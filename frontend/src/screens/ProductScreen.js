@@ -17,7 +17,7 @@ import Loader from '../components/Loader';
 import Message from '../components/Message';
 
 const ProductScreen = ({ history, match }) => {
-  const [qty, setQty] = useState(0);
+  const [qty, setQty] = useState(1);
 
   const dispatch = useDispatch();
 
@@ -31,8 +31,6 @@ const ProductScreen = ({ history, match }) => {
   const addToCartHandler = () => {
     history.push(`/cart/${match.params.id}?qty=${qty}`);
   };
-
-  console.log(`loading: ${loading} & error: ${error}`, product);
 
   return (
     <>
@@ -92,7 +90,7 @@ const ProductScreen = ({ history, match }) => {
                         <Form.Control
                           as='select'
                           className='form-select border border-secondary rounded'
-                          style={{ minWidth: '80px' }}
+                          style={{ minWidth: '120px' }}
                           value={qty}
                           onChange={(e) => setQty(e.target.value)}
                         >
