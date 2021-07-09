@@ -3,6 +3,7 @@ import {
   ORDER_CREATE_FAIL,
   ORDER_CREATE_REQUEST,
   ORDER_CREATE_SUCCESS,
+  ORDER_DELIVER_FAIL,
   ORDER_DELIVER_REQUEST,
   ORDER_DELIVER_SUCCESS,
   ORDER_DETAILS_FAIL,
@@ -212,7 +213,7 @@ export const deliverOrder = (id) => async (dispatch, getState) => {
     });
   } catch (error) {
     dispatch({
-      type: ORDER_LIST_FAIL,
+      type: ORDER_DELIVER_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message
