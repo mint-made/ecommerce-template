@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
-import { LinkContainer } from 'react-router-bootstrap';
 import { Table, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { listOrders } from '../actions/orderActions';
+import { listOrders, deliverOrder } from '../actions/orderActions';
 
 const OrderListScreen = ({ history }) => {
   const dispatch = useDispatch();
@@ -15,22 +14,30 @@ const OrderListScreen = ({ history }) => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
+  const orderDeliver = useSelector((state) => state.orderDeliver);
+  const {
+    loading: loadingDeliver,
+    error: errorDeliver,
+    success: successDeliver,
+  } = orderDeliver;
+
   useEffect(() => {
     if (userInfo && userInfo.isAdmin) {
       dispatch(listOrders());
     } else {
       history.push('/login');
     }
-  }, [dispatch, history, userInfo]);
+  }, [dispatch, history, userInfo, successDeliver]);
 
-  const markDeliveredHandler = (e) => {
-    // MARK DELIVERED
-    console.log(e.target);
+  const markDeliveredHandler = (id) => {
+    dispatch(deliverOrder(id));
   };
 
   return (
     <>
       <h1>Users</h1>
+      {loadingDeliver && <Loader />}
+      {errorDeliver && <Message variant='danger'>{errorDeliver}</Message>}
       {loading ? (
         <Loader />
       ) : error ? (
@@ -55,14 +62,26 @@ const OrderListScreen = ({ history }) => {
                 <td>{order.totalPrice}</td>
                 <td>
                   {order.isPaid ? (
-                    <i className='fas fa-check' style={{ color: 'green' }}></i>
+                    <>
+                      <i
+                        className='fas fa-check'
+                        style={{ color: 'green' }}
+                      ></i>{' '}
+                      {order.deliveredAt.substring(0, 10)}
+                    </>
                   ) : (
                     <i className='fas fa-times' style={{ color: 'red' }}></i>
                   )}
                 </td>
                 <td>
                   {order.isDelivered ? (
-                    order.deliveredAt.substring(0, 10)
+                    <>
+                      <i
+                        className='fas fa-check'
+                        style={{ color: 'green' }}
+                      ></i>{' '}
+                      {order.deliveredAt.substring(0, 10)}
+                    </>
                   ) : (
                     <i className='fas fa-times' style={{ color: 'red' }}></i>
                   )}
@@ -71,7 +90,8 @@ const OrderListScreen = ({ history }) => {
                   <Button
                     variant='light'
                     className='btn-sm'
-                    onClick={(e) => markDeliveredHandler(e)}
+                    disabled={order.isDelivered}
+                    onClick={() => markDeliveredHandler(order._id)}
                   >
                     Mark Delivered
                   </Button>
