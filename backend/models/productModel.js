@@ -16,6 +16,18 @@ const reviewSchema = new mongoose.Schema(
   }
 );
 
+const variationSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  options: [
+    {
+      name: { type: String, required: true },
+      additionalPrice: { type: Number, required: true, default: 0 },
+      isDefault: { type: Boolean, required: true, default: false },
+      isSelected: { type: Boolean, required: true, default: false },
+    },
+  ],
+});
+
 const productSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
@@ -43,6 +55,7 @@ const productSchema = new mongoose.Schema({
     required: true,
   },
   reviews: [reviewSchema],
+  variations: [variationSchema],
   rating: {
     type: Number,
     required: true,

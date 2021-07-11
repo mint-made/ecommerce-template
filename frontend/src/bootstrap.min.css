@@ -6112,6 +6112,15 @@ button.bg-dark:hover {
 .border-left-0 {
   border-left: 0 !important;
 }
+.border-3 {
+  border-width: 3px !important;
+}
+.border-bottom-3 {
+  border-bottom: 3px solid #eceeef !important;
+}
+.border-brand {
+  border-color: #343a40 !important;
+}
 .border-primary {
   border-color: #1a1a1a !important;
 }

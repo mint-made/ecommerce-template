@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Row, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
@@ -15,10 +15,12 @@ const ProductEditScreen = ({ match, history }) => {
   const [name, setName] = useState('');
   const [price, setPrice] = useState(0);
   const [image, setImage] = useState('');
-  const [brand, setBrand] = useState('');
   const [category, setCategory] = useState('');
   const [countInStock, setCountInStock] = useState(0);
   const [description, setDescription] = useState('');
+  //Variations
+  const [variations, setVariations] = useState([]);
+
   const [uploading, setUploading] = useState(false);
 
   const dispatch = useDispatch();
@@ -44,10 +46,10 @@ const ProductEditScreen = ({ match, history }) => {
         setName(product.name);
         setPrice(product.price);
         setImage(product.image);
-        setBrand(product.brand);
         setCategory(product.category);
         setCountInStock(product.countInStock);
         setDescription(product.description);
+        setVariations(product.variations);
       }
     }
   }, [dispatch, history, productId, product, successUpdate]);
@@ -82,12 +84,42 @@ const ProductEditScreen = ({ match, history }) => {
         name,
         price,
         image,
-        brand,
         category,
         description,
         countInStock,
+        variations,
       })
     );
+  };
+
+  const addVariationHandler = () => {
+    setVariations((variations) => [
+      ...variations,
+      {
+        name: 'e.g. size',
+        options: [
+          {
+            name: 'e.g. small',
+            additionalPrice: 0.0,
+            isDefault: true,
+          },
+          {
+            name: 'e.g. large',
+            additionalPrice: 2.0,
+            isDefault: false,
+          },
+        ],
+      },
+    ]);
+  };
+  const addOptionHandler = (index) => {
+    const newVariationsArray = [...variations];
+    newVariationsArray[index].options.push({
+      name: 'e.g. large',
+      additionalPrice: 2.0,
+      isDefault: false,
+    });
+    setVariations(newVariationsArray);
   };
 
   return (
@@ -105,86 +137,186 @@ const ProductEditScreen = ({ match, history }) => {
           <Message variant='danger'>{error}</Message>
         ) : (
           <Form onSubmit={submitHandler}>
-            <Form.Group controlId='name'>
-              <Form.Label>Name</Form.Label>
-              <Form.Control
-                type='name'
-                placeholder='Enter Name'
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              ></Form.Control>
-            </Form.Group>
+            <div className='p-3 border border-3 rounded-lg'>
+              <Row>
+                <Col xs={7}>
+                  <Form.Group controlId='name'>
+                    <Form.Label>Name</Form.Label>
+                    <Form.Control
+                      type='name'
+                      placeholder='Enter Name'
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                    ></Form.Control>
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group controlId='price'>
+                    <Form.Label>Price</Form.Label>
+                    <Form.Control
+                      type='number'
+                      placeholder='Enter price'
+                      value={price}
+                      onChange={(e) => setPrice(e.target.value)}
+                    ></Form.Control>
+                  </Form.Group>
+                </Col>
+              </Row>
 
-            <Form.Group controlId='price'>
-              <Form.Label>Price</Form.Label>
-              <Form.Control
-                type='number'
-                placeholder='Enter price'
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-              ></Form.Control>
-            </Form.Group>
+              <Form.Group controlId='image'>
+                <Form.Label>Image</Form.Label>
+                <Form.Control
+                  type='text'
+                  placeholder='Enter image URL'
+                  value={image}
+                  onChange={(e) => setImage(e.target.value)}
+                ></Form.Control>
+                <Form.File
+                  id='image-file'
+                  label='Choose File'
+                  custom
+                  onChange={uploadFileHandler}
+                ></Form.File>
+                {uploading && <Loader />}
+              </Form.Group>
 
-            <Form.Group controlId='image'>
-              <Form.Label>Image</Form.Label>
-              <Form.Control
-                type='text'
-                placeholder='Enter image URL'
-                value={image}
-                onChange={(e) => setImage(e.target.value)}
-              ></Form.Control>
-              <Form.File
-                id='image-file'
-                label='Choose File'
-                custom
-                onChange={uploadFileHandler}
-              ></Form.File>
-              {uploading && <Loader />}
-            </Form.Group>
+              <Row>
+                <Col>
+                  <Form.Group controlId='category'>
+                    <Form.Label>Category</Form.Label>
+                    <Form.Control
+                      type='text'
+                      placeholder='Enter category'
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                    ></Form.Control>
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group controlId='countInStock'>
+                    <Form.Label>Count In Stock </Form.Label>
+                    <Form.Control
+                      type='number'
+                      placeholder='Count In Stock'
+                      value={countInStock}
+                      onChange={(e) => setCountInStock(e.target.value)}
+                    ></Form.Control>
+                  </Form.Group>
+                </Col>
+              </Row>
 
-            <Form.Group controlId='brand'>
-              <Form.Label>Brand</Form.Label>
-              <Form.Control
-                type='text'
-                placeholder='Enter Brand'
-                value={brand}
-                onChange={(e) => setBrand(e.target.value)}
-              ></Form.Control>
-            </Form.Group>
+              <Form.Group controlId='description'>
+                <Form.Label>Description</Form.Label>
+                <Form.Control
+                  as='textarea'
+                  rows={3}
+                  type='text'
+                  placeholder='Enter Description'
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                ></Form.Control>
+              </Form.Group>
 
-            <Form.Group controlId='countInStock'>
-              <Form.Label>Count In Stock </Form.Label>
-              <Form.Control
-                type='number'
-                placeholder='Count In Stock'
-                value={countInStock}
-                onChange={(e) => setCountInStock(e.target.value)}
-              ></Form.Control>
-            </Form.Group>
-
-            <Form.Group controlId='category'>
-              <Form.Label>Category</Form.Label>
-              <Form.Control
-                type='text'
-                placeholder='Enter category'
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-              ></Form.Control>
-            </Form.Group>
-
-            <Form.Group controlId='description'>
-              <Form.Label>Description</Form.Label>
-              <Form.Control
-                type='text'
-                placeholder='Enter Description'
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              ></Form.Control>
-            </Form.Group>
-
-            <Button type='submit' variant='primary'>
-              Update
-            </Button>
+              <div className='border border-3 rounded-lg mb-2'>
+                {variations &&
+                  variations.map((variation, index) => (
+                    <div
+                      key={`variation-${index}`}
+                      className='border-bottom-3 p-2'
+                    >
+                      <h4 className='p-1'>Variation #{index + 1}</h4>
+                      <Form.Group controlId={`variation-name-${index}`}>
+                        <Form.Label>Variation Name</Form.Label>
+                        <Form.Control
+                          type='text'
+                          placeholder='Variation Name'
+                          value={variation.name}
+                          onChange={(e) => {
+                            variation.name = e.target.value;
+                            setVariations([...variations]);
+                          }}
+                        ></Form.Control>
+                      </Form.Group>
+                      {variation.options &&
+                        variation.options.map((option, index) => (
+                          <Row key={`${variation.name}-option-${index}`}>
+                            <Col>
+                              <Form.Group
+                                controlId={`${variation.name}-option-${index}-name`}
+                              >
+                                <Form.Label>
+                                  {index + 1}. Option Name
+                                </Form.Label>
+                                <Form.Control
+                                  className='form-control-sm'
+                                  type='text'
+                                  placeholder='Variation Name'
+                                  value={option.name}
+                                  onChange={(e) => {
+                                    option.name = e.target.value;
+                                    setVariations([...variations]);
+                                  }}
+                                ></Form.Control>
+                              </Form.Group>
+                            </Col>
+                            <Col>
+                              <Form.Group
+                                controlId={`${variation.name}-option-${index}-additionalPrice`}
+                              >
+                                <Form.Label>Additional Price</Form.Label>
+                                <Form.Control
+                                  className='form-control-sm'
+                                  type='text'
+                                  placeholder='e.g. 1.00'
+                                  value={option.additionalPrice}
+                                  onChange={(e) => {
+                                    option.additionalPrice = e.target.value;
+                                    setVariations([...variations]);
+                                  }}
+                                ></Form.Control>
+                              </Form.Group>
+                            </Col>
+                            <Col>
+                              <Form.Group
+                                controlId={`${variation.name}-option-${index}-isDefault`}
+                              >
+                                <Form.Check
+                                  type='checkbox'
+                                  label='Default Option?'
+                                  checked={option.isDefault}
+                                  onChange={(e) => {
+                                    variation.options.map(
+                                      (option) => (option.isDefault = false)
+                                    );
+                                    option.isDefault = e.target.checked;
+                                    setVariations([...variations]);
+                                  }}
+                                ></Form.Check>
+                              </Form.Group>
+                            </Col>
+                          </Row>
+                        ))}
+                      <Button
+                        variant='primary'
+                        className='m-1 btn btn-sm'
+                        onClick={() => addOptionHandler(index)}
+                      >
+                        Add Option
+                      </Button>
+                    </div>
+                  ))}
+                <Button
+                  variant='primary'
+                  className='m-1 btn'
+                  onClick={addVariationHandler}
+                >
+                  New Variation
+                </Button>
+              </div>
+              <Button type='submit' variant='success'>
+                Update
+              </Button>
+            </div>
           </Form>
         )}
       </FormContainer>
