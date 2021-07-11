@@ -25,6 +25,7 @@ const ProductScreen = ({ history, match }) => {
   const [qty, setQty] = useState(1);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
+  const [variations, setVariations] = useState([]);
 
   const dispatch = useDispatch();
 
@@ -45,9 +46,12 @@ const ProductScreen = ({ history, match }) => {
       setComment('');
       dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
     }
-
-    dispatch(listProductDetails(match.params.id));
-  }, [dispatch, match, successProductReview]);
+    if (!product.name) {
+      dispatch(listProductDetails(match.params.id));
+    } else {
+      setVariations([...product.variations]);
+    }
+  }, [dispatch, match, successProductReview, product]);
 
   const addToCartHandler = () => {
     history.push(`/cart/${match.params.id}?qty=${qty}`);
@@ -61,6 +65,18 @@ const ProductScreen = ({ history, match }) => {
         comment,
       })
     );
+  };
+
+  const updateSelectedVariationsHandler = (e, index) => {
+    const newVariationsArray = [...variations];
+    newVariationsArray[index].options.forEach(
+      (option) => (option.isSelected = false)
+    );
+    console.log(e.target.value);
+    newVariationsArray[index].options.find(
+      (option) => option.name === e.target.value
+    ).isSelected = true;
+    setVariations(newVariationsArray);
   };
 
   return (
@@ -115,6 +131,47 @@ const ProductScreen = ({ history, match }) => {
                       </Col>
                     </Row>
                   </ListGroup.Item>
+
+                  {variations &&
+                    variations.map((variation, index) => (
+                      <ListGroup.Item key={`variation-${index}`}>
+                        <Form.Label>
+                          {variation.name} -{' '}
+                          <>
+                            {variation.options.map((option) => (
+                              <p key={option._id}>
+                                {option.name} / {option.isSelected.toString()}
+                              </p>
+                            ))}
+                          </>
+                        </Form.Label>
+                        <Form.Control
+                          as='select'
+                          className='form-select border border-secondary rounded'
+                          style={{ minWidth: '120px' }}
+                          value={
+                            variation.options.find(
+                              (option) => option.isSelected === true
+                            ).name
+                          }
+                          onChange={(e) =>
+                            updateSelectedVariationsHandler(e, index)
+                          }
+                        >
+                          {variation.options.map((option) => (
+                            <option
+                              key={`${option.name}-${index}`}
+                              value={option.name}
+                            >
+                              {`${option.name} (£${
+                                product.price + option.additionalPrice
+                              })`}
+                            </option>
+                          ))}
+                        </Form.Control>
+                      </ListGroup.Item>
+                    ))}
+
                   {product.countInStock > 0 && (
                     <ListGroup.Item>
                       <Row>

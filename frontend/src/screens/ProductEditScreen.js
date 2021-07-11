@@ -101,12 +101,12 @@ const ProductEditScreen = ({ match, history }) => {
           {
             name: 'e.g. small',
             additionalPrice: 0.0,
-            isDefault: true,
+            isSelected: true,
           },
           {
             name: 'e.g. large',
             additionalPrice: 2.0,
-            isDefault: false,
+            isSelected: false,
           },
         ],
       },
@@ -117,7 +117,7 @@ const ProductEditScreen = ({ match, history }) => {
     newVariationsArray[index].options.push({
       name: 'e.g. large',
       additionalPrice: 2.0,
-      isDefault: false,
+      isSelected: false,
     });
     setVariations(newVariationsArray);
   };
@@ -278,17 +278,17 @@ const ProductEditScreen = ({ match, history }) => {
                             </Col>
                             <Col>
                               <Form.Group
-                                controlId={`${variation.name}-option-${index}-isDefault`}
+                                controlId={`${variation.name}-option-${index}-isSelected`}
                               >
                                 <Form.Check
                                   type='checkbox'
-                                  label='Default Option?'
-                                  checked={option.isDefault}
+                                  label='Default Option Selected?'
+                                  checked={option.isSelected}
                                   onChange={(e) => {
                                     variation.options.map(
-                                      (option) => (option.isDefault = false)
+                                      (option) => (option.isSelected = false)
                                     );
-                                    option.isDefault = e.target.checked;
+                                    option.isSelected = e.target.checked;
                                     setVariations([...variations]);
                                   }}
                                 ></Form.Check>
