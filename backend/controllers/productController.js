@@ -2,9 +2,17 @@ import asyncHandler from 'express-async-handler';
 
 import Product from '../models/productModel.js';
 
-// @description Fetch all products
-// @route GET /api/products
-// @access Public
+/**
+ * @api {get} /api/products getProducts
+ * @apiGroup Public
+ *
+ * @apiParam {String} Keyword to search the database
+ * @apiParam {Number} Page number of the results
+ *
+ * @apiSuccess {Array} Array of Products
+ * @apiSuccess {Number} Page number of results that is being returned
+ * @apiSuccess {Number} Pages Total number of pages of results
+ */
 const getProducts = asyncHandler(async (req, res) => {
   const pageSize = 10;
   const page = Number(req.query.pageNumber) || 1;
@@ -25,9 +33,14 @@ const getProducts = asyncHandler(async (req, res) => {
   res.json({ products, page, pages: Math.ceil(count / pageSize) });
 });
 
-// @description Fetch single product
-// @route GET /api/products/:id
-// @access Public
+/**
+ * @api {get} /api/products/:id getProductById
+ * @apiGroup Public
+ *
+ * @apiParam {String} ID of the product to be returned
+ *
+ * @apiSuccess {Object} Product Single Product with that ID
+ */
 const getProductById = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id);
 
@@ -42,6 +55,14 @@ const getProductById = asyncHandler(async (req, res) => {
 // @description Delete a product
 // @route DELETE /api/products/:id
 // @access Private/Admin
+/**
+ * @api {delete} /api/products/:id deleteProduct
+ * @apiGroup Private/Admin
+ *
+ * @apiParam {String} ID of the product to be deleted
+ *
+ * @apiSuccess {Object} message "Product removed"
+ */
 const deleteProduct = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id);
 
@@ -57,6 +78,14 @@ const deleteProduct = asyncHandler(async (req, res) => {
 // @description Create a product
 // @route POST /api/products
 // @access Private/Admin
+/**
+ * @api {post} /api/products/ createProduct
+ * @apiGroup Private/Admin
+ *
+ * @apiParam {Object} Object Empty Object
+ *
+ * @apiSuccess {Object} product A template product created
+ */
 const createProduct = asyncHandler(async (req, res) => {
   const product = new Product({
     name: 'Sample name',
@@ -77,6 +106,21 @@ const createProduct = asyncHandler(async (req, res) => {
 // @description Update a product
 // @route PUT /api/products/:id
 // @access Private/Admin
+/**
+ * @api {put} /api/products/:id updateProduct
+ * @apiGroup Private/Admin
+ *
+ * @apiParam {String} name of the product
+ * @apiParam {Number} price of the product
+ * @apiParam {String} description of the product
+ * @apiParam {String} image of the product
+ * @apiParam {String} brand of the product
+ * @apiParam {String} category of the product
+ * @apiParam {Number} countInStock of the product
+ * @apiParam {Object} variations of the product
+ *
+ * @apiSuccess {Object} Product An object of the updated product
+ */
 const updateProduct = asyncHandler(async (req, res) => {
   const {
     name,
@@ -112,6 +156,15 @@ const updateProduct = asyncHandler(async (req, res) => {
 // @description create new review
 // @route POST /api/products/:id/reviews
 // @access Private
+/**
+ * @api {post} /api/products/:id createProductReview
+ * @apiGroup Private
+ *
+ * @apiParam {Number} rating review rating
+ * @apiParam {String} comment review comment
+ *
+ * @apiSuccess {Object} product A template product created
+ */
 const createProductReview = asyncHandler(async (req, res) => {
   console.log('route hit');
   const { rating, comment } = req.body;
@@ -153,6 +206,12 @@ const createProductReview = asyncHandler(async (req, res) => {
 // @description Get top rated products
 // @route GET /api/products/top
 // @access Public
+/**
+ * @api {get} /api/products/top getTopProducts
+ * @apiGroup Public
+ *
+ * @apiSuccess {Object} products The top 3 rated products
+ */
 const getTopProducts = asyncHandler(async (req, res) => {
   const products = await Product.find({}).sort({ rating: -1 }).limit(3);
 

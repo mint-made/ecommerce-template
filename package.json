@@ -2,6 +2,12 @@
   "name": "ecommerce-template",
   "version": "1.0.0",
   "description": "MERN shopping cart app",
+  "apidoc": {
+    "title": "ecommerce-template Documentation",
+    "url": "",
+    "version": "1.0.0",
+    "sampleUrl": null
+  },
   "main": "server.js",
   "type": "module",
   "scripts": {
@@ -11,7 +17,8 @@
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "data:import": "node backend/seeder",
     "data:destroy": "node backend/seeder -d",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend"
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend",
+    "docs": "rm -r backend/apidoc; apidoc -i /home/tom/Desktop/ecommerce-template/backend/controllers/ -o backend/apidoc/"
   },
   "repository": {
     "type": "git",

@@ -54,7 +54,18 @@ const ProductScreen = ({ history, match }) => {
   }, [dispatch, match, successProductReview, product]);
 
   const addToCartHandler = () => {
-    history.push(`/cart/${match.params.id}?qty=${qty}`);
+    const selectedVariations = [];
+    variations.forEach((variation) =>
+      selectedVariations.push(
+        variation.options.find((option) => option.isSelected === true)
+      )
+    );
+    const variationsUrl = selectedVariations
+      .map((variation, index) => `&var${index + 1}=${variation._id}`)
+      .join('');
+    console.log(`/cart/${match.params.id}?qty=${qty}${variationsUrl}`);
+
+    //history.push(`/cart/${match.params.id}?qty=${qty}`);
   };
 
   const submitHandler = (e) => {
@@ -119,7 +130,7 @@ const ProductScreen = ({ history, match }) => {
                     <Row>
                       <Col>Price</Col>
                       <Col>
-                        <strong>${product.price}</strong>
+                        <strong>£{product.price}</strong>
                       </Col>
                     </Row>
                   </ListGroup.Item>
@@ -135,16 +146,7 @@ const ProductScreen = ({ history, match }) => {
                   {variations &&
                     variations.map((variation, index) => (
                       <ListGroup.Item key={`variation-${index}`}>
-                        <Form.Label>
-                          {variation.name} -{' '}
-                          <>
-                            {variation.options.map((option) => (
-                              <p key={option._id}>
-                                {option.name} / {option.isSelected.toString()}
-                              </p>
-                            ))}
-                          </>
-                        </Form.Label>
+                        <Form.Label>{variation.name}</Form.Label>
                         <Form.Control
                           as='select'
                           className='form-select border border-secondary rounded'
@@ -163,9 +165,9 @@ const ProductScreen = ({ history, match }) => {
                               key={`${option.name}-${index}`}
                               value={option.name}
                             >
-                              {`${option.name} (£${
-                                product.price + option.additionalPrice
-                              })`}
+                              {`${
+                                option.name
+                              } (+£${option.additionalPrice.toFixed(2)})`}
                             </option>
                           ))}
                         </Form.Control>
