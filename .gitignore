@@ -12,6 +12,9 @@
 # production
 /frontend/build
 
+# documentation
+/backend/apidoc
+
 # misc
 .DS_Store
 .env.local
