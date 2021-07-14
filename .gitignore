@@ -12,7 +12,8 @@
 # production
 /frontend/build
 
-# documentation
+# ApiDoc documentation
+/apidoc
 /backend/apidoc
 
 # misc
