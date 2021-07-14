@@ -4,7 +4,8 @@ import Product from '../models/productModel.js';
 
 /**
  * @api {get} /api/products getProducts
- * @apiGroup Public
+ * @apiGroup Product
+ * @apiPermission Public
  *
  * @apiParam {String} Keyword to search the database
  * @apiParam {Number} Page number of the results
@@ -35,7 +36,8 @@ const getProducts = asyncHandler(async (req, res) => {
 
 /**
  * @api {get} /api/products/:id getProductById
- * @apiGroup Public
+ * @apiGroup Product
+ * @apiPermission Public
  *
  * @apiParam {String} ID of the product to be returned
  *
@@ -57,7 +59,8 @@ const getProductById = asyncHandler(async (req, res) => {
 // @access Private/Admin
 /**
  * @api {delete} /api/products/:id deleteProduct
- * @apiGroup Private/Admin
+ * @apiGroup Product
+ * @apiPermission Private/Admin
  *
  * @apiParam {String} ID of the product to be deleted
  *
@@ -80,7 +83,8 @@ const deleteProduct = asyncHandler(async (req, res) => {
 // @access Private/Admin
 /**
  * @api {post} /api/products/ createProduct
- * @apiGroup Private/Admin
+ * @apiGroup Product
+ * @apiPermission Private/Admin
  *
  * @apiParam {Object} Object Empty Object
  *
@@ -108,7 +112,8 @@ const createProduct = asyncHandler(async (req, res) => {
 // @access Private/Admin
 /**
  * @api {put} /api/products/:id updateProduct
- * @apiGroup Private/Admin
+ * @apiGroup Product
+ * @apiPermission Private/Admin
  *
  * @apiParam {String} name of the product
  * @apiParam {Number} price of the product
@@ -158,7 +163,8 @@ const updateProduct = asyncHandler(async (req, res) => {
 // @access Private
 /**
  * @api {post} /api/products/:id createProductReview
- * @apiGroup Private
+ * @apiGroup Product
+ * @apiPermission Private
  *
  * @apiParam {Number} rating review rating
  * @apiParam {String} comment review comment
@@ -208,7 +214,8 @@ const createProductReview = asyncHandler(async (req, res) => {
 // @access Public
 /**
  * @api {get} /api/products/top getTopProducts
- * @apiGroup Public
+ * @apiGroup Product
+ * @apiPermission Public
  *
  * @apiSuccess {Object} products The top 3 rated products
  */

@@ -7,7 +7,10 @@ import Order from '../models/orderModel.js';
 // @access Private
 /**
  * @api {post} /api/orders addOrderItems
- * @apiGroup Private
+ * @apiGroup Order
+ * @apiPermission Private
+ *
+ * @apiDescription This route will create a new order, made up of the order items passed in the body
  *
  * @apiParam {Array} orderItems All items included in the order
  * @apiParam {Object} shippingAddress Containing address , city, postalCode, country
@@ -57,7 +60,8 @@ const addOrderItems = asyncHandler(async (req, res) => {
 // @access Private
 /**
  * @api {get} /api/orders/:id getOrderById
- * @apiGroup Private
+ * @apiGroup Order
+ * @apiPermission Private
  *
  * @apiParam {String} orderId ID of the order requested
  *
@@ -83,7 +87,8 @@ const getOrderById = asyncHandler(async (req, res) => {
 // @access Private
 /**
  * @api {get} /api/orders/:id/pay updateOrderToPaid
- * @apiGroup Private
+ * @apiGroup Order
+ * @apiPermission Private
  *
  * @apiParam {String} orderId ID of the order that has been paid
  *
@@ -117,7 +122,8 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
 // @access Private
 /**
  * @api {get} /api/orders/myorders getMyOrders
- * @apiGroup Private
+ * @apiGroup Order
+ * @apiPermission Private
  *
  * @apiSuccess {Array} orders The orders for the user who sent the request
  */
@@ -131,7 +137,8 @@ const getMyOrders = asyncHandler(async (req, res) => {
 // @access Private/Admin
 /**
  * @api {get} /api/orders/ getOrders
- * @apiGroup Private/Admin
+ * @apiGroup Order
+ * @apiPermission Private/Admin
  *
  * @apiSuccess {Array} orders All orders
  */
@@ -145,7 +152,8 @@ const getOrders = asyncHandler(async (req, res) => {
 // @access Private/Admin
 /**
  * @api {get} /api/orders/:id/deliver updateOrderToDelivered
- * @apiGroup Private/Admin
+ * @apiGroup Order
+ * @apiPermission Private/Admin
  *
  * @apiParam {String} orderId ID of the order to be marked as delivered
  *
