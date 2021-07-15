@@ -11,21 +11,23 @@ export const cartReducer = (
 ) => {
   switch (action.type) {
     case CART_ADD_ITEM:
-      const item = action.payload;
+      const newCartItem = action.payload;
 
-      const existItem = state.cartItems.find((x) => x.product === item.product);
+      const existItem = state.cartItems.find(
+        (item) => item.productId === newCartItem.productId
+      );
 
       if (existItem) {
         return {
           ...state,
-          cartItems: state.cartItems.map((x) =>
-            x.product === existItem.product ? item : x
+          cartItems: state.cartItems.map((cartItem) =>
+            cartItem.productId === existItem.productId ? newCartItem : cartItem
           ),
         };
       } else {
         return {
           ...state,
-          cartItems: [...state.cartItems, item],
+          cartItems: [...state.cartItems, newCartItem],
         };
       }
     case CART_REMOVE_ITEM:

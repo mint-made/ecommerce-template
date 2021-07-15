@@ -25,6 +25,6 @@ This is a template ecommerce site, built with the essential ecommerce functional
 - Node + Express
 - MongoDB + Mongoose
 - JSON web tokens
-- bcrypt
+- [bcrypt](https://www.npmjs.com/package/bcrypt)
 - RESTful APIs
-- apiDoc
+- [apiDoc](https://apidocjs.com/#param-api-description)

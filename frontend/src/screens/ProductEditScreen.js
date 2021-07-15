@@ -54,6 +54,10 @@ const ProductEditScreen = ({ match, history }) => {
     }
   }, [dispatch, history, productId, product, successUpdate]);
 
+  /**
+   * Handler for uploading images added by the user
+   * @param {Object} e Event object to get the image file added by the user
+   */
   const uploadFileHandler = async (e) => {
     const file = e.target.files[0];
     const formData = new FormData();
@@ -76,6 +80,10 @@ const ProductEditScreen = ({ match, history }) => {
     }
   };
 
+  /**
+   * Dispatches the updateProduct action
+   * @param {Object} e Event object to prevent default page reload
+   */
   const submitHandler = (e) => {
     e.preventDefault();
     dispatch(
@@ -92,32 +100,37 @@ const ProductEditScreen = ({ match, history }) => {
     );
   };
 
+  /**
+   * Adds a new variation to the product
+   */
   const addVariationHandler = () => {
     setVariations((variations) => [
       ...variations,
       {
         name: 'e.g. size',
+        selectedOption: 0,
         options: [
           {
             name: 'e.g. small',
             additionalPrice: 0.0,
-            isSelected: true,
           },
           {
             name: 'e.g. large',
             additionalPrice: 2.0,
-            isSelected: false,
           },
         ],
       },
     ]);
   };
+  /**
+   * Adds an option to the variation[index]
+   * @param {Number} index variation[index] to have an option added
+   */
   const addOptionHandler = (index) => {
     const newVariationsArray = [...variations];
     newVariationsArray[index].options.push({
       name: 'e.g. large',
       additionalPrice: 2.0,
-      isSelected: false,
     });
     setVariations(newVariationsArray);
   };
@@ -282,13 +295,10 @@ const ProductEditScreen = ({ match, history }) => {
                               >
                                 <Form.Check
                                   type='checkbox'
-                                  label='Default Option Selected?'
-                                  checked={option.isSelected}
+                                  label='Default Option?'
+                                  checked={variation.selectedOption === index}
                                   onChange={(e) => {
-                                    variation.options.map(
-                                      (option) => (option.isSelected = false)
-                                    );
-                                    option.isSelected = e.target.checked;
+                                    variation.selectedOption = index;
                                     setVariations([...variations]);
                                   }}
                                 ></Form.Check>

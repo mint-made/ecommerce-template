@@ -18,12 +18,11 @@ const reviewSchema = new mongoose.Schema(
 
 const variationSchema = new mongoose.Schema({
   name: { type: String, required: true },
+  selectedOption: { type: Number, required: true },
   options: [
     {
       name: { type: String, required: true },
       additionalPrice: { type: Number, required: true, default: 0 },
-      isDefault: { type: Boolean, required: true, default: false },
-      isSelected: { type: Boolean, required: true, default: false },
     },
   ],
 });

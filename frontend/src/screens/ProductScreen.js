@@ -15,6 +15,7 @@ import {
   listProductDetails,
   createProductReview,
 } from '../actions/productActions';
+import { addToCart } from '../actions/cartActions';
 import { PRODUCT_CREATE_REVIEW_RESET } from '../constants/productConstants';
 import Rating from '../components/Rating';
 import Loader from '../components/Loader';
@@ -25,7 +26,7 @@ const ProductScreen = ({ history, match }) => {
   const [qty, setQty] = useState(1);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
-  const [variations, setVariations] = useState([]);
+  const [selectedVariations, setSelectedVariations] = useState([]);
 
   const dispatch = useDispatch();
 
@@ -49,26 +50,26 @@ const ProductScreen = ({ history, match }) => {
     if (!product.name) {
       dispatch(listProductDetails(match.params.id));
     } else {
-      setVariations([...product.variations]);
+      setSelectedVariations([...product.variations]);
     }
   }, [dispatch, match, successProductReview, product]);
 
+  /**
+   * Handler for adding an item to cart, calling the addToCart action and redirecting to /cart
+   */
   const addToCartHandler = () => {
-    const selectedVariations = [];
-    variations.forEach((variation) =>
-      selectedVariations.push(
-        variation.options.find((option) => option.isSelected === true)
-      )
-    );
-    const variationsUrl = selectedVariations
-      .map((variation, index) => `&var${index + 1}=${variation._id}`)
-      .join('');
-    console.log(`/cart/${match.params.id}?qty=${qty}${variationsUrl}`);
-
-    //history.push(`/cart/${match.params.id}?qty=${qty}`);
+    const addedProduct = product;
+    addedProduct.qty = qty;
+    addedProduct.variations = selectedVariations;
+    dispatch(addToCart(addedProduct));
+    history.push('/cart');
   };
 
-  const submitHandler = (e) => {
+  /**
+   * Dispatches the createProductReview action
+   * @param {*} e Event object for the review submitted
+   */
+  const submitReviewHandler = (e) => {
     e.preventDefault();
     dispatch(
       createProductReview(match.params.id, {
@@ -78,16 +79,20 @@ const ProductScreen = ({ history, match }) => {
     );
   };
 
-  const updateSelectedVariationsHandler = (e, index) => {
-    const newVariationsArray = [...variations];
-    newVariationsArray[index].options.forEach(
+  /**
+   * Updates the selectedVariations state array of to the new selected option
+   * @param {object} e Event object of the field that has been changed
+   * @param {Number} index Index of the
+   */
+  const updateVariationsHandler = (e, index) => {
+    const newVariations = [...selectedVariations];
+    newVariations[index].options.forEach(
       (option) => (option.isSelected = false)
     );
-    console.log(e.target.value);
-    newVariationsArray[index].options.find(
+    newVariations[index].options.find(
       (option) => option.name === e.target.value
     ).isSelected = true;
-    setVariations(newVariationsArray);
+    setSelectedVariations(newVariations);
   };
 
   return (
@@ -143,8 +148,8 @@ const ProductScreen = ({ history, match }) => {
                     </Row>
                   </ListGroup.Item>
 
-                  {variations &&
-                    variations.map((variation, index) => (
+                  {selectedVariations &&
+                    selectedVariations.map((variation, index) => (
                       <ListGroup.Item key={`variation-${index}`}>
                         <Form.Label>{variation.name}</Form.Label>
                         <Form.Control
@@ -156,18 +161,15 @@ const ProductScreen = ({ history, match }) => {
                               (option) => option.isSelected === true
                             ).name
                           }
-                          onChange={(e) =>
-                            updateSelectedVariationsHandler(e, index)
-                          }
+                          onChange={(e) => updateVariationsHandler(e, index)}
                         >
                           {variation.options.map((option) => (
-                            <option
-                              key={`${option.name}-${index}`}
-                              value={option.name}
-                            >
+                            <option key={option._id} value={option.name}>
                               {`${
                                 option.name
-                              } (+£${option.additionalPrice.toFixed(2)})`}
+                              } (+£${option.additionalPrice.toFixed(2)})---${
+                                option.isSelected
+                              }`}
                             </option>
                           ))}
                         </Form.Control>
@@ -233,7 +235,7 @@ const ProductScreen = ({ history, match }) => {
                     <Message variant='danger'>{errorProductReview}</Message>
                   )}
                   {userInfo ? (
-                    <Form onSubmit={submitHandler}>
+                    <Form onSubmit={submitReviewHandler}>
                       <Form.Group controlId='rating'>
                         <Form.Label>Rating</Form.Label>
                         <Form.Control
