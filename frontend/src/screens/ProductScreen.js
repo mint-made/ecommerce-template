@@ -81,18 +81,12 @@ const ProductScreen = ({ history, match }) => {
 
   /**
    * Updates the selectedVariations state array of to the new selected option
-   * @param {object} e Event object of the field that has been changed
-   * @param {Number} index Index of the
+   * @param {Object} e Event object of the field that has been changed
+   * @param {Number} variationIndex Index of the
    */
-  const updateVariationsHandler = (e, index) => {
-    const newVariations = [...selectedVariations];
-    newVariations[index].options.forEach(
-      (option) => (option.isSelected = false)
-    );
-    newVariations[index].options.find(
-      (option) => option.name === e.target.value
-    ).isSelected = true;
-    setSelectedVariations(newVariations);
+  const updateVariationsHandler = (e, variationIndex) => {
+    selectedVariations[variationIndex].selectedOption = e.target.value;
+    setSelectedVariations([...selectedVariations]);
   };
 
   return (
@@ -100,6 +94,9 @@ const ProductScreen = ({ history, match }) => {
       <Link className='btn btn-light my-3' to='/'>
         Go Back
       </Link>
+      {selectedVariations.map((variation, index) => (
+        <p key={`dfgsd${index}`}>{variation.selectedOption}</p>
+      ))}
       {loading ? (
         <Loader />
       ) : error ? (
@@ -156,20 +153,14 @@ const ProductScreen = ({ history, match }) => {
                           as='select'
                           className='form-select border border-secondary rounded'
                           style={{ minWidth: '120px' }}
-                          value={
-                            variation.options.find(
-                              (option) => option.isSelected === true
-                            ).name
-                          }
+                          value={variation.selectedOption}
                           onChange={(e) => updateVariationsHandler(e, index)}
                         >
-                          {variation.options.map((option) => (
-                            <option key={option._id} value={option.name}>
+                          {variation.options.map((option, optionIndex) => (
+                            <option key={option._id} value={optionIndex}>
                               {`${
                                 option.name
-                              } (+£${option.additionalPrice.toFixed(2)})---${
-                                option.isSelected
-                              }`}
+                              } (+£${option.additionalPrice.toFixed(2)})`}
                             </option>
                           ))}
                         </Form.Control>
