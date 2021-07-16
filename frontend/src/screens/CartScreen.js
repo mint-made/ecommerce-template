@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
@@ -15,29 +14,18 @@ import { addToCart, removeFromCart } from '../actions/cartActions';
 import Message from '../components/Message';
 
 const CartScreen = ({ match, location, history }) => {
-  const productId = match.params.id;
-
-  const qty = location.search ? Number(location.search.split('=')[1]) : 1;
-
   const dispatch = useDispatch();
 
   const cart = useSelector((state) => state.cart);
   const { cartItems } = cart;
 
-  useEffect(() => {
-    if (productId) {
-      dispatch(addToCart(productId, qty));
-    }
-  }, [dispatch, productId, qty]);
-
-  const removeFromCartHandler = (id) => {
-    dispatch(removeFromCart(id));
+  const removeFromCartHandler = (productId, variantId) => {
+    dispatch(removeFromCart(productId, variantId));
   };
 
   const checkoutHandler = () => {
     history.push('/login?redirect=shipping');
   };
-
   return (
     <Row>
       <Col md={8}>
@@ -49,16 +37,30 @@ const CartScreen = ({ match, location, history }) => {
         ) : (
           <ListGroup variant='flush'>
             {cartItems.map((item) => (
-              <ListGroup.Item key={item.productId}>
+              <ListGroup.Item key={`${item._id}-${item.variantId}`}>
                 <Row>
                   <Col md={2}>
                     <Image src={item.image} alt={item.name} fluid rounded />
+                    {item.variantId}
                   </Col>
                   <Col md={3}>
-                    <Link to={`/product/${item.productId}`}>{item.name}</Link>
+                    <p>
+                      <Link to={`/product/${item._id}`}>{item.name}</Link>
+                    </p>
+                    {item.variations &&
+                      item.variations.map((variation, index) => (
+                        <p key={`variation-${index}`}>
+                          {variation.name + ' - '}
+                          {variation.options[variation.selectedOption].name}
+                          {' (+£' +
+                            variation.options[variation.selectedOption]
+                              .additionalPrice +
+                            ')'}
+                        </p>
+                      ))}
                   </Col>
                   <Col md={2}>
-                    ${item.price} qty: {item.qty}
+                    ${item.totalPrice} qty: {item.qty}
                   </Col>
                   <Col md={3}>
                     <Form.Control
@@ -67,9 +69,7 @@ const CartScreen = ({ match, location, history }) => {
                       style={{ minWidth: '112px' }}
                       value={item.qty}
                       onChange={(e) =>
-                        dispatch(
-                          addToCart({ ...item, qty: Number(e.target.value) })
-                        )
+                        dispatch(addToCart(item, Number(e.target.value)))
                       }
                     >
                       {[...Array(item.countInStock).keys()].map((x) => (
@@ -83,7 +83,9 @@ const CartScreen = ({ match, location, history }) => {
                     <Button
                       type='button'
                       variant='light'
-                      onClick={() => removeFromCartHandler(item.productId)}
+                      onClick={() =>
+                        removeFromCartHandler(item._id, item.variantId)
+                      }
                     >
                       <i className='fas fa-trash'></i>
                     </Button>
@@ -104,7 +106,7 @@ const CartScreen = ({ match, location, history }) => {
               </h2>
               $
               {cartItems
-                .reduce((acc, item) => acc + item.qty * item.price, 0)
+                .reduce((acc, item) => acc + item.qty * item.totalPrice, 0)
                 .toFixed(2)}
             </ListGroup.Item>
             <ListGroup.Item>

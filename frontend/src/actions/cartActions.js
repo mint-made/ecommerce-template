@@ -5,32 +5,39 @@ import {
   CART_SAVE_SAVE_PAYMENT_METHOD,
 } from '../constants/cartConstants';
 
-export const addToCart = (addedProduct) => async (dispatch, getState) => {
+export const addToCart = (addedProduct, qty) => async (dispatch, getState) => {
+  console.log(addedProduct, qty);
   dispatch({
     type: CART_ADD_ITEM,
     payload: {
-      productId: addedProduct._id,
+      _id: addedProduct._id,
       name: addedProduct.name,
       image: addedProduct.image,
       price: addedProduct.price,
       countInStock: addedProduct.countInStock,
-      qty: addedProduct.qty,
-      variations: addedProduct.qty,
+      qty: qty,
+      variations: addedProduct.variations,
+      variantId: addedProduct.variantId,
+      totalPrice: addedProduct.totalPrice,
     },
   });
 
   localStorage.setItem('cartItems', JSON.stringify(getState().cart.cartItems));
 };
 
-export const removeFromCart = (id) => (dispatch, getState) => {
-  console.log('remove from cart action');
-  dispatch({
-    type: CART_REMOVE_ITEM,
-    payload: id,
-  });
+export const removeFromCart =
+  (productId, variantId) => (dispatch, getState) => {
+    console.log('remove from cart action');
+    dispatch({
+      type: CART_REMOVE_ITEM,
+      payload: { productId, variantId },
+    });
 
-  localStorage.setItem('cartItems', JSON.stringify(getState().cart.cartItems));
-};
+    localStorage.setItem(
+      'cartItems',
+      JSON.stringify(getState().cart.cartItems)
+    );
+  };
 
 export const saveShippingAddress = (data) => (dispatch) => {
   dispatch({

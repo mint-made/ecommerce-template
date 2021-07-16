@@ -11,30 +11,42 @@ export const cartReducer = (
 ) => {
   switch (action.type) {
     case CART_ADD_ITEM:
-      const newCartItem = action.payload;
+      const newItem = action.payload;
+      console.log(newItem);
+      const existsItem = state.cartItems.find((item) => {
+        return item._id === newItem._id && item.variantId === newItem.variantId;
+      });
 
-      const existItem = state.cartItems.find(
-        (item) => item.productId === newCartItem.productId
-      );
-
-      if (existItem) {
+      if (!existsItem) {
         return {
           ...state,
-          cartItems: state.cartItems.map((cartItem) =>
-            cartItem.productId === existItem.productId ? newCartItem : cartItem
-          ),
+          cartItems: [...state.cartItems, newItem],
         };
       } else {
         return {
           ...state,
-          cartItems: [...state.cartItems, newCartItem],
+          cartItems: [
+            ...state.cartItems.map((item) => {
+              if (
+                item._id === newItem._id &&
+                item.variantId === newItem.variantId
+              ) {
+                item.qty = newItem.qty;
+              }
+              return item;
+            }),
+          ],
         };
       }
+
     case CART_REMOVE_ITEM:
+      const { _id, variantId } = action.payload;
       console.log('remove from cart reducer');
       return {
         ...state,
-        cartItems: state.cartItems.filter((x) => x.product !== action.payload),
+        cartItems: state.cartItems.filter(
+          (item) => item._id !== _id && item.variantId !== variantId
+        ),
       };
     case CART_SAVE_SHIPPING_ADDRESS:
       return {

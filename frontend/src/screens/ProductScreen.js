@@ -47,7 +47,7 @@ const ProductScreen = ({ history, match }) => {
       setComment('');
       dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
     }
-    if (!product.name) {
+    if (!product.name || product._id !== match.params.id) {
       dispatch(listProductDetails(match.params.id));
     } else {
       setSelectedVariations([...product.variations]);
@@ -59,9 +59,14 @@ const ProductScreen = ({ history, match }) => {
    */
   const addToCartHandler = () => {
     const addedProduct = product;
-    addedProduct.qty = qty;
     addedProduct.variations = selectedVariations;
-    dispatch(addToCart(addedProduct));
+    addedProduct.totalPrice = getTotalPrice();
+    addedProduct.variantId = selectedVariations
+      .map((variations, index) => variations.selectedOption)
+      .join('')
+      .toString();
+
+    dispatch(addToCart(addedProduct, qty));
     history.push('/cart');
   };
 
@@ -89,6 +94,16 @@ const ProductScreen = ({ history, match }) => {
     setSelectedVariations([...selectedVariations]);
   };
 
+  const getTotalPrice = () => {
+    const variationCost = selectedVariations
+      .map(
+        (variation) =>
+          variation.options[variation.selectedOption].additionalPrice
+      )
+      .reduce((acc, value) => acc + value, 0);
+    return product.price + variationCost;
+  };
+
   return (
     <>
       <Link className='btn btn-light my-3' to='/'>
@@ -107,6 +122,7 @@ const ProductScreen = ({ history, match }) => {
           <Row>
             <Col md={6}>
               <Image src={product.image} alt={product.name} fluid />
+              <p>{product.variantId}</p>
             </Col>
             <Col md={3}>
               <ListGroup variant='flush'>
@@ -132,7 +148,7 @@ const ProductScreen = ({ history, match }) => {
                     <Row>
                       <Col>Price</Col>
                       <Col>
-                        <strong>£{product.price}</strong>
+                        <strong>£{getTotalPrice()}</strong>
                       </Col>
                     </Row>
                   </ListGroup.Item>
