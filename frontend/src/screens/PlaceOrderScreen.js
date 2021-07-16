@@ -16,7 +16,7 @@ const PlaceOrderScreen = ({ history }) => {
   };
 
   cart.itemsPrice = addDecimals(
-    cart.cartItems.reduce((acc, item) => acc + item.price * item.qty, 0)
+    cart.cartItems.reduce((acc, item) => acc + item.totalPrice * item.qty, 0)
   );
 
   cart.shippingPrice = addDecimals(cart.itemsPrice > 100 ? 0 : 100);
@@ -80,7 +80,7 @@ const PlaceOrderScreen = ({ history }) => {
                   {cart.cartItems.map((item, index) => (
                     <ListGroup.Item key={index}>
                       <Row>
-                        <Col md={1}>
+                        <Col xs={3} sm={2} md={2}>
                           <Image
                             src={item.image}
                             alt={item.name}
@@ -88,13 +88,28 @@ const PlaceOrderScreen = ({ history }) => {
                             rounded
                           />
                         </Col>
-                        <Col>
+                        <Col xs={5} sm={6} md={6}>
                           <Link to={`/product/${item.product}`}>
                             {item.name}
                           </Link>
+                          {item.variations &&
+                            item.variations.map((variation, index) => (
+                              <p key={`variation-${index}`}>
+                                {variation.name + ' - '}
+                                {
+                                  variation.options[variation.selectedOption]
+                                    .name
+                                }
+                                {' (+£' +
+                                  variation.options[variation.selectedOption]
+                                    .additionalPrice +
+                                  ')'}
+                              </p>
+                            ))}
                         </Col>
-                        <Col md={4}>
-                          {item.qty} x ${item.price} = ${item.qty * item.price}
+                        <Col className='font-weight-bold' xs={4} sm={4} md={4}>
+                          {item.qty} x ${item.totalPrice} = $
+                          {(item.qty * item.totalPrice).toFixed(2)}
                         </Col>
                       </Row>
                     </ListGroup.Item>

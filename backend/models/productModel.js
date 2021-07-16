@@ -55,6 +55,11 @@ const productSchema = new mongoose.Schema({
   },
   reviews: [reviewSchema],
   variations: [variationSchema],
+  variantId: {
+    type: String,
+    required: true,
+    default: '',
+  },
   rating: {
     type: Number,
     required: true,

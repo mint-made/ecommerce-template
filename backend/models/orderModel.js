@@ -13,7 +13,22 @@ const orderSchema = new mongoose.Schema(
         qty: { type: Number, required: true },
         image: { type: String, required: true },
         price: { type: Number, required: true },
-        product: {
+        totalPrice: { type: Number, required: true },
+        variantId: { type: String, required: true },
+        variations: [
+          {
+            name: { type: String, required: true },
+            selectedOption: { type: Number, required: true },
+            options: [
+              {
+                additionalPrice: { type: String, required: true },
+                isSelected: { type: Boolean },
+                name: { type: String, required: true },
+              },
+            ],
+          },
+        ],
+        _id: {
           type: mongoose.Schema.Types.ObjectId,
           required: true,
           ref: 'Product',
