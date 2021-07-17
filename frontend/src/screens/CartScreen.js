@@ -48,13 +48,22 @@ const CartScreen = ({ match, location, history }) => {
                     </p>
                     {item.variations &&
                       item.variations.map((variation, index) => (
-                        <p key={`variation-${index}`}>
+                        <p key={index}>
                           {variation.name + ' - '}
                           {variation.options[variation.selectedOption].name}
                           {' (+£' +
                             variation.options[variation.selectedOption]
                               .additionalPrice +
                             ')'}
+                        </p>
+                      ))}
+
+                    {item.personalizations &&
+                      item.personalizations.map((personalization, index) => (
+                        <p key={index}>
+                          {personalization.name + ' - '}
+                          {personalization.value}
+                          {' (+£' + personalization.additionalPrice + ')'}
                         </p>
                       ))}
                   </Col>

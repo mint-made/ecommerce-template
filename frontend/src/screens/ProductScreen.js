@@ -64,12 +64,14 @@ const ProductScreen = ({ history, match }) => {
     addedProduct.variations = selectedVariations;
     addedProduct.personalizations = selectedPersonalizations;
     addedProduct.totalPrice = getTotalPrice();
+    // Variant ID is created to check if an item with selected
+    // variations/personalizations is already in the cart
     const variantIdArray = selectedVariations
       .map((variations) => variations.selectedOption)
       .concat(
         selectedPersonalizations.map((personalization) => personalization.value)
       );
-    addedProduct.variantId = variantIdArray.join('');
+    addedProduct.variantId = variantIdArray.join('-');
 
     dispatch(addToCart(addedProduct, qty));
     history.push('/cart');
