@@ -93,6 +93,10 @@ const ProductScreen = ({ history, match }) => {
     selectedVariations[variationIndex].selectedOption = e.target.value;
     setSelectedVariations([...selectedVariations]);
   };
+  const updatePersonalizationsHandler = (e, variationIndex) => {
+    selectedVariations[variationIndex].options[0].name = e.target.value;
+    setSelectedVariations([...selectedVariations]);
+  };
 
   const getTotalPrice = () => {
     const variationCost = selectedVariations
@@ -162,21 +166,34 @@ const ProductScreen = ({ history, match }) => {
                     selectedVariations.map((variation, index) => (
                       <ListGroup.Item key={`variation-${index}`}>
                         <Form.Label>{variation.name}</Form.Label>
-                        <Form.Control
-                          as='select'
-                          className='form-select border border-secondary rounded'
-                          style={{ minWidth: '120px' }}
-                          value={variation.selectedOption}
-                          onChange={(e) => updateVariationsHandler(e, index)}
-                        >
-                          {variation.options.map((option, optionIndex) => (
-                            <option key={option._id} value={optionIndex}>
-                              {`${
-                                option.name
-                              } (+£${option.additionalPrice.toFixed(2)})`}
-                            </option>
+                        {(variation.type === 'select' && (
+                          <Form.Control
+                            as='select'
+                            className='form-select border border-secondary rounded'
+                            style={{ minWidth: '120px' }}
+                            value={variation.selectedOption}
+                            onChange={(e) => updateVariationsHandler(e, index)}
+                          >
+                            {variation.options.map((option, optionIndex) => (
+                              <option key={option._id} value={optionIndex}>
+                                {`${
+                                  option.name
+                                } (+£${option.additionalPrice.toFixed(2)})`}
+                              </option>
+                            ))}
+                          </Form.Control>
+                        )) ||
+                          (variation.type === 'personalization' && (
+                            <Form.Control
+                              as='textarea'
+                              rows={3}
+                              placeholder='Variation Name'
+                              value={variation.options[0].name}
+                              onChange={(e) =>
+                                updatePersonalizationsHandler(e, index)
+                              }
+                            ></Form.Control>
                           ))}
-                        </Form.Control>
                       </ListGroup.Item>
                     ))}
 

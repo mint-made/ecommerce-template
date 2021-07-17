@@ -9319,6 +9319,14 @@ a.text-dark:hover {
   font-size: 0.765625rem;
   text-transform: uppercase;
 }
+.btn-circle-btn-sm {
+  width: 30px;
+  height: 30px;
+  padding: 6px 0px;
+  border-radius: 15px;
+  font-size: 8px;
+  text-align: center;
+}
 .btn-group-sm > .btn,
 .btn-sm {
   font-size: 10px;

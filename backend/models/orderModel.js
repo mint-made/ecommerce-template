@@ -19,13 +19,20 @@ const orderSchema = new mongoose.Schema(
           {
             name: { type: String, required: true },
             selectedOption: { type: Number, required: true },
-            type: { type: String, required: true },
             options: [
               {
                 additionalPrice: { type: Number, required: true },
                 name: { type: String, required: true },
               },
             ],
+          },
+        ],
+        personalizations: [
+          {
+            name: { type: String, required: true },
+            isSelected: { type: Boolean, required: true },
+            value: { type: String, required: true },
+            additionalPrice: { type: String, required: true },
           },
         ],
         _id: {
