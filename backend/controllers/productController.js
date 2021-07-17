@@ -123,6 +123,7 @@ const createProduct = asyncHandler(async (req, res) => {
  * @apiParam {String} category of the product
  * @apiParam {Number} countInStock of the product
  * @apiParam {Object} variations of the product
+ * @apiParam {Object} personalizations of the product
  *
  * @apiSuccess {Object} Product An object of the updated product
  */
@@ -136,6 +137,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     category,
     countInStock,
     variations,
+    personalizations,
   } = req.body;
 
   const product = await Product.findById(req.params.id);
@@ -148,7 +150,8 @@ const updateProduct = asyncHandler(async (req, res) => {
     product.brand = brand || product.brand;
     product.category = category || product.category;
     product.countInStock = countInStock || product.countInStock;
-    product.variations = variations || product.variation;
+    product.variations = variations || product.variations;
+    product.personalizations = personalizations || product.personalizations;
 
     const updatedProduct = await product.save();
     res.json(updatedProduct);

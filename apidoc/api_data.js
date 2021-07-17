@@ -591,6 +591,13 @@ define({ "api": [
             "optional": false,
             "field": "variations",
             "description": "<p>of the product</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Object",
+            "optional": false,
+            "field": "personalizations",
+            "description": "<p>of the product</p>"
           }
         ]
       }
