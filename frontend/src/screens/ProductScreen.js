@@ -109,9 +109,6 @@ const ProductScreen = ({ history, match }) => {
       <Link className='btn btn-light my-3' to='/'>
         Go Back
       </Link>
-      {selectedVariations.map((variation, index) => (
-        <p key={`dfgsd${index}`}>{variation.selectedOption}</p>
-      ))}
       {loading ? (
         <Loader />
       ) : error ? (
