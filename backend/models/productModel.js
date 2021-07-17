@@ -31,7 +31,7 @@ const personalizationSchema = new mongoose.Schema({
   name: { type: String, required: true },
   isSelected: { type: Boolean, required: true },
   value: { type: String, required: true },
-  additionalPrice: { type: String, required: true },
+  additionalPrice: { type: Number, required: true },
 });
 
 const productSchema = new mongoose.Schema({

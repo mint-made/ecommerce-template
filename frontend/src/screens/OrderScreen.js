@@ -168,6 +168,19 @@ const OrderScreen = ({ match, history }) => {
                                   ')'}
                               </p>
                             ))}
+
+                          {item.personalizations &&
+                            item.personalizations.map(
+                              (personalization, index) => (
+                                <p key={index}>
+                                  {personalization.name + ' - '}
+                                  {personalization.value}
+                                  {' (+£' +
+                                    personalization.additionalPrice +
+                                    ')'}
+                                </p>
+                              )
+                            )}
                         </Col>
                         <Col className='font-weight-bold' xs={4} sm={4} md={4}>
                           {item.qty} x ${item.totalPrice} = $

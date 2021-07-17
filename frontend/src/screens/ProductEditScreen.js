@@ -337,11 +337,13 @@ const ProductEditScreen = ({ match, history }) => {
                               >
                                 <Form.Control
                                   className='form-control-sm'
-                                  type='text'
+                                  type='number'
                                   placeholder='4.00'
                                   value={option.additionalPrice}
                                   onChange={(e) => {
-                                    option.additionalPrice = e.target.value;
+                                    option.additionalPrice = Number(
+                                      e.target.value
+                                    );
                                     setVariations([...variations]);
                                   }}
                                 ></Form.Control>
@@ -420,8 +422,10 @@ const ProductEditScreen = ({ match, history }) => {
                               placeholder='2.00'
                               value={personalization.additionalPrice}
                               onChange={(e) => {
-                                personalization.additionalPrice =
-                                  e.target.value;
+                                console.log(e.target.value);
+                                personalization.additionalPrice = Number(
+                                  e.target.value
+                                );
                                 setPersonalizations([...personalizations]);
                               }}
                             ></Form.Control>

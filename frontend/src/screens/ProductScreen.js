@@ -101,7 +101,10 @@ const ProductScreen = ({ history, match }) => {
           variation.options[variation.selectedOption].additionalPrice
       )
       .reduce((acc, value) => acc + value, 0);
-    return product.price + variationCost;
+    const personalizationCost = selectedPersonalizations
+      .map((personalization) => personalization.additionalPrice)
+      .reduce((acc, value) => acc + value, 0);
+    return product.price + variationCost + personalizationCost;
   };
 
   return (
