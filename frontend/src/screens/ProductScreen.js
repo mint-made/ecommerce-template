@@ -27,6 +27,7 @@ const ProductScreen = ({ history, match }) => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
   const [selectedVariations, setSelectedVariations] = useState([]);
+  const [selectedPersonalizations, setSelectedPersonalizations] = useState([]);
 
   const dispatch = useDispatch();
 
@@ -51,20 +52,24 @@ const ProductScreen = ({ history, match }) => {
       dispatch(listProductDetails(match.params.id));
     } else {
       setSelectedVariations([...product.variations]);
+      setSelectedPersonalizations([...product.personalizations]);
     }
   }, [dispatch, match, successProductReview, product]);
 
   /**
-   * Handler for adding an item to cart, calling the addToCart action and redirecting to /cart
+   * Handler for adding an item to cart; dispatches action and redirects to /cart
    */
   const addToCartHandler = () => {
     const addedProduct = product;
     addedProduct.variations = selectedVariations;
+    addedProduct.personalizations = selectedPersonalizations;
     addedProduct.totalPrice = getTotalPrice();
-    addedProduct.variantId = selectedVariations
-      .map((variations, index) => variations.selectedOption)
-      .join('')
-      .toString();
+    const variantIdArray = selectedVariations
+      .map((variations) => variations.selectedOption)
+      .concat(
+        selectedPersonalizations.map((personalization) => personalization.value)
+      );
+    addedProduct.variantId = variantIdArray.join('');
 
     dispatch(addToCart(addedProduct, qty));
     history.push('/cart');
@@ -85,19 +90,8 @@ const ProductScreen = ({ history, match }) => {
   };
 
   /**
-   * Updates the selectedVariations state array of to the new selected option
-   * @param {Object} e Event object of the field that has been changed
-   * @param {Number} variationIndex Index of the
+   * Returns the total price of the item inc. variations/personalizations
    */
-  const updateVariationsHandler = (e, variationIndex) => {
-    selectedVariations[variationIndex].selectedOption = e.target.value;
-    setSelectedVariations([...selectedVariations]);
-  };
-  const updatePersonalizationsHandler = (e, variationIndex) => {
-    selectedVariations[variationIndex].options[0].name = e.target.value;
-    setSelectedVariations([...selectedVariations]);
-  };
-
   const getTotalPrice = () => {
     const variationCost = selectedVariations
       .map(
@@ -166,34 +160,44 @@ const ProductScreen = ({ history, match }) => {
                     selectedVariations.map((variation, index) => (
                       <ListGroup.Item key={`variation-${index}`}>
                         <Form.Label>{variation.name}</Form.Label>
-                        {(variation.type === 'select' && (
-                          <Form.Control
-                            as='select'
-                            className='form-select border border-secondary rounded'
-                            style={{ minWidth: '120px' }}
-                            value={variation.selectedOption}
-                            onChange={(e) => updateVariationsHandler(e, index)}
-                          >
-                            {variation.options.map((option, optionIndex) => (
-                              <option key={option._id} value={optionIndex}>
-                                {`${
-                                  option.name
-                                } (+£${option.additionalPrice.toFixed(2)})`}
-                              </option>
-                            ))}
-                          </Form.Control>
-                        )) ||
-                          (variation.type === 'personalization' && (
-                            <Form.Control
-                              as='textarea'
-                              rows={3}
-                              placeholder='Variation Name'
-                              value={variation.options[0].name}
-                              onChange={(e) =>
-                                updatePersonalizationsHandler(e, index)
-                              }
-                            ></Form.Control>
+
+                        <Form.Control
+                          as='select'
+                          className='form-select border border-secondary rounded'
+                          style={{ minWidth: '120px' }}
+                          value={variation.selectedOption}
+                          onChange={(e) => {
+                            variation.selectedOption = e.target.value;
+                            setSelectedVariations([...selectedVariations]);
+                          }}
+                        >
+                          {variation.options.map((option, optionIndex) => (
+                            <option key={option._id} value={optionIndex}>
+                              {`${
+                                option.name
+                              } (+£${option.additionalPrice.toFixed(2)})`}
+                            </option>
                           ))}
+                        </Form.Control>
+                      </ListGroup.Item>
+                    ))}
+
+                  {selectedPersonalizations &&
+                    selectedPersonalizations.map((personalization, index) => (
+                      <ListGroup.Item key={`personalization-${index}`}>
+                        <Form.Label>{personalization.name}</Form.Label>
+                        <Form.Control
+                          as='textarea'
+                          rows={3}
+                          placeholder='Personalization Name'
+                          value={personalization.value}
+                          onChange={(e) => {
+                            personalization.value = e.target.value;
+                            setSelectedPersonalizations([
+                              ...selectedPersonalizations,
+                            ]);
+                          }}
+                        ></Form.Control>
                       </ListGroup.Item>
                     ))}
 
