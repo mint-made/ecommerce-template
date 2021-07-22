@@ -21,6 +21,8 @@ import Rating from '../components/Rating';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
 import Meta from '../components/Meta';
+import VariationForm from '../components/VariantForms/VariationForm';
+import PersonalizationForm from '../components/VariantForms/PersonalizationForm';
 
 const ProductScreen = ({ history, match }) => {
   const [qty, setQty] = useState(1);
@@ -165,45 +167,28 @@ const ProductScreen = ({ history, match }) => {
                   {selectedVariations &&
                     selectedVariations.map((variation, index) => (
                       <ListGroup.Item key={`variation-${index}`}>
-                        <Form.Label>{variation.name}</Form.Label>
-
-                        <Form.Control
-                          as='select'
-                          className='form-select border border-secondary rounded'
-                          style={{ minWidth: '120px' }}
-                          value={variation.selectedOption}
+                        <VariationForm
+                          variation={variation}
                           onChange={(e) => {
                             variation.selectedOption = e.target.value;
                             setSelectedVariations([...selectedVariations]);
                           }}
-                        >
-                          {variation.options.map((option, optionIndex) => (
-                            <option key={option._id} value={optionIndex}>
-                              {`${
-                                option.name
-                              } (+£${option.additionalPrice.toFixed(2)})`}
-                            </option>
-                          ))}
-                        </Form.Control>
+                        />
                       </ListGroup.Item>
                     ))}
 
                   {selectedPersonalizations &&
                     selectedPersonalizations.map((personalization, index) => (
                       <ListGroup.Item key={`personalization-${index}`}>
-                        <Form.Label>{personalization.name}</Form.Label>
-                        <Form.Control
-                          as='textarea'
-                          rows={3}
-                          placeholder='Personalization Name'
-                          value={personalization.value}
+                        <PersonalizationForm
+                          personalization={personalization}
                           onChange={(e) => {
                             personalization.value = e.target.value;
                             setSelectedPersonalizations([
                               ...selectedPersonalizations,
                             ]);
                           }}
-                        ></Form.Control>
+                        />
                       </ListGroup.Item>
                     ))}
 
