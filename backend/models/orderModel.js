@@ -14,7 +14,7 @@ const orderSchema = new mongoose.Schema(
         image: { type: String, required: true },
         price: { type: Number, required: true },
         totalPrice: { type: Number, required: true },
-        variantId: { type: String, required: true },
+        variantId: { type: String },
         variations: [
           {
             name: { type: String, required: true },

@@ -11,6 +11,7 @@ import {
 } from 'react-bootstrap';
 
 import { addToCart, removeFromCart } from '../actions/cartActions';
+import ItemVariantInfo from '../components/ItemVariantInfo';
 import Message from '../components/Message';
 
 const CartScreen = ({ match, location, history }) => {
@@ -43,32 +44,10 @@ const CartScreen = ({ match, location, history }) => {
                     <Image src={item.image} alt={item.name} fluid rounded />
                   </Col>
                   <Col md={3}>
-                    <p>
-                      <Link to={`/product/${item._id}`}>{item.name}</Link>
-                    </p>
-                    {item.variations &&
-                      item.variations.map((variation, index) => (
-                        <p key={index}>
-                          {variation.name + ' - '}
-                          {variation.options[variation.selectedOption].name}
-                          {' (+£' +
-                            variation.options[variation.selectedOption]
-                              .additionalPrice +
-                            ')'}
-                        </p>
-                      ))}
-
-                    {item.personalizations &&
-                      item.personalizations.map((personalization, index) => (
-                        <p key={index}>
-                          {personalization.name + ' - '}
-                          {personalization.value}
-                          {' (+£' + personalization.additionalPrice + ')'}
-                        </p>
-                      ))}
+                    <ItemVariantInfo item={item} />
                   </Col>
                   <Col md={2}>
-                    ${item.totalPrice} qty: {item.qty}
+                    £{item.totalPrice} qty: {item.qty}
                   </Col>
                   <Col md={3}>
                     <Form.Control

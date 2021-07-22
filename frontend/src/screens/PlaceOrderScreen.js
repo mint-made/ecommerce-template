@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
+
 import Message from '../components/Message';
 import CheckoutSteps from '../components/CheckoutSteps';
 import { createOrder } from '../actions/orderActions';
+import ItemVariantInfo from '../components/ItemVariantInfo';
 
 const PlaceOrderScreen = ({ history }) => {
   const dispatch = useDispatch();
@@ -89,23 +90,7 @@ const PlaceOrderScreen = ({ history }) => {
                           />
                         </Col>
                         <Col xs={5} sm={6} md={6}>
-                          <Link to={`/product/${item.product}`}>
-                            {item.name}
-                          </Link>
-                          {item.variations &&
-                            item.variations.map((variation, index) => (
-                              <p key={`variation-${index}`}>
-                                {variation.name + ' - '}
-                                {
-                                  variation.options[variation.selectedOption]
-                                    .name
-                                }
-                                {' (+£' +
-                                  variation.options[variation.selectedOption]
-                                    .additionalPrice +
-                                  ')'}
-                              </p>
-                            ))}
+                          <ItemVariantInfo item={item} />
                         </Col>
                         <Col className='font-weight-bold' xs={4} sm={4} md={4}>
                           {item.qty} x ${item.totalPrice} = $

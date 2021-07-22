@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { PayPalButton } from 'react-paypal-button-v2';
-import { Link } from 'react-router-dom';
 import { Row, Col, ListGroup, Image, Card, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
+import ItemVariantInfo from '../components/ItemVariantInfo';
 import {
   getOrderDetails,
   payOrder,
@@ -151,39 +151,10 @@ const OrderScreen = ({ match, history }) => {
                           />
                         </Col>
                         <Col xs={5} sm={6} md={6}>
-                          <Link to={`/product/${item.product}`}>
-                            {item.name}
-                          </Link>
-                          {item.variations &&
-                            item.variations.map((variation, index) => (
-                              <p key={`variation-${index}`}>
-                                {variation.name + ' - '}
-                                {
-                                  variation.options[variation.selectedOption]
-                                    .name
-                                }
-                                {' (+£' +
-                                  variation.options[variation.selectedOption]
-                                    .additionalPrice +
-                                  ')'}
-                              </p>
-                            ))}
-
-                          {item.personalizations &&
-                            item.personalizations.map(
-                              (personalization, index) => (
-                                <p key={index}>
-                                  {personalization.name + ' - '}
-                                  {personalization.value}
-                                  {' (+£' +
-                                    personalization.additionalPrice +
-                                    ')'}
-                                </p>
-                              )
-                            )}
+                          <ItemVariantInfo item={item} />
                         </Col>
                         <Col className='font-weight-bold' xs={4} sm={4} md={4}>
-                          {item.qty} x ${item.totalPrice} = $
+                          {item.qty} x £{item.totalPrice} = £
                           {(item.qty * item.totalPrice).toFixed(2)}
                         </Col>
                       </Row>
@@ -203,25 +174,25 @@ const OrderScreen = ({ match, history }) => {
               <ListGroup.Item>
                 <Row>
                   <Col>Items</Col>
-                  <Col>${order.itemsPrice}</Col>
+                  <Col>£{order.itemsPrice}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Row>
                   <Col>Shipping</Col>
-                  <Col>${order.shippingPrice}</Col>
+                  <Col>£{order.shippingPrice}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Row>
                   <Col>Tax</Col>
-                  <Col>${order.taxPrice}</Col>
+                  <Col>£{order.taxPrice}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Row>
                   <Col>Total</Col>
-                  <Col>${order.totalPrice}</Col>
+                  <Col>£{order.totalPrice}</Col>
                 </Row>
               </ListGroup.Item>
               {!order.isPaid && (
