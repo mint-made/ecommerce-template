@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import FormContainer from '../components/FormContainer';
@@ -9,10 +9,20 @@ const ShippingScreen = ({ history }) => {
   const cart = useSelector((state) => state.cart);
   const { shippingAddress } = cart;
 
-  const [address, setAddress] = useState(shippingAddress.address);
-  const [city, setCity] = useState(shippingAddress.city);
-  const [postalCode, setPostalCode] = useState(shippingAddress.postalCode);
-  const [country, setCountry] = useState(shippingAddress.country);
+  const [address, setAddress] = useState('');
+  const [city, setCity] = useState('');
+  const [postalCode, setPostalCode] = useState('');
+  const [country, setCountry] = useState('');
+
+  useEffect(() => {
+    if (shippingAddress.address) {
+      console.log(shippingAddress);
+      setAddress(shippingAddress.address);
+      setCity(shippingAddress.city);
+      setPostalCode(shippingAddress.postalCode);
+      setCountry(shippingAddress.country);
+    }
+  }, [shippingAddress]);
 
   const dispatch = useDispatch();
 
