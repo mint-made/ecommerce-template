@@ -111,6 +111,8 @@ const ProductEditScreen = ({ match, history }) => {
       ...variations,
       {
         name: '',
+        isOptional: true,
+        isSelected: false,
         selectedOption: 0,
         options: [
           {
@@ -130,6 +132,7 @@ const ProductEditScreen = ({ match, history }) => {
       ...personalizations,
       {
         name: '',
+        isOptional: true,
         isSelected: false,
         value: '',
         additionalPrice: '',
@@ -293,6 +296,22 @@ const ProductEditScreen = ({ match, history }) => {
                         ></Form.Control>
                       </Form.Group>
                       <Row>
+                        <Col sm={2}>
+                          <p>Optional?</p>
+                        </Col>
+                        <Col sm={1}>
+                          <Form.Check
+                            type='checkbox'
+                            checked={variation.isOptional}
+                            onChange={(e) => {
+                              variation.isOptional = !variation.isOptional;
+                              setVariations([...variations]);
+                            }}
+                          ></Form.Check>
+                        </Col>
+                      </Row>
+
+                      <Row>
                         <Col sm={5}>
                           <p>
                             Option Name{' '}
@@ -422,7 +441,6 @@ const ProductEditScreen = ({ match, history }) => {
                               placeholder='2.00'
                               value={personalization.additionalPrice}
                               onChange={(e) => {
-                                console.log(e.target.value);
                                 personalization.additionalPrice = Number(
                                   e.target.value
                                 );
@@ -444,7 +462,22 @@ const ProductEditScreen = ({ match, history }) => {
                           </Button>
                         </Col>
                       </Row>
-
+                      <Row>
+                        <Col sm={2}>
+                          <p>Optional?</p>
+                        </Col>
+                        <Col sm={1}>
+                          <Form.Check
+                            type='checkbox'
+                            checked={personalization.isOptional}
+                            onChange={(e) => {
+                              personalization.isOptional =
+                                !personalization.isOptional;
+                              setPersonalizations([...personalizations]);
+                            }}
+                          ></Form.Check>
+                        </Col>
+                      </Row>
                       <Form.Group controlId={`personalization-name-${index}`}>
                         <Form.Label>Placeholder Text</Form.Label>
                         <Form.Control

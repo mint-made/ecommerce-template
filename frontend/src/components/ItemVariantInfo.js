@@ -8,9 +8,10 @@ import { Link } from 'react-router-dom';
  */
 
 const ItemVariantInfo = ({ item }) => {
+  console.log(item);
   return (
     <>
-      <Link to={`/product/${item.product}`}>
+      <Link to={`/product/${item._id}`}>
         {item.name} - £{item.price}
       </Link>
       {item.variantId && (

@@ -18,6 +18,8 @@ const reviewSchema = new mongoose.Schema(
 
 const variationSchema = new mongoose.Schema({
   name: { type: String, required: true },
+  isOptional: { type: Boolean, required: true },
+  isSelected: { type: Boolean, required: true },
   selectedOption: { type: Number, required: true },
   options: [
     {
@@ -29,6 +31,7 @@ const variationSchema = new mongoose.Schema({
 
 const personalizationSchema = new mongoose.Schema({
   name: { type: String, required: true },
+  isOptional: { type: Boolean, required: true },
   isSelected: { type: Boolean, required: true },
   value: { type: String, required: true },
   additionalPrice: { type: Number, required: true },
