@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Row,
@@ -13,23 +12,19 @@ import {
   useAccordionToggle,
 } from 'react-bootstrap';
 
-import {
-  listProductDetails,
-  createProductReview,
-} from '../actions/productActions';
+import { listProductDetails } from '../actions/productActions';
 import { addToCart } from '../actions/cartActions';
-import { PRODUCT_CREATE_REVIEW_RESET } from '../constants/productConstants';
 import Rating from '../components/Rating';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
 import Meta from '../components/Meta';
 import VariationForm from '../components/VariantForms/VariationForm';
 import PersonalizationForm from '../components/VariantForms/PersonalizationForm';
+import DisplayReviews from '../components/reviews/DisplayReviews';
+import WriteReviewForm from '../components/reviews/WriteReviewForm';
 
 const ProductScreen = ({ history, match }) => {
   const [qty, setQty] = useState(1);
-  const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState('');
   const [selectedVariations, setSelectedVariations] = useState([]);
   const [selectedPersonalizations, setSelectedPersonalizations] = useState([]);
 
@@ -38,38 +33,26 @@ const ProductScreen = ({ history, match }) => {
   const productDetails = useSelector((state) => state.productDetails);
   const { loading, error, product } = productDetails;
 
-  const productReviewCreate = useSelector((state) => state.productReviewCreate);
-  const { success: successProductReview, error: errorProductReview } =
-    productReviewCreate;
-
-  const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo } = userLogin;
-
   useEffect(() => {
-    if (successProductReview) {
-      alert('Review Submitted!');
-      setRating(0);
-      setComment('');
-      dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
-    }
     if (!product.name || product._id !== match.params.id) {
       dispatch(listProductDetails(match.params.id));
     } else {
       setSelectedVariations([...product.variations]);
       setSelectedPersonalizations([...product.personalizations]);
+      console.log(product);
     }
-  }, [dispatch, match, successProductReview, product]);
+  }, [dispatch, match, product]);
 
   /**
    * Handler for adding an item to cart; dispatches action and redirects to /cart
+   * Variant ID is created here as an identifier in the cart between items
+   * that have different variations or personalizations
    */
   const addToCartHandler = () => {
     const addedProduct = product;
     addedProduct.variations = selectedVariations;
     addedProduct.personalizations = selectedPersonalizations;
     addedProduct.totalPrice = getTotalPrice();
-    // Variant ID is created to check if an item with selected
-    // variations/personalizations is already in the cart
     const variantIdArray = selectedVariations
       .map((variations) => variations.selectedOption)
       .concat(
@@ -79,20 +62,6 @@ const ProductScreen = ({ history, match }) => {
 
     dispatch(addToCart(addedProduct, qty));
     history.push('/cart');
-  };
-
-  /**
-   * Dispatches the createProductReview action
-   * @param {*} e Event object for the review submitted
-   */
-  const submitReviewHandler = (e) => {
-    e.preventDefault();
-    dispatch(
-      createProductReview(match.params.id, {
-        rating,
-        comment,
-      })
-    );
   };
 
   /**
@@ -151,66 +120,25 @@ const ProductScreen = ({ history, match }) => {
               <Image src={product.image} alt={product.name} fluid />
             </Col>
             <Col md={7} className='d-none d-md-block'>
-              <Image src={product.image} alt={product.name} fluid />
-
+              <Image
+                src={product.image}
+                alt={product.name}
+                fluid
+                className='mb-5'
+              />
               <ListGroup variant='flush'>
                 <h2>
                   <Rating
                     value={product.rating}
-                    text={`${product.numReviews} reviews`}
+                    text={`${product.numReviews} Review${
+                      product.numReviews === 1 ? '' : 's'
+                    }`}
                     textLeft
                   />
                 </h2>
                 {product.reviews.length === 0 && <Message>No Reviews</Message>}
-                {product.reviews.map((review) => (
-                  <ListGroup.Item key={review._id}>
-                    <strong>{review.name}</strong>
-                    <Rating value={review.rating} text='rating' />
-                    <p>{review.createdAt.substring(0, 10)}</p>
-                    <p>{review.comment}</p>
-                  </ListGroup.Item>
-                ))}
-
-                <ListGroup.Item>
-                  <h2>Write a Customer Review</h2>
-                  {errorProductReview && (
-                    <Message variant='danger'>{errorProductReview}</Message>
-                  )}
-                  {userInfo ? (
-                    <Form onSubmit={submitReviewHandler}>
-                      <Form.Group controlId='rating'>
-                        <Form.Label>Rating</Form.Label>
-                        <Form.Control
-                          as='select'
-                          value={rating}
-                          onChange={(e) => setRating(Number(e.target.value))}
-                        >
-                          <option value=''>Select...</option>
-                          <option value='1'>1 - Poor</option>
-                          <option value='2'>2 - Fair</option>
-                          <option value='3'>3 - Good</option>
-                          <option value='4'>4 - Very Good</option>
-                          <option value='5'>5 - Excellent</option>
-                        </Form.Control>
-                      </Form.Group>
-                      <Form.Group controlId='comment'>
-                        <Form.Label>Comment</Form.Label>
-                        <Form.Control
-                          as='textarea'
-                          value={comment}
-                          onChange={(e) => setComment(e.target.value)}
-                        ></Form.Control>
-                      </Form.Group>
-                      <Button type='submit' variant='primary'>
-                        Submit
-                      </Button>
-                    </Form>
-                  ) : (
-                    <Message>
-                      Please <Link to='/login'>sign in</Link> to write a review
-                    </Message>
-                  )}
-                </ListGroup.Item>
+                <DisplayReviews reviews={product.reviews} />
+                <WriteReviewForm productId={match.params.id} />
               </ListGroup>
             </Col>
             <Col sm={12} md={5}>
