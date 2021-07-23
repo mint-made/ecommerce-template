@@ -27,9 +27,15 @@ const CartScreen = ({ match, location, history }) => {
   const checkoutHandler = () => {
     history.push('/login?redirect=shipping');
   };
+
+  //Returns numbers to two decimal points
+  const addDecimals = (num) => {
+    return (Math.round(num * 100) / 100).toFixed(2);
+  };
+
   return (
     <Row>
-      <Col md={8}>
+      <Col md={9}>
         <h1>Shopping Cart</h1>
         {cartItems.length === 0 ? (
           <Message>
@@ -40,20 +46,17 @@ const CartScreen = ({ match, location, history }) => {
             {cartItems.map((item) => (
               <ListGroup.Item key={`${item._id}-${item.variantId}`}>
                 <Row>
-                  <Col md={2}>
+                  <Col xs={2}>
                     <Image src={item.image} alt={item.name} fluid rounded />
                   </Col>
-                  <Col md={3}>
+                  <Col xs={5}>
                     <ItemVariantInfo item={item} />
                   </Col>
-                  <Col md={2}>
-                    £{item.totalPrice} qty: {item.qty}
-                  </Col>
-                  <Col md={3}>
+                  <Col xs={2}>
                     <Form.Control
                       as='select'
-                      className='form-select border border-secondary rounded'
-                      style={{ minWidth: '112px' }}
+                      className='form-select border border-secondary rounded form-control-sm'
+                      style={{ maxWidth: '70px' }}
                       value={item.qty}
                       onChange={(e) =>
                         dispatch(addToCart(item, Number(e.target.value)))
@@ -66,10 +69,19 @@ const CartScreen = ({ match, location, history }) => {
                       ))}
                     </Form.Control>
                   </Col>
-                  <Col md={2}>
+                  <Col xs={2} className='p-0 text-center'>
+                    <h5 className='m-0'>
+                      £{addDecimals(item.totalPrice * item.qty)}
+                    </h5>
+                    {item.qty > 1 && (
+                      <p>(£{addDecimals(item.totalPrice)} each)</p>
+                    )}
+                  </Col>
+                  <Col xs={1}>
                     <Button
                       type='button'
                       variant='light'
+                      className='btn-sm text-danger'
                       onClick={() =>
                         removeFromCartHandler(item._id, item.variantId)
                       }
@@ -83,18 +95,25 @@ const CartScreen = ({ match, location, history }) => {
           </ListGroup>
         )}
       </Col>
-      <Col md={4}>
+      <Col md={3}>
         <Card>
           <ListGroup variant='flush'>
             <ListGroup.Item>
-              <h2>
+              <h5>
                 Subtotal ({cartItems.reduce((acc, item) => acc + item.qty, 0)})
-                items
-              </h2>
-              $
-              {cartItems
-                .reduce((acc, item) => acc + item.qty * item.totalPrice, 0)
-                .toFixed(2)}
+                {cartItems.reduce((acc, item) => acc + item.qty, 0) > 1
+                  ? ' items'
+                  : ' item'}
+              </h5>
+              <h3 className='my-1'>
+                £
+                {addDecimals(
+                  cartItems.reduce(
+                    (acc, item) => acc + item.qty * item.totalPrice,
+                    0
+                  )
+                )}
+              </h3>
             </ListGroup.Item>
             <ListGroup.Item>
               <Button

@@ -60,10 +60,12 @@ const PlaceOrderScreen = ({ history }) => {
             <ListGroup.Item>
               <h2>Shipping</h2>
               <p>
-                <strong>Address</strong>
-                {cart.shippingAddress.address},{cart.shippingAddress.city},
-                {cart.shippingAddress.postalCode},{cart.shippingAddress.country}
+                <strong>Address:</strong>
               </p>
+              <p className='m-0'>{cart.shippingAddress.address}</p>
+              <p className='m-0'>{cart.shippingAddress.city}</p>
+              <p className='m-0'>{cart.shippingAddress.postalCode}</p>
+              <p className='m-0'>{cart.shippingAddress.country}</p>
             </ListGroup.Item>
 
             <ListGroup.Item>
@@ -81,7 +83,7 @@ const PlaceOrderScreen = ({ history }) => {
                   {cart.cartItems.map((item, index) => (
                     <ListGroup.Item key={index}>
                       <Row>
-                        <Col xs={3} sm={2} md={2}>
+                        <Col xs={3}>
                           <Image
                             src={item.image}
                             alt={item.name}
@@ -89,12 +91,16 @@ const PlaceOrderScreen = ({ history }) => {
                             rounded
                           />
                         </Col>
-                        <Col xs={5} sm={6} md={6}>
-                          <ItemVariantInfo item={item} />
+                        <Col xs={6}>
+                          <ItemVariantInfo item={item} quantity />
                         </Col>
-                        <Col className='font-weight-bold' xs={4} sm={4} md={4}>
-                          {item.qty} x ${item.totalPrice} = $
-                          {(item.qty * item.totalPrice).toFixed(2)}
+                        <Col xs={3} className='text-center'>
+                          <h5 className='m-0'>
+                            £{addDecimals(item.totalPrice * item.qty)}
+                          </h5>
+                          {item.qty > 1 && (
+                            <p>(£{addDecimals(item.totalPrice)} each)</p>
+                          )}
                         </Col>
                       </Row>
                     </ListGroup.Item>
@@ -113,25 +119,25 @@ const PlaceOrderScreen = ({ history }) => {
               <ListGroup.Item>
                 <Row>
                   <Col>Items</Col>
-                  <Col>${cart.itemsPrice}</Col>
+                  <Col>£{cart.itemsPrice}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Row>
                   <Col>Shipping</Col>
-                  <Col>${cart.shippingPrice}</Col>
+                  <Col>£{cart.shippingPrice}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Row>
                   <Col>Tax</Col>
-                  <Col>${cart.taxPrice}</Col>
+                  <Col>£{cart.taxPrice}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Row>
                   <Col>Total</Col>
-                  <Col>${cart.totalPrice}</Col>
+                  <Col>£{cart.totalPrice}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>

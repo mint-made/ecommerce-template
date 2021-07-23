@@ -85,6 +85,11 @@ const OrderScreen = ({ match, history }) => {
     dispatch(deliverOrder(orderId));
   };
 
+  //Returns numbers to two decimal points
+  const addDecimals = (num) => {
+    return (Math.round(num * 100) / 100).toFixed(2);
+  };
+
   return loading ? (
     <Loader />
   ) : error ? (
@@ -93,7 +98,7 @@ const OrderScreen = ({ match, history }) => {
     <>
       <h1>Order {order._id}</h1>
       <Row>
-        <Col md={8}>
+        <Col md={7}>
           <ListGroup variant='flush'>
             <ListGroup.Item>
               <h2>Shipping</h2>
@@ -142,7 +147,7 @@ const OrderScreen = ({ match, history }) => {
                   {order.orderItems.map((item, index) => (
                     <ListGroup.Item key={index}>
                       <Row>
-                        <Col xs={3} sm={2} md={2}>
+                        <Col xs={4}>
                           <Image
                             src={item.image}
                             alt={item.name}
@@ -150,12 +155,16 @@ const OrderScreen = ({ match, history }) => {
                             rounded
                           />
                         </Col>
-                        <Col xs={5} sm={6} md={6}>
-                          <ItemVariantInfo item={item} />
+                        <Col xs={6} lg={5}>
+                          <ItemVariantInfo item={item} quantity />
                         </Col>
-                        <Col className='font-weight-bold' xs={4} sm={4} md={4}>
-                          {item.qty} x £{item.totalPrice} = £
-                          {(item.qty * item.totalPrice).toFixed(2)}
+                        <Col xs={2} lg={3} className='text-center'>
+                          <h5 className='m-0'>
+                            £{addDecimals(item.totalPrice * item.qty)}
+                          </h5>
+                          {item.qty > 1 && (
+                            <p>(£{addDecimals(item.totalPrice)} each)</p>
+                          )}
                         </Col>
                       </Row>
                     </ListGroup.Item>
@@ -165,7 +174,7 @@ const OrderScreen = ({ match, history }) => {
             </ListGroup.Item>
           </ListGroup>
         </Col>
-        <Col md={4}>
+        <Col md={5}>
           <Card>
             <ListGroup variant='flush'>
               <ListGroup.Item>
@@ -174,25 +183,25 @@ const OrderScreen = ({ match, history }) => {
               <ListGroup.Item>
                 <Row>
                   <Col>Items</Col>
-                  <Col>£{order.itemsPrice}</Col>
+                  <Col>£{addDecimals(order.itemsPrice)}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Row>
                   <Col>Shipping</Col>
-                  <Col>£{order.shippingPrice}</Col>
+                  <Col>£{addDecimals(order.shippingPrice)}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Row>
                   <Col>Tax</Col>
-                  <Col>£{order.taxPrice}</Col>
+                  <Col>£{addDecimals(order.taxPrice)}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Row>
                   <Col>Total</Col>
-                  <Col>£{order.totalPrice}</Col>
+                  <Col>£{addDecimals(order.totalPrice)}</Col>
                 </Row>
               </ListGroup.Item>
               {!order.isPaid && (

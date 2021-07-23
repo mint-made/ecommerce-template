@@ -7,12 +7,16 @@ import { Link } from 'react-router-dom';
  * @param {Object} item The item object of the selected Item + variant options
  */
 
-const ItemVariantInfo = ({ item }) => {
-  console.log(item);
+const ItemVariantInfo = ({ item, total = false, quantity = false }) => {
+  //Returns numbers to two decimal points
+  const addDecimals = (num) => {
+    return (Math.round(num * 100) / 100).toFixed(2);
+  };
+
   return (
     <>
       <Link to={`/product/${item._id}`}>
-        {item.name} - £{item.price}
+        {item.name} - £{addDecimals(item.price)}
       </Link>
       {item.variantId && (
         <>
@@ -24,10 +28,14 @@ const ItemVariantInfo = ({ item }) => {
                 <p className='m-1' key={`variation-${index}`}>
                   {variation.name + ': '}
                   {variation.options[variation.selectedOption].name}
-                  {' (+£' +
-                    variation.options[variation.selectedOption]
-                      .additionalPrice +
-                    ')'}
+                  {variation.options[variation.selectedOption].additionalPrice >
+                    0 &&
+                    ' (+£' +
+                      addDecimals(
+                        variation.options[variation.selectedOption]
+                          .additionalPrice
+                      ) +
+                      ')'}
                 </p>
               ) : null
             )}
@@ -38,12 +46,23 @@ const ItemVariantInfo = ({ item }) => {
                 <p key={index}>
                   {personalization.name + ': '}
                   {personalization.value}
-                  {' (+£' + personalization.additionalPrice + ')'}
+                  {personalization.additionalPrice > 0 &&
+                    ' (+£' + addDecimals(personalization.additionalPrice) + ')'}
                 </p>
               ) : null
             )}
-          <hr className='my-2' />
-          Total: £{item.totalPrice}
+          {total && (
+            <>
+              <hr className='my-2' />
+              Total: £{addDecimals(item.totalPrice)}
+            </>
+          )}
+          {quantity && (
+            <>
+              <hr className='my-2' />
+              <p>Quantity: {item.qty}</p>
+            </>
+          )}
         </>
       )}
     </>
