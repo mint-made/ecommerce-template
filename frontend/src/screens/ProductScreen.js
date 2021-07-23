@@ -37,11 +37,15 @@ const ProductScreen = ({ history, match }) => {
     if (!product.name || product._id !== match.params.id) {
       dispatch(listProductDetails(match.params.id));
     } else {
-      setSelectedVariations([...product.variations]);
-      setSelectedPersonalizations([...product.personalizations]);
-      console.log(product);
+      const variationsDeepCopy = JSON.parse(JSON.stringify(product.variations));
+      const personalizationsDeepCopy = JSON.parse(
+        JSON.stringify(product.personalizations)
+      );
+      setSelectedVariations([...variationsDeepCopy]);
+      setSelectedPersonalizations([...personalizationsDeepCopy]);
+      console.log(product.personalizations[1]);
     }
-  }, [dispatch, match, product]);
+  }, [dispatch, match, product, history]);
 
   /**
    * Handler for adding an item to cart; dispatches action and redirects to /cart
@@ -49,18 +53,27 @@ const ProductScreen = ({ history, match }) => {
    * that have different variations or personalizations
    */
   const addToCartHandler = () => {
-    const addedProduct = product;
-    addedProduct.variations = selectedVariations;
-    addedProduct.personalizations = selectedPersonalizations;
-    addedProduct.totalPrice = getTotalPrice();
+    const productDeepCopy = JSON.parse(JSON.stringify(product));
+    productDeepCopy.variations = selectedVariations;
+    productDeepCopy.personalizations = selectedPersonalizations;
+    productDeepCopy.totalPrice = getTotalPrice();
     const variantIdArray = selectedVariations
-      .map((variations) => variations.selectedOption)
+      .map((variation) =>
+        !variation.isOptional || (variation.isOptional && variation.isSelected)
+          ? variation.selectedOption
+          : null
+      )
       .concat(
-        selectedPersonalizations.map((personalization) => personalization.value)
+        selectedPersonalizations.map((personalization) =>
+          !personalization.isOptional ||
+          (personalization.isOptional && personalization.isSelected)
+            ? personalization.value
+            : null
+        )
       );
-    addedProduct.variantId = variantIdArray.join('-');
+    productDeepCopy.variantId = variantIdArray.join('-');
 
-    dispatch(addToCart(addedProduct, qty));
+    dispatch(addToCart(productDeepCopy, qty));
     history.push('/cart');
   };
 
@@ -251,6 +264,8 @@ const ProductScreen = ({ history, match }) => {
                             label
                             onChange={(e) => {
                               personalization.value = e.target.value;
+                              console.log(product.personalizations[1].value);
+                              console.log(selectedPersonalizations[1].value);
                               setSelectedPersonalizations([
                                 ...selectedPersonalizations,
                               ]);

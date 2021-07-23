@@ -8,7 +8,6 @@ import { Link } from 'react-router-dom';
  */
 
 const ItemVariantInfo = ({ item }) => {
-  console.log(item);
   return (
     <>
       <Link to={`/product/${item._id}`}>
@@ -18,23 +17,30 @@ const ItemVariantInfo = ({ item }) => {
         <>
           <hr className='my-2' />
           {item.variations &&
-            item.variations.map((variation, index) => (
-              <p className='m-1' key={`variation-${index}`}>
-                {variation.name + ': '}
-                {variation.options[variation.selectedOption].name}
-                {' (+£' +
-                  variation.options[variation.selectedOption].additionalPrice +
-                  ')'}
-              </p>
-            ))}
+            item.variations.map((variation, index) =>
+              !variation.isOptional ||
+              (variation.isOptional && variation.isSelected) ? (
+                <p className='m-1' key={`variation-${index}`}>
+                  {variation.name + ': '}
+                  {variation.options[variation.selectedOption].name}
+                  {' (+£' +
+                    variation.options[variation.selectedOption]
+                      .additionalPrice +
+                    ')'}
+                </p>
+              ) : null
+            )}
           {item.personalizations &&
-            item.personalizations.map((personalization, index) => (
-              <p key={index}>
-                {personalization.name + ': '}
-                {personalization.value}
-                {' (+£' + personalization.additionalPrice + ')'}
-              </p>
-            ))}
+            item.personalizations.map((personalization, index) =>
+              !personalization.isOptional ||
+              (personalization.isOptional && personalization.isSelected) ? (
+                <p key={index}>
+                  {personalization.name + ': '}
+                  {personalization.value}
+                  {' (+£' + personalization.additionalPrice + ')'}
+                </p>
+              ) : null
+            )}
           <hr className='my-2' />
           Total: £{item.totalPrice}
         </>
