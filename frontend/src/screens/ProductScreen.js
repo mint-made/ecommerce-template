@@ -57,7 +57,6 @@ const ProductScreen = ({ history, match }) => {
     } else {
       setSelectedVariations([...product.variations]);
       setSelectedPersonalizations([...product.personalizations]);
-      console.log(product);
     }
   }, [dispatch, match, successProductReview, product]);
 
@@ -132,7 +131,7 @@ const ProductScreen = ({ history, match }) => {
       }
     });
     return (
-      <p className='cursor-pointer' onClick={decoratedOnClick}>
+      <p className='cursor-pointer mb-2' onClick={decoratedOnClick}>
         {children}
       </p>
     );
@@ -140,9 +139,6 @@ const ProductScreen = ({ history, match }) => {
 
   return (
     <>
-      <Link className='btn btn-light my-3' to='/'>
-        Go Back
-      </Link>
       {loading ? (
         <Loader />
       ) : error ? (
@@ -151,13 +147,21 @@ const ProductScreen = ({ history, match }) => {
         <>
           <Meta title={product.name} />
           <Row>
-            <Col md={6}>
+            <Col sm={12} className='d-block d-md-none'>
               <Image src={product.image} alt={product.name} fluid />
-              <p>{product.variantId}</p>
-              <h2>Reviews</h2>
-              {product.reviews.length === 0 && <Message>No Reviews</Message>}
+            </Col>
+            <Col md={7} className='d-none d-md-block'>
+              <Image src={product.image} alt={product.name} fluid />
 
               <ListGroup variant='flush'>
+                <h2>
+                  <Rating
+                    value={product.rating}
+                    text={`${product.numReviews} reviews`}
+                    textLeft
+                  />
+                </h2>
+                {product.reviews.length === 0 && <Message>No Reviews</Message>}
                 {product.reviews.map((review) => (
                   <ListGroup.Item key={review._id}>
                     <strong>{review.name}</strong>
@@ -179,7 +183,7 @@ const ProductScreen = ({ history, match }) => {
                         <Form.Control
                           as='select'
                           value={rating}
-                          onChange={(e) => setRating(e.target.value)}
+                          onChange={(e) => setRating(Number(e.target.value))}
                         >
                           <option value=''>Select...</option>
                           <option value='1'>1 - Poor</option>
@@ -193,7 +197,6 @@ const ProductScreen = ({ history, match }) => {
                         <Form.Label>Comment</Form.Label>
                         <Form.Control
                           as='textarea'
-                          row='3'
                           value={comment}
                           onChange={(e) => setComment(e.target.value)}
                         ></Form.Control>
@@ -210,39 +213,29 @@ const ProductScreen = ({ history, match }) => {
                 </ListGroup.Item>
               </ListGroup>
             </Col>
-            <Col md={3}>
-              <ListGroup variant='flush'>
-                <ListGroup.Item>
-                  <h2>{product.name}</h2>
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <Rating
-                    value={product.rating}
-                    text={`${product.numReviews} reviews`}
-                  />
-                </ListGroup.Item>
-                <ListGroup.Item>Price £{product.price}</ListGroup.Item>
-                <ListGroup.Item>
-                  Description: {product.description}
-                </ListGroup.Item>
-              </ListGroup>
-            </Col>
-            <Col md={3}>
+            <Col sm={12} md={5}>
               <Card>
                 <ListGroup variant='flush'>
                   <ListGroup.Item>
-                    <Row>
-                      <Col>Price</Col>
-                      <Col>
-                        <strong>£{getTotalPrice()}</strong>
-                      </Col>
-                    </Row>
+                    <h2 className='m-0'>{product.name}</h2>
                   </ListGroup.Item>
                   <ListGroup.Item>
                     <Row>
-                      <Col>Status:</Col>
                       <Col>
-                        {product.countInStock > 0 ? 'In Stock' : 'Out of Stock'}
+                        <h4 className='m-0'>£{getTotalPrice()}</h4>
+                      </Col>
+                      <Col className='d-flex justify-content-end'>
+                        {product.countInStock > 0 ? (
+                          <p className='m-0'>
+                            <i className='fas fa-check text-success'></i>In
+                            Stock
+                          </p>
+                        ) : (
+                          <p className='m-0'>
+                            <i className='fas fa-times text-danger'></i> Out of
+                            Stock
+                          </p>
+                        )}
                       </Col>
                     </Row>
                   </ListGroup.Item>
@@ -252,13 +245,14 @@ const ProductScreen = ({ history, match }) => {
                       <ListGroup.Item key={`variation-${index}`}>
                         {variation.isOptional ? (
                           <Accordion>
-                            <p>
-                              Is selected: {variation.isSelected.toString()}
-                            </p>
                             <CustomToggle eventKey={`variation-${index}`}>
                               {variation.name}
                               <span>
-                                <i className='fas fa-caret-down ml-1'></i>
+                                {variation.isSelected ? (
+                                  <i className='fas fa-caret-up ml-1'></i>
+                                ) : (
+                                  <i className='fas fa-caret-down ml-1'></i>
+                                )}
                               </span>
                             </CustomToggle>
                             <Accordion.Collapse eventKey={`variation-${index}`}>
@@ -291,14 +285,14 @@ const ProductScreen = ({ history, match }) => {
                       <ListGroup.Item key={`personalization-${index}`}>
                         {personalization.isOptional ? (
                           <Accordion>
-                            <p>
-                              Is selected:{' '}
-                              {personalization.isSelected.toString()}
-                            </p>
                             <CustomToggle eventKey={`personalization-${index}`}>
                               {personalization.name}
                               <span>
-                                <i className='fas fa-caret-down ml-1'></i>
+                                {personalization.isSelected ? (
+                                  <i className='fas fa-caret-up ml-1'></i>
+                                ) : (
+                                  <i className='fas fa-caret-down ml-1'></i>
+                                )}
                               </span>
                             </CustomToggle>
                             <Accordion.Collapse
@@ -333,14 +327,16 @@ const ProductScreen = ({ history, match }) => {
                   {product.countInStock > 0 && (
                     <ListGroup.Item>
                       <Row>
-                        <Col>Qty</Col>
+                        <Col className='d-flex align-items-center'>
+                          <p className='m-0'>Quantity</p>
+                        </Col>
                         <Col>
                           <Form.Control
                             as='select'
                             className='form-select border border-secondary rounded'
                             style={{ minWidth: '120px' }}
                             value={qty}
-                            onChange={(e) => setQty(e.target.value)}
+                            onChange={(e) => setQty(Number(e.target.value))}
                           >
                             {[...Array(product.countInStock).keys()].map(
                               (x) => (
@@ -363,6 +359,9 @@ const ProductScreen = ({ history, match }) => {
                     >
                       Add to Cart
                     </Button>
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                    Description: {product.description}
                   </ListGroup.Item>
                 </ListGroup>
               </Card>
