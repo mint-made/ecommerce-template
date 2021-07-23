@@ -1,14 +1,10 @@
 import React from 'react';
 import { Form } from 'react-bootstrap';
 
-/**
- *
- *
- */
-const VariationForm = ({ variation, onChange }) => {
+const VariationForm = ({ variation, onChange, label = false }) => {
   return (
     <>
-      <Form.Label>{variation.name}</Form.Label>
+      {label && <Form.Label>{variation.name}</Form.Label>}
       <Form.Control
         as='select'
         className='form-select border border-secondary rounded'

@@ -1,10 +1,10 @@
 import React from 'react';
 import { Form } from 'react-bootstrap';
 
-const PersonalizationForm = ({ personalization, onChange }) => {
+const PersonalizationForm = ({ personalization, onChange, label = false }) => {
   return (
     <>
-      <Form.Label>{personalization.name}</Form.Label>
+      {label && <Form.Label>{personalization.name}</Form.Label>}
       <Form.Control
         as='textarea'
         rows={3}

@@ -14,9 +14,28 @@ h2 {
   font-size: 1.4rem;
   padding: 0.5rem;
 }
-
+.cursor-pointer {
+  cursor: pointer;
+}
 .rating span {
   margin: 0.1rem;
+}
+.border-3 {
+  border-width: 3px !important;
+}
+.border-bottom-3 {
+  border-bottom: 3px solid #eceeef !important;
+}
+.border-brand {
+  border-color: #343a40 !important;
+}
+.btn-circle-btn-sm {
+  width: 30px;
+  height: 30px;
+  padding: 6px 0px;
+  border-radius: 15px;
+  font-size: 8px;
+  text-align: center;
 }
 
 /*Carousel*/

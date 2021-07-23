@@ -9,6 +9,8 @@ import {
   Card,
   Button,
   Form,
+  Accordion,
+  useAccordionToggle,
 } from 'react-bootstrap';
 
 import {
@@ -110,6 +112,32 @@ const ProductScreen = ({ history, match }) => {
     return product.price + variationCost + personalizationCost;
   };
 
+  /**
+   * Function to add a custom Accordion function that changes the value of
+   * @param {*} param0
+   */
+  function CustomToggle({ children, eventKey }) {
+    const decoratedOnClick = useAccordionToggle(eventKey, () => {
+      const variantType = eventKey.split('-')[0];
+      const variantIndex = eventKey.split('-')[1];
+      if (variantType === 'variation') {
+        selectedVariations[variantIndex].isSelected =
+          !selectedVariations[variantIndex].isSelected;
+        setSelectedVariations([...selectedVariations]);
+      }
+      if (variantType === 'personalization') {
+        selectedPersonalizations[variantIndex].isSelected =
+          !selectedPersonalizations[variantIndex].isSelected;
+        setSelectedPersonalizations([...selectedPersonalizations]);
+      }
+    });
+    return (
+      <p className='cursor-pointer' onClick={decoratedOnClick}>
+        {children}
+      </p>
+    );
+  }
+
   return (
     <>
       <Link className='btn btn-light my-3' to='/'>
@@ -126,112 +154,6 @@ const ProductScreen = ({ history, match }) => {
             <Col md={6}>
               <Image src={product.image} alt={product.name} fluid />
               <p>{product.variantId}</p>
-            </Col>
-            <Col md={3}>
-              <ListGroup variant='flush'>
-                <ListGroup.Item>
-                  <h2>{product.name}</h2>
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <Rating
-                    value={product.rating}
-                    text={`${product.numReviews} reviews`}
-                  />
-                </ListGroup.Item>
-                <ListGroup.Item>Price £{product.price}</ListGroup.Item>
-                <ListGroup.Item>
-                  Description: {product.description}
-                </ListGroup.Item>
-              </ListGroup>
-            </Col>
-            <Col md={3}>
-              <Card>
-                <ListGroup variant='flush'>
-                  <ListGroup.Item>
-                    <Row>
-                      <Col>Price</Col>
-                      <Col>
-                        <strong>£{getTotalPrice()}</strong>
-                      </Col>
-                    </Row>
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    <Row>
-                      <Col>Status:</Col>
-                      <Col>
-                        {product.countInStock > 0 ? 'In Stock' : 'Out of Stock'}
-                      </Col>
-                    </Row>
-                  </ListGroup.Item>
-
-                  {selectedVariations &&
-                    selectedVariations.map((variation, index) => (
-                      <ListGroup.Item key={`variation-${index}`}>
-                        <VariationForm
-                          variation={variation}
-                          onChange={(e) => {
-                            variation.selectedOption = e.target.value;
-                            setSelectedVariations([...selectedVariations]);
-                          }}
-                        />
-                      </ListGroup.Item>
-                    ))}
-
-                  {selectedPersonalizations &&
-                    selectedPersonalizations.map((personalization, index) => (
-                      <ListGroup.Item key={`personalization-${index}`}>
-                        <PersonalizationForm
-                          personalization={personalization}
-                          onChange={(e) => {
-                            personalization.value = e.target.value;
-                            setSelectedPersonalizations([
-                              ...selectedPersonalizations,
-                            ]);
-                          }}
-                        />
-                      </ListGroup.Item>
-                    ))}
-
-                  {product.countInStock > 0 && (
-                    <ListGroup.Item>
-                      <Row>
-                        <Col>Qty</Col>
-                        <Col>
-                          <Form.Control
-                            as='select'
-                            className='form-select border border-secondary rounded'
-                            style={{ minWidth: '120px' }}
-                            value={qty}
-                            onChange={(e) => setQty(e.target.value)}
-                          >
-                            {[...Array(product.countInStock).keys()].map(
-                              (x) => (
-                                <option key={x + 1} value={x + 1}>
-                                  {x + 1}
-                                </option>
-                              )
-                            )}
-                          </Form.Control>
-                        </Col>
-                      </Row>
-                    </ListGroup.Item>
-                  )}
-                  <ListGroup.Item>
-                    <Button
-                      onClick={addToCartHandler}
-                      className='btn-block'
-                      type='button'
-                      disabled={product.countInStock === 0}
-                    >
-                      Add to Cart
-                    </Button>
-                  </ListGroup.Item>
-                </ListGroup>
-              </Card>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={6}>
               <h2>Reviews</h2>
               {product.reviews.length === 0 && <Message>No Reviews</Message>}
 
@@ -287,6 +209,163 @@ const ProductScreen = ({ history, match }) => {
                   )}
                 </ListGroup.Item>
               </ListGroup>
+            </Col>
+            <Col md={3}>
+              <ListGroup variant='flush'>
+                <ListGroup.Item>
+                  <h2>{product.name}</h2>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <Rating
+                    value={product.rating}
+                    text={`${product.numReviews} reviews`}
+                  />
+                </ListGroup.Item>
+                <ListGroup.Item>Price £{product.price}</ListGroup.Item>
+                <ListGroup.Item>
+                  Description: {product.description}
+                </ListGroup.Item>
+              </ListGroup>
+            </Col>
+            <Col md={3}>
+              <Card>
+                <ListGroup variant='flush'>
+                  <ListGroup.Item>
+                    <Row>
+                      <Col>Price</Col>
+                      <Col>
+                        <strong>£{getTotalPrice()}</strong>
+                      </Col>
+                    </Row>
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                    <Row>
+                      <Col>Status:</Col>
+                      <Col>
+                        {product.countInStock > 0 ? 'In Stock' : 'Out of Stock'}
+                      </Col>
+                    </Row>
+                  </ListGroup.Item>
+
+                  {selectedVariations &&
+                    selectedVariations.map((variation, index) => (
+                      <ListGroup.Item key={`variation-${index}`}>
+                        {variation.isOptional ? (
+                          <Accordion>
+                            <p>
+                              Is selected: {variation.isSelected.toString()}
+                            </p>
+                            <CustomToggle eventKey={`variation-${index}`}>
+                              {variation.name}
+                              <span>
+                                <i className='fas fa-caret-down ml-1'></i>
+                              </span>
+                            </CustomToggle>
+                            <Accordion.Collapse eventKey={`variation-${index}`}>
+                              <VariationForm
+                                variation={variation}
+                                onChange={(e) => {
+                                  variation.selectedOption = e.target.value;
+                                  setSelectedVariations([
+                                    ...selectedVariations,
+                                  ]);
+                                }}
+                              />
+                            </Accordion.Collapse>
+                          </Accordion>
+                        ) : (
+                          <VariationForm
+                            variation={variation}
+                            label
+                            onChange={(e) => {
+                              variation.selectedOption = e.target.value;
+                              setSelectedVariations([...selectedVariations]);
+                            }}
+                          />
+                        )}
+                      </ListGroup.Item>
+                    ))}
+
+                  {selectedPersonalizations &&
+                    selectedPersonalizations.map((personalization, index) => (
+                      <ListGroup.Item key={`personalization-${index}`}>
+                        {personalization.isOptional ? (
+                          <Accordion>
+                            <p>
+                              Is selected:{' '}
+                              {personalization.isSelected.toString()}
+                            </p>
+                            <CustomToggle eventKey={`personalization-${index}`}>
+                              {personalization.name}
+                              <span>
+                                <i className='fas fa-caret-down ml-1'></i>
+                              </span>
+                            </CustomToggle>
+                            <Accordion.Collapse
+                              eventKey={`personalization-${index}`}
+                            >
+                              <PersonalizationForm
+                                personalization={personalization}
+                                onChange={(e) => {
+                                  personalization.value = e.target.value;
+                                  setSelectedPersonalizations([
+                                    ...selectedPersonalizations,
+                                  ]);
+                                }}
+                              />
+                            </Accordion.Collapse>
+                          </Accordion>
+                        ) : (
+                          <PersonalizationForm
+                            personalization={personalization}
+                            label
+                            onChange={(e) => {
+                              personalization.value = e.target.value;
+                              setSelectedPersonalizations([
+                                ...selectedPersonalizations,
+                              ]);
+                            }}
+                          />
+                        )}
+                      </ListGroup.Item>
+                    ))}
+
+                  {product.countInStock > 0 && (
+                    <ListGroup.Item>
+                      <Row>
+                        <Col>Qty</Col>
+                        <Col>
+                          <Form.Control
+                            as='select'
+                            className='form-select border border-secondary rounded'
+                            style={{ minWidth: '120px' }}
+                            value={qty}
+                            onChange={(e) => setQty(e.target.value)}
+                          >
+                            {[...Array(product.countInStock).keys()].map(
+                              (x) => (
+                                <option key={x + 1} value={x + 1}>
+                                  {x + 1}
+                                </option>
+                              )
+                            )}
+                          </Form.Control>
+                        </Col>
+                      </Row>
+                    </ListGroup.Item>
+                  )}
+                  <ListGroup.Item>
+                    <Button
+                      onClick={addToCartHandler}
+                      className='btn-block'
+                      type='button'
+                      disabled={product.countInStock === 0}
+                    >
+                      Add to Cart
+                    </Button>
+                  </ListGroup.Item>
+                </ListGroup>
+              </Card>
             </Col>
           </Row>
         </>
