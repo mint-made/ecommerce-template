@@ -126,6 +126,26 @@ const ProductScreen = ({ history, match }) => {
     );
   }
 
+  const ReviewsSection = () => {
+    return (
+      <ListGroup variant='flush'>
+        <h5>
+          <Rating
+            value={product.rating}
+            text={`${product.numReviews} Review${
+              product.numReviews === 1 ? '' : 's'
+            }`}
+            textLeft
+          />
+          <hr />
+        </h5>
+        {product.reviews.length === 0 && <Message>No Reviews</Message>}
+        <DisplayReviews reviews={product.reviews} />
+        <WriteReviewForm productId={match.params.id} />
+      </ListGroup>
+    );
+  };
+
   return (
     <>
       {loading ? (
@@ -146,22 +166,9 @@ const ProductScreen = ({ history, match }) => {
                 fluid
                 className='mb-5'
               />
-              <ListGroup variant='flush'>
-                <h2>
-                  <Rating
-                    value={product.rating}
-                    text={`${product.numReviews} Review${
-                      product.numReviews === 1 ? '' : 's'
-                    }`}
-                    textLeft
-                  />
-                </h2>
-                {product.reviews.length === 0 && <Message>No Reviews</Message>}
-                <DisplayReviews reviews={product.reviews} />
-                <WriteReviewForm productId={match.params.id} />
-              </ListGroup>
+              <ReviewsSection />
             </Col>
-            <Col sm={12} md={5}>
+            <Col sm={12} md={5} className='mb-5'>
               <Card>
                 <ListGroup variant='flush'>
                   <ListGroup.Item>
@@ -264,8 +271,6 @@ const ProductScreen = ({ history, match }) => {
                             label
                             onChange={(e) => {
                               personalization.value = e.target.value;
-                              console.log(product.personalizations[1].value);
-                              console.log(selectedPersonalizations[1].value);
                               setSelectedPersonalizations([
                                 ...selectedPersonalizations,
                               ]);
@@ -318,20 +323,7 @@ const ProductScreen = ({ history, match }) => {
               </Card>
             </Col>
             <Col sm={12} className='d-block d-md-none'>
-              <ListGroup variant='flush' className='mt-5'>
-                <h2>
-                  <Rating
-                    value={product.rating}
-                    text={`${product.numReviews} Review${
-                      product.numReviews === 1 ? '' : 's'
-                    }`}
-                    textLeft
-                  />
-                </h2>
-                {product.reviews.length === 0 && <Message>No Reviews</Message>}
-                <DisplayReviews reviews={product.reviews} />
-                <WriteReviewForm productId={match.params.id} />
-              </ListGroup>
+              <ReviewsSection />
             </Col>
           </Row>
         </>

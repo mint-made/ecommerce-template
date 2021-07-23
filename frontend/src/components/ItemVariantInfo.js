@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
  */
 
 const ItemVariantInfo = ({ item }) => {
+  console.log(item);
   return (
     <>
       <Link to={`/product/${item._id}`}>

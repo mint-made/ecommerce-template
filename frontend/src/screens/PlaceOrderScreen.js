@@ -11,7 +11,7 @@ const PlaceOrderScreen = ({ history }) => {
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart);
 
-  //Calculate prices
+  //Returns numbers to two decimal points
   const addDecimals = (num) => {
     return (Math.round(num * 100) / 100).toFixed(2);
   };

@@ -18,6 +18,8 @@ const orderSchema = new mongoose.Schema(
         variations: [
           {
             name: { type: String, required: true },
+            isOptional: { type: Boolean, required: true },
+            isSelected: { type: Boolean, required: true },
             selectedOption: { type: Number, required: true },
             options: [
               {
@@ -30,8 +32,9 @@ const orderSchema = new mongoose.Schema(
         personalizations: [
           {
             name: { type: String, required: true },
+            isOptional: { type: Boolean, required: true },
             isSelected: { type: Boolean, required: true },
-            value: { type: String, required: true },
+            value: { type: String },
             additionalPrice: { type: String, required: true },
           },
         ],
