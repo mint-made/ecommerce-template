@@ -4,7 +4,12 @@ import { Form } from 'react-bootstrap';
 const PersonalizationForm = ({ personalization, onChange, label = false }) => {
   return (
     <>
-      {label && <Form.Label>{personalization.name}</Form.Label>}
+      {label && (
+        <Form.Label>
+          {personalization.name}
+          {` (+£${personalization.additionalPrice})`}
+        </Form.Label>
+      )}
       <Form.Control
         as='textarea'
         rows={3}

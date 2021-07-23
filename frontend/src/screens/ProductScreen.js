@@ -69,13 +69,20 @@ const ProductScreen = ({ history, match }) => {
    */
   const getTotalPrice = () => {
     const variationCost = selectedVariations
-      .map(
-        (variation) =>
-          variation.options[variation.selectedOption].additionalPrice
+      .map((variation) =>
+        !variation.isOptional || (variation.isOptional && variation.isSelected)
+          ? variation.options[variation.selectedOption].additionalPrice
+          : null
       )
       .reduce((acc, value) => acc + value, 0);
+
     const personalizationCost = selectedPersonalizations
-      .map((personalization) => personalization.additionalPrice)
+      .map((personalization) =>
+        !personalization.isOptional ||
+        (personalization.isOptional && personalization.isSelected)
+          ? personalization.additionalPrice
+          : null
+      )
       .reduce((acc, value) => acc + value, 0);
     return product.price + variationCost + personalizationCost;
   };
@@ -215,6 +222,7 @@ const ProductScreen = ({ history, match }) => {
                           <Accordion>
                             <CustomToggle eventKey={`personalization-${index}`}>
                               {personalization.name}
+                              {` (+£${personalization.additionalPrice})`}
                               <span>
                                 {personalization.isSelected ? (
                                   <i className='fas fa-caret-up ml-1'></i>
@@ -293,6 +301,22 @@ const ProductScreen = ({ history, match }) => {
                   </ListGroup.Item>
                 </ListGroup>
               </Card>
+            </Col>
+            <Col sm={12} className='d-block d-md-none'>
+              <ListGroup variant='flush' className='mt-5'>
+                <h2>
+                  <Rating
+                    value={product.rating}
+                    text={`${product.numReviews} Review${
+                      product.numReviews === 1 ? '' : 's'
+                    }`}
+                    textLeft
+                  />
+                </h2>
+                {product.reviews.length === 0 && <Message>No Reviews</Message>}
+                <DisplayReviews reviews={product.reviews} />
+                <WriteReviewForm productId={match.params.id} />
+              </ListGroup>
             </Col>
           </Row>
         </>

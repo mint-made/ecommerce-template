@@ -45,7 +45,7 @@ const WriteReviewForm = ({ productId }) => {
 
   return (
     <ListGroup.Item>
-      <h2>Write a Customer Review component</h2>
+      <h2>Write a Review</h2>
       {errorProductReview && (
         <Message variant='danger'>{errorProductReview}</Message>
       )}
