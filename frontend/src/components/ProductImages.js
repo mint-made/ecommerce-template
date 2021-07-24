@@ -1,18 +1,30 @@
-import React from 'react';
-import { Card, Carousel, Col, Container, Image, Row } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Button, Carousel, Container, Image } from 'react-bootstrap';
 
 const ProductImages = ({ images }) => {
-  console.log(images);
+  const [index, setIndex] = useState(0);
+
+  const handleSelect = (selectedIndex, e) => {
+    setIndex(selectedIndex);
+  };
+
   return (
-    <Carousel pause='hover'>
+    <>
       {images.map((image, index) => (
-        <Carousel.Item key={index}>
-          <Container fluid>
-            <Image src={image} fluid className='rounded-0 m-0 p-0' />
-          </Container>
-        </Carousel.Item>
+        <Button className='ml-1' onClick={() => setIndex(index)}>
+          Go to image {index + 1}
+        </Button>
       ))}
-    </Carousel>
+      <Carousel activeIndex={index} onSelect={handleSelect}>
+        {images.map((image, index) => (
+          <Carousel.Item key={index}>
+            <Container fluid>
+              <Image src={image} fluid className='rounded-0 m-0 p-0' />
+            </Container>
+          </Carousel.Item>
+        ))}
+      </Carousel>
+    </>
   );
 };
 
