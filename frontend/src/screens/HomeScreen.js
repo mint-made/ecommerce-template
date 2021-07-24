@@ -10,6 +10,7 @@ import Loader from '../components/Loader';
 import Paginate from '../components/Paginate';
 import ProductCarousel from '../components/ProductCarousel';
 import Meta from '../components/Meta';
+import ProductImages from '../components/ProductImages';
 
 const HomeScreen = ({ match }) => {
   const keyword = match.params.keyword;
@@ -23,6 +24,11 @@ const HomeScreen = ({ match }) => {
   useEffect(() => {
     dispatch(listProducts(keyword, pageNumber));
   }, [dispatch, keyword, pageNumber]);
+
+  const getProductImages = () => {
+    const imageArray = products.map((product) => product.image);
+    return imageArray;
+  };
 
   return (
     <>
@@ -54,6 +60,7 @@ const HomeScreen = ({ match }) => {
             page={page}
             keyword={keyword ? keyword : ''}
           />
+          <ProductImages images={getProductImages()} />
         </>
       )}
     </>

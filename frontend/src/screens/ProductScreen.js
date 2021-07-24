@@ -156,7 +156,7 @@ const ProductScreen = ({ history, match }) => {
         <>
           <Meta title={product.name} />
           <Row>
-            <Col sm={12} className='d-block d-md-none'>
+            <Col md={5} className='d-block d-md-none'>
               <Image src={product.image} alt={product.name} fluid />
             </Col>
             <Col md={7} className='d-none d-md-block'>
