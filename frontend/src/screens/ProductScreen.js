@@ -29,6 +29,7 @@ const ProductScreen = ({ history, match }) => {
   const [qty, setQty] = useState(1);
   const [selectedVariations, setSelectedVariations] = useState([]);
   const [selectedPersonalizations, setSelectedPersonalizations] = useState([]);
+  const [imageIndex, setImageIndex] = useState(0);
 
   const dispatch = useDispatch();
 
@@ -98,7 +99,8 @@ const ProductScreen = ({ history, match }) => {
           : null
       )
       .reduce((acc, value) => acc + value, 0);
-    return product.price + variationCost + personalizationCost;
+    const totalPrice = product.price + variationCost + personalizationCost;
+    return (Math.round(totalPrice * 100) / 100).toFixed(2);
   };
 
   /**
@@ -115,6 +117,15 @@ const ProductScreen = ({ history, match }) => {
         setSelectedVariations([...selectedVariations]);
       }
       if (variantType === 'personalization') {
+        // If personalization is optional, has linked image and isn't selected
+        // we will set the imageIndex of the carosel to the linkedImage value
+        if (
+          !selectedPersonalizations[variantIndex].isSelected &&
+          typeof selectedPersonalizations[variantIndex].linkedImage === 'number'
+        ) {
+          handleSelect(selectedPersonalizations[variantIndex].linkedImage);
+        }
+
         selectedPersonalizations[variantIndex].isSelected =
           !selectedPersonalizations[variantIndex].isSelected;
         setSelectedPersonalizations([...selectedPersonalizations]);
@@ -148,15 +159,12 @@ const ProductScreen = ({ history, match }) => {
   };
 
   /**
-   *
-   *
+   * Returns an ImageCarousel for product.images Array. The image displayed by the
+   * carousel can be changed by calling the handleSelect function and passing an
+   * indexNumber of the image you want to display from the product.images array.
+   * This is used to change the image displayed when a user changes a variaion that
+   * has a value in the linkedImage property.
    */
-  const [imageIndex, setImageIndex] = useState(0);
-
-  const handleSelect = (selectedIndex, e) => {
-    console.log('handleSelect', selectedIndex);
-    setImageIndex(selectedIndex);
-  };
   const ImageCarousel = () => {
     return (
       <Carousel
@@ -174,6 +182,9 @@ const ProductScreen = ({ history, match }) => {
         ))}
       </Carousel>
     );
+  };
+  const handleSelect = (selectedIndex, e) => {
+    setImageIndex(selectedIndex);
   };
 
   return (
@@ -239,6 +250,12 @@ const ProductScreen = ({ history, match }) => {
                               <VariationForm
                                 variation={variation}
                                 onChange={(e) => {
+                                  typeof variation.options[e.target.value]
+                                    .linkedImage === 'number' &&
+                                    handleSelect(
+                                      variation.options[e.target.value]
+                                        .linkedImage
+                                    );
                                   variation.selectedOption = e.target.value;
                                   setSelectedVariations([
                                     ...selectedVariations,
@@ -252,15 +269,11 @@ const ProductScreen = ({ history, match }) => {
                             variation={variation}
                             label
                             onChange={(e) => {
-                              console.log(
-                                '.linkedImage value onChange: ',
-                                variation.options[e.target.value].linkedImage
-                              );
-                              variation.options[e.target.value].linkedImage &&
-                                console.log('statement true');
-                              handleSelect(
-                                variation.options[e.target.value].linkedImage
-                              );
+                              typeof variation.options[e.target.value]
+                                .linkedImage === 'number' &&
+                                handleSelect(
+                                  variation.options[e.target.value].linkedImage
+                                );
                               variation.selectedOption = e.target.value;
                               setSelectedVariations([...selectedVariations]);
                             }}
