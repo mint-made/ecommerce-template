@@ -1,75 +1,139 @@
 const products = [
   {
-    name: 'Airpods Wireless Bluetooth Headphones',
-    image: '/images/airpods.jpg',
+    variantId: '',
+    rating: 1,
+    numReviews: 1,
+    price: 3.25,
+    countInStock: 5,
+    name: 'Giraffe Birthday Card',
+    image: '/uploads/image-1627066972096.jpg',
+    images: [
+      '/uploads/image-1627066972096.jpg',
+      'uploads/image-1627214953669.jpg',
+      'uploads/image-1627214989064.jpg.jpg',
+    ],
+    brand: 'sample brand',
+    category: 'Cards',
     description:
-      'Bluetooth technology lets you connect it with compatible devices wirelessly High-quality AAC audio offers immersive listening experience Built-in microphone allows you to take calls while working',
-    brand: 'Apple',
-    category: 'Electronics',
-    price: 89.99,
-    countInStock: 3,
-    rating: 4.5,
-    numReviews: 12,
+      'Giraffe Birthday card, avaliable in two sizes, A6 or square 15cmx15cm\nFrom one of my original watercolour paintings and printed on to 300gsm FSC certified card, with white envelope and biodegradable sleeve.',
+    reviews: [],
+    variations: [
+      {
+        name: 'Size',
+        isOptional: false,
+        isSelected: false,
+        selectedOption: 0,
+        options: [
+          {
+            additionalPrice: 0,
+            name: 'A6',
+            linkedImage: 0,
+          },
+          {
+            additionalPrice: 0.25,
+            name: 'Square',
+            linkedImage: 1,
+          },
+        ],
+      },
+      {
+        name: 'Text',
+        isOptional: false,
+        isSelected: false,
+        selectedOption: 0,
+        options: [
+          {
+            additionalPrice: 0,
+            name: 'Have a Wild Birthday',
+          },
+          {
+            additionalPrice: 0,
+            name: 'No Text',
+          },
+          {
+            additionalPrice: 0,
+            name: 'Happy Birthday',
+          },
+        ],
+      },
+    ],
+    personalizations: [
+      {
+        name: 'Add a name to the front of the card?',
+        isOptional: true,
+        isSelected: false,
+        value:
+          'For example "Happy Birthday Emma" or " Have a wild birthday Emma" ',
+        additionalPrice: 0,
+      },
+    ],
+    __v: 2,
   },
   {
+    variantId: '',
+    rating: 3,
+    numReviews: 2,
+    price: 599.99,
+    countInStock: 7,
     name: 'iPhone 11 Pro 256GB Memory',
     image: '/images/phone.jpg',
+    images: ['/images/phone.jpg', 'uploads/image-1627215109963.jpg'],
     description:
       'Introducing the iPhone 11 Pro. A transformative triple-camera system that adds tons of capability without complexity. An unprecedented leap in battery life',
     brand: 'Apple',
     category: 'Electronics',
-    price: 599.99,
-    countInStock: 7,
-    rating: 4.0,
-    numReviews: 8,
-  },
-  {
-    name: 'Cannon EOS 80D DSLR Camera',
-    image: '/images/camera.jpg',
-    description:
-      'Characterized by versatile imaging specs, the Canon EOS 80D further clarifies itself using a pair of robust focusing systems and an intuitive design',
-    brand: 'Cannon',
-    category: 'Electronics',
-    price: 929.99,
-    countInStock: 5,
-    rating: 3,
-    numReviews: 12,
-  },
-  {
-    name: 'Sony Playstation 4 Pro White Version',
-    image: '/images/playstation.jpg',
-    description:
-      'The ultimate home entertainment center starts with PlayStation. Whether you are into gaming, HD movies, television, music',
-    brand: 'Sony',
-    category: 'Electronics',
-    price: 399.99,
-    countInStock: 11,
-    rating: 5,
-    numReviews: 12,
-  },
-  {
-    name: 'Logitech G-Series Gaming Mouse',
-    image: '/images/mouse.jpg',
-    description:
-      'Get a better handle on your games with this Logitech LIGHTSYNC gaming mouse. The six programmable buttons allow customization for a smooth playing experience',
-    brand: 'Logitech',
-    category: 'Electronics',
-    price: 49.99,
-    countInStock: 7,
-    rating: 3.5,
-    numReviews: 10,
-  },
-  {
-    name: 'Amazon Echo Dot 3rd Generation',
-    image: '/images/alexa.jpg',
-    description:
-      'Meet Echo Dot - Our most popular smart speaker with a fabric design. It is our most compact smart speaker that fits perfectly into small space',
-    brand: 'Amazon',
-    category: 'Electronics',
-    price: 29.99,
-    countInStock: 0,
-    rating: 4,
-    numReviews: 12,
+    reviews: [],
+    variations: [
+      {
+        name: 'Additional Memory',
+        isOptional: true,
+        isSelected: false,
+        selectedOption: 0,
+        options: [
+          {
+            additionalPrice: 90,
+            name: '512GB',
+          },
+          {
+            additionalPrice: 200,
+            name: '1024GB',
+          },
+        ],
+      },
+      {
+        name: 'Ram Size',
+        isOptional: false,
+        isSelected: false,
+        selectedOption: 0,
+        options: [
+          {
+            additionalPrice: 0,
+            name: '3GB',
+          },
+          {
+            additionalPrice: 50,
+            name: '4GB',
+          },
+        ],
+      },
+    ],
+    personalizations: [
+      {
+        name: 'Engraving',
+        isOptional: true,
+        isSelected: false,
+        value: '<your engraving text>',
+        additionalPrice: 65,
+      },
+      {
+        name: 'Greeting Message',
+        isOptional: false,
+        isSelected: false,
+        value: 'Welcome to your phone',
+        additionalPrice: 0,
+      },
+    ],
+    __v: 4,
   },
 ];
 

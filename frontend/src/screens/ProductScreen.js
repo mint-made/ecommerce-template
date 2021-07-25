@@ -10,6 +10,8 @@ import {
   Form,
   Accordion,
   useAccordionToggle,
+  Carousel,
+  Container,
 } from 'react-bootstrap';
 
 import { listProductDetails } from '../actions/productActions';
@@ -146,6 +148,32 @@ const ProductScreen = ({ history, match }) => {
     );
   };
 
+  console.log(product.images);
+
+  /**
+   *
+   *
+   */
+  const [index, setIndex] = useState(0);
+
+  const handleSelect = (selectedIndex, e) => {
+    setIndex(selectedIndex);
+  };
+
+  const ImageCarousel = (imageArray) => {
+    return (
+      <Carousel activeIndex={index} onSelect={handleSelect}>
+        {imageArray.map((image, index) => (
+          <Carousel.Item key={index}>
+            <Container fluid>
+              <Image src={image} fluid className='rounded-0 m-0 p-0' />
+            </Container>
+          </Carousel.Item>
+        ))}
+      </Carousel>
+    );
+  };
+
   return (
     <>
       {loading ? (
@@ -157,7 +185,7 @@ const ProductScreen = ({ history, match }) => {
           <Meta title={product.name} />
           <Row>
             <Col md={5} className='d-block d-md-none'>
-              <Image src={product.image} alt={product.name} fluid />
+              <ImageCarousel imageArray={product.images} />
             </Col>
             <Col md={7} className='d-none d-md-block'>
               <Image

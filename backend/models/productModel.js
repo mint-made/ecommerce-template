@@ -25,6 +25,7 @@ const variationSchema = new mongoose.Schema({
     {
       name: { type: String, required: true },
       additionalPrice: { type: Number, required: true, default: 0 },
+      linkedImage: { type: Number },
     },
   ],
 });
@@ -35,6 +36,7 @@ const personalizationSchema = new mongoose.Schema({
   isSelected: { type: Boolean, required: true },
   value: { type: String, required: true },
   additionalPrice: { type: Number, required: true },
+  linkedImage: { type: Number },
 });
 
 const productSchema = new mongoose.Schema({
@@ -54,6 +56,7 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  images: [{ type: String, required: true }],
   brand: {
     type: String,
     required: true,
