@@ -7,7 +7,6 @@ const ProductImages = ({ images }) => {
   const handleSelect = (selectedIndex, e) => {
     setIndex(selectedIndex);
   };
-
   return (
     <>
       {images.map((image, index) => (

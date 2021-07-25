@@ -45,7 +45,6 @@ const ProductScreen = ({ history, match }) => {
       );
       setSelectedVariations([...variationsDeepCopy]);
       setSelectedPersonalizations([...personalizationsDeepCopy]);
-      console.log(product.personalizations[1]);
     }
   }, [dispatch, match, product, history]);
 
@@ -148,22 +147,25 @@ const ProductScreen = ({ history, match }) => {
     );
   };
 
-  console.log(product.images);
-
   /**
    *
    *
    */
-  const [index, setIndex] = useState(0);
+  const [imageIndex, setImageIndex] = useState(0);
 
   const handleSelect = (selectedIndex, e) => {
-    setIndex(selectedIndex);
+    console.log('handleSelect', selectedIndex);
+    setImageIndex(selectedIndex);
   };
-
-  const ImageCarousel = (imageArray) => {
+  const ImageCarousel = () => {
     return (
-      <Carousel activeIndex={index} onSelect={handleSelect}>
-        {imageArray.map((image, index) => (
+      <Carousel
+        activeIndex={imageIndex}
+        onSelect={handleSelect}
+        className='mb-5'
+        interval={null}
+      >
+        {product.images.map((image, index) => (
           <Carousel.Item key={index}>
             <Container fluid>
               <Image src={image} fluid className='rounded-0 m-0 p-0' />
@@ -185,15 +187,10 @@ const ProductScreen = ({ history, match }) => {
           <Meta title={product.name} />
           <Row>
             <Col md={5} className='d-block d-md-none'>
-              <ImageCarousel imageArray={product.images} />
+              {product.images && <ImageCarousel />}
             </Col>
             <Col md={7} className='d-none d-md-block'>
-              <Image
-                src={product.image}
-                alt={product.name}
-                fluid
-                className='mb-5'
-              />
+              {product.images && <ImageCarousel />}
               <ReviewsSection />
             </Col>
             <Col sm={12} md={5} className='mb-5'>
@@ -255,6 +252,15 @@ const ProductScreen = ({ history, match }) => {
                             variation={variation}
                             label
                             onChange={(e) => {
+                              console.log(
+                                '.linkedImage value onChange: ',
+                                variation.options[e.target.value].linkedImage
+                              );
+                              variation.options[e.target.value].linkedImage &&
+                                console.log('statement true');
+                              handleSelect(
+                                variation.options[e.target.value].linkedImage
+                              );
                               variation.selectedOption = e.target.value;
                               setSelectedVariations([...selectedVariations]);
                             }}
