@@ -167,20 +167,26 @@ const ProductScreen = ({ history, match }) => {
    */
   const ImageCarousel = () => {
     return (
-      <Carousel
-        activeIndex={imageIndex}
-        onSelect={handleSelect}
-        className='mb-5'
-        interval={null}
-      >
-        {product.images.map((image, index) => (
-          <Carousel.Item key={index}>
-            <Container fluid>
-              <Image src={image} fluid className='rounded-0 m-0 p-0' />
-            </Container>
-          </Carousel.Item>
-        ))}
-      </Carousel>
+      <Container className='d-flex justify-content-center'>
+        <Carousel
+          activeIndex={imageIndex}
+          onSelect={handleSelect}
+          className='mb-5 product-screen-carousel'
+          interval={null}
+        >
+          {product.images.map((image, index) => (
+            <Carousel.Item key={index}>
+              <Container fluid>
+                <Image
+                  src={image}
+                  fluid
+                  className='rounded-0 m-0 p-0 product-screen-image'
+                />
+              </Container>
+            </Carousel.Item>
+          ))}
+        </Carousel>
+      </Container>
     );
   };
   const handleSelect = (selectedIndex, e) => {

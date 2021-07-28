@@ -53,7 +53,7 @@ h2 {
   color: #fff;
 }
 
-.carousel img {
+.homepage-carousel {
   height: 300px;
   padding: 30px;
   margin: 40px;
@@ -64,8 +64,8 @@ h2 {
   margin: 0 auto;
 }
 
-.carousel-control-next,
-.carousel-control-prev,
-.carousel-indicators {
+.product-screen-carousel .carousel-control-next,
+.product-screen-carousel .carousel-control-prev,
+.product-screen-carousel .carousel-indicators {
   filter: invert(1) grayscale(100);
 }
