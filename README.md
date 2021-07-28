@@ -17,6 +17,8 @@ This is a template ecommerce site, built with the essential ecommerce functional
 - User Profile with order history and order status
 - Admin Product/User/Order Management
 - Database seeder script for Products and Users
+- Optional product variations & personalizations
+- Product Image gallery with variations linked to specific images.
 
 ### Technologies Utilized
 
@@ -27,4 +29,5 @@ This is a template ecommerce site, built with the essential ecommerce functional
 - JSON web tokens
 - [bcrypt](https://www.npmjs.com/package/bcrypt)
 - RESTful APIs
+- React-BootStrap
 - [apiDoc](https://apidocjs.com/#param-api-description)
