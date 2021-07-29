@@ -1,7 +1,15 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Form, Button, Row, Col } from 'react-bootstrap';
+import {
+  Form,
+  Button,
+  Row,
+  Col,
+  Container,
+  Carousel,
+  Image,
+} from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
@@ -15,6 +23,7 @@ const ProductEditScreen = ({ match, history }) => {
   const [name, setName] = useState('');
   const [price, setPrice] = useState(0);
   const [image, setImage] = useState('');
+  const [imagesArray, setImagesArray] = useState([]);
   const [category, setCategory] = useState('');
   const [countInStock, setCountInStock] = useState(0);
   const [description, setDescription] = useState('');
@@ -52,6 +61,7 @@ const ProductEditScreen = ({ match, history }) => {
         setDescription(product.description);
         setVariations(product.variations);
         setPersonalizations(product.personalizations);
+        setImagesArray(product.images);
       }
     }
   }, [dispatch, history, productId, product, successUpdate]);
@@ -75,6 +85,7 @@ const ProductEditScreen = ({ match, history }) => {
       const { data } = await axios.post('/api/upload', formData, config);
 
       setImage(data);
+      setImagesArray([...imagesArray, data]);
       setUploading(false);
     } catch (e) {
       console.error(error);
@@ -158,6 +169,7 @@ const ProductEditScreen = ({ match, history }) => {
       <Link to='/admin/productlist' className='btn btn-light my-3'>
         Go back
       </Link>
+
       <FormContainer>
         <h1>Edit Product</h1>
         {loadingUpdate && <Loader />}
@@ -167,338 +179,386 @@ const ProductEditScreen = ({ match, history }) => {
         ) : error ? (
           <Message variant='danger'>{error}</Message>
         ) : (
-          <Form onSubmit={submitHandler}>
-            <div className='p-3 border border-3 rounded-lg'>
+          <Row>
+            <Col>
+              <Carousel
+                className='mb-2 product-screen-carousel'
+                interval={null}
+              >
+                {imagesArray.map((image, index) => (
+                  <Carousel.Item key={index}>
+                    <Image
+                      src={image}
+                      fluid
+                      className='rounded-0 m-0 p-0 product-screen-image'
+                    />
+                  </Carousel.Item>
+                ))}
+              </Carousel>
               <Row>
-                <Col xs={7}>
-                  <Form.Group controlId='name'>
-                    <Form.Label>Name</Form.Label>
-                    <Form.Control
-                      type='name'
-                      placeholder='Enter Name'
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                    ></Form.Control>
-                  </Form.Group>
-                </Col>
-                <Col>
-                  <Form.Group controlId='price'>
-                    <Form.Label>Price</Form.Label>
-                    <Form.Control
-                      type='number'
-                      placeholder='Enter price'
-                      value={price}
-                      onChange={(e) => setPrice(e.target.value)}
-                    ></Form.Control>
-                  </Form.Group>
-                </Col>
-              </Row>
-
-              <Form.Group controlId='image'>
-                <Form.Label>Image</Form.Label>
-                <Form.Control
-                  type='text'
-                  placeholder='Enter image URL'
-                  value={image}
-                  onChange={(e) => setImage(e.target.value)}
-                ></Form.Control>
-                <Form.File
-                  id='image-file'
-                  label='Choose File'
-                  custom
-                  onChange={uploadFileHandler}
-                ></Form.File>
-                {uploading && <Loader />}
-              </Form.Group>
-
-              <Row>
-                <Col>
-                  <Form.Group controlId='category'>
-                    <Form.Label>Category</Form.Label>
-                    <Form.Control
-                      type='text'
-                      placeholder='Enter category'
-                      value={category}
-                      onChange={(e) => setCategory(e.target.value)}
-                    ></Form.Control>
-                  </Form.Group>
-                </Col>
-                <Col>
-                  <Form.Group controlId='countInStock'>
-                    <Form.Label>Count In Stock </Form.Label>
-                    <Form.Control
-                      type='number'
-                      placeholder='Count In Stock'
-                      value={countInStock}
-                      onChange={(e) => setCountInStock(e.target.value)}
-                    ></Form.Control>
-                  </Form.Group>
-                </Col>
-              </Row>
-
-              <Form.Group controlId='description'>
-                <Form.Label>Description</Form.Label>
-                <Form.Control
-                  as='textarea'
-                  rows={3}
-                  type='text'
-                  placeholder='Enter Description'
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                ></Form.Control>
-              </Form.Group>
-
-              <div className='border border-3 rounded-lg mb-2'>
-                <h4 className='p-2 mb-0'>
-                  Variations
-                  <Button
-                    variant='success'
-                    className='btn-sm px-2 py-1 ml-2 rounded'
-                    onClick={() => addVariationHandler()}
-                  >
-                    <i className='fas fa-plus'></i>
-                  </Button>
-                </h4>
-
-                {variations &&
-                  variations.map((variation, index) => (
-                    <div
-                      key={`variation-${index}`}
-                      className='border-bottom-3 p-2'
+                {imagesArray.map((image, index) => (
+                  <Col sm={3} key={index}>
+                    <Image
+                      src={image}
+                      fluid
+                      className='rounded-0 m-0 mb-1 p-0 product-screen-image'
+                    />
+                    <Button
+                      variant='danger'
+                      className='btn-sm px-2 py-1 rounded'
+                      onClick={() => {
+                        imagesArray.splice(index, 1);
+                        setImagesArray([...imagesArray]);
+                      }}
                     >
-                      <Form.Group controlId={`variation-name-${index}`}>
-                        <Row>
-                          <Col sm={10}>
-                            <p>Variation Name</p>
-                          </Col>
-                          <Col sm={2}>
-                            <Button
-                              variant='danger'
-                              className='btn-sm px-2 py-1 ml-2 rounded'
-                              onClick={() => {
-                                variations.splice(index, 1);
-                                setVariations([...variations]);
-                              }}
-                            >
-                              <i className='fas fa-trash'></i>
-                            </Button>
-                          </Col>
-                        </Row>
-
+                      {' '}
+                      <i className='fas fa-trash'></i>
+                    </Button>
+                  </Col>
+                ))}
+              </Row>
+            </Col>
+            <Col>
+              <Form onSubmit={submitHandler}>
+                <div className='p-3 border border-3 rounded-lg'>
+                  <Row>
+                    <Col xs={7}>
+                      <Form.Group controlId='name'>
+                        <Form.Label>Name</Form.Label>
                         <Form.Control
-                          type='text'
-                          placeholder='e.g. Size'
-                          value={variation.name}
-                          onChange={(e) => {
-                            variation.name = e.target.value;
-                            setVariations([...variations]);
-                          }}
+                          type='name'
+                          placeholder='Enter Name'
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
                         ></Form.Control>
                       </Form.Group>
-                      <Row>
-                        <Col sm={2}>
-                          <p>Optional?</p>
-                        </Col>
-                        <Col sm={1}>
-                          <Form.Check
-                            type='checkbox'
-                            checked={variation.isOptional}
-                            onChange={(e) => {
-                              variation.isOptional = !variation.isOptional;
-                              setVariations([...variations]);
-                            }}
-                          ></Form.Check>
-                        </Col>
-                      </Row>
+                    </Col>
+                    <Col>
+                      <Form.Group controlId='price'>
+                        <Form.Label>Price</Form.Label>
+                        <Form.Control
+                          type='number'
+                          placeholder='Enter price'
+                          value={price}
+                          onChange={(e) => setPrice(e.target.value)}
+                        ></Form.Control>
+                      </Form.Group>
+                    </Col>
+                  </Row>
 
-                      <Row>
-                        <Col sm={5}>
-                          <p>
-                            Option Name{' '}
-                            <Button
-                              variant='success'
-                              className='btn-sm px-2 py-1 ml-2 rounded'
-                              onClick={() => addOptionHandler(index)}
-                            >
-                              <i className='fas fa-plus'></i>
-                            </Button>
-                          </p>
-                        </Col>
-                        <Col sm={3}>
-                          <p>Price</p>
-                        </Col>
-                        <Col sm={2}>
-                          <p>Default</p>
-                        </Col>
-                      </Row>
-                      {variation.options &&
-                        variation.options.map((option, index) => (
-                          <Row key={`${variation.name}-option-${index}`}>
-                            <Col sm={5}>
-                              <Form.Group
-                                controlId={`${variation.name}-option-${index}-name`}
-                              >
-                                <Form.Control
-                                  className='form-control-sm'
-                                  type='text'
-                                  placeholder='e.g. Large'
-                                  value={option.name}
-                                  onChange={(e) => {
-                                    option.name = e.target.value;
+                  <Form.Group controlId='image'>
+                    <Form.Label>Image</Form.Label>
+                    <Form.Control
+                      type='text'
+                      placeholder='Enter image URL'
+                      value={image}
+                      onChange={(e) => setImage(e.target.value)}
+                    ></Form.Control>
+                    <Form.File
+                      id='image-file'
+                      label='Choose File'
+                      custom
+                      onChange={uploadFileHandler}
+                    ></Form.File>
+                    {uploading && <Loader />}
+                  </Form.Group>
+
+                  <Row>
+                    <Col>
+                      <Form.Group controlId='category'>
+                        <Form.Label>Category</Form.Label>
+                        <Form.Control
+                          type='text'
+                          placeholder='Enter category'
+                          value={category}
+                          onChange={(e) => setCategory(e.target.value)}
+                        ></Form.Control>
+                      </Form.Group>
+                    </Col>
+                    <Col>
+                      <Form.Group controlId='countInStock'>
+                        <Form.Label>Count In Stock </Form.Label>
+                        <Form.Control
+                          type='number'
+                          placeholder='Count In Stock'
+                          value={countInStock}
+                          onChange={(e) => setCountInStock(e.target.value)}
+                        ></Form.Control>
+                      </Form.Group>
+                    </Col>
+                  </Row>
+
+                  <Form.Group controlId='description'>
+                    <Form.Label>Description</Form.Label>
+                    <Form.Control
+                      as='textarea'
+                      rows={3}
+                      type='text'
+                      placeholder='Enter Description'
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                    ></Form.Control>
+                  </Form.Group>
+
+                  <div className='border border-3 rounded-lg mb-2'>
+                    <h4 className='p-2 mb-0'>
+                      Variations
+                      <Button
+                        variant='success'
+                        className='btn-sm px-2 py-1 ml-2 rounded'
+                        onClick={() => addVariationHandler()}
+                      >
+                        <i className='fas fa-plus'></i>
+                      </Button>
+                    </h4>
+
+                    {variations &&
+                      variations.map((variation, index) => (
+                        <div
+                          key={`variation-${index}`}
+                          className='border-bottom-3 p-2'
+                        >
+                          <Form.Group controlId={`variation-name-${index}`}>
+                            <Row>
+                              <Col sm={10}>
+                                <p>Variation Name</p>
+                              </Col>
+                              <Col sm={2}>
+                                <Button
+                                  variant='danger'
+                                  className='btn-sm px-2 py-1 ml-2 rounded'
+                                  onClick={() => {
+                                    variations.splice(index, 1);
                                     setVariations([...variations]);
+                                  }}
+                                >
+                                  <i className='fas fa-trash'></i>
+                                </Button>
+                              </Col>
+                            </Row>
+
+                            <Form.Control
+                              type='text'
+                              placeholder='e.g. Size'
+                              value={variation.name}
+                              onChange={(e) => {
+                                variation.name = e.target.value;
+                                setVariations([...variations]);
+                              }}
+                            ></Form.Control>
+                          </Form.Group>
+                          <Row>
+                            <Col sm={2}>
+                              <p>Optional?</p>
+                            </Col>
+                            <Col sm={1}>
+                              <Form.Check
+                                type='checkbox'
+                                checked={variation.isOptional}
+                                onChange={(e) => {
+                                  variation.isOptional = !variation.isOptional;
+                                  setVariations([...variations]);
+                                }}
+                              ></Form.Check>
+                            </Col>
+                          </Row>
+
+                          <Row>
+                            <Col sm={5}>
+                              <p>
+                                Option Name{' '}
+                                <Button
+                                  variant='success'
+                                  className='btn-sm px-2 py-1 ml-2 rounded'
+                                  onClick={() => addOptionHandler(index)}
+                                >
+                                  <i className='fas fa-plus'></i>
+                                </Button>
+                              </p>
+                            </Col>
+                            <Col sm={3}>
+                              <p>Price</p>
+                            </Col>
+                            <Col sm={2}>
+                              <p>Default</p>
+                            </Col>
+                          </Row>
+                          {variation.options &&
+                            variation.options.map((option, index) => (
+                              <Row key={`${variation.name}-option-${index}`}>
+                                <Col sm={5}>
+                                  <Form.Group
+                                    controlId={`${variation.name}-option-${index}-name`}
+                                  >
+                                    <Form.Control
+                                      className='form-control-sm'
+                                      type='text'
+                                      placeholder='e.g. Large'
+                                      value={option.name}
+                                      onChange={(e) => {
+                                        option.name = e.target.value;
+                                        setVariations([...variations]);
+                                      }}
+                                    ></Form.Control>
+                                  </Form.Group>
+                                </Col>
+                                <Col sm={3}>
+                                  <Form.Group
+                                    controlId={`${variation.name}-option-${index}-additionalPrice`}
+                                  >
+                                    <Form.Control
+                                      className='form-control-sm'
+                                      type='number'
+                                      placeholder='4.00'
+                                      value={option.additionalPrice}
+                                      onChange={(e) => {
+                                        option.additionalPrice = Number(
+                                          e.target.value
+                                        );
+                                        setVariations([...variations]);
+                                      }}
+                                    ></Form.Control>
+                                  </Form.Group>
+                                </Col>
+                                <Col sm={2}>
+                                  <Form.Group
+                                    className='d-flex justify-content-center'
+                                    controlId={`${variation.name}-option-${index}-isSelected`}
+                                  >
+                                    <Form.Check
+                                      type='checkbox'
+                                      checked={
+                                        variation.selectedOption === index
+                                      }
+                                      onChange={(e) => {
+                                        variation.selectedOption = index;
+                                        setVariations([...variations]);
+                                      }}
+                                    ></Form.Check>
+                                  </Form.Group>
+                                </Col>
+                                <Col sm={1}>
+                                  <Button
+                                    variant='danger'
+                                    className='btn-sm px-2 py-1 ml-2 rounded'
+                                    onClick={() => {
+                                      variation.options.splice(index, 1);
+                                      setVariations([...variations]);
+                                    }}
+                                  >
+                                    <i className='fas fa-trash'></i>
+                                  </Button>
+                                </Col>
+                              </Row>
+                            ))}
+                        </div>
+                      ))}
+
+                    <h4 className='p-2 mb-0'>
+                      Personalization
+                      <Button
+                        variant='success'
+                        className='btn-sm px-2 py-1 ml-2 rounded'
+                        onClick={() => addPersonalizationHandler()}
+                      >
+                        <i className='fas fa-plus'></i>
+                      </Button>
+                    </h4>
+                    {personalizations &&
+                      personalizations.map((personalization, index) => (
+                        <div
+                          key={`personalization-${index}`}
+                          className='border-bottom-3 p-2'
+                        >
+                          <Row>
+                            <Col sm={6}>
+                              <Form.Group
+                                controlId={`personalization-name-${index}`}
+                              >
+                                <Form.Label>Personalization Name</Form.Label>
+                                <Form.Control
+                                  type='text'
+                                  placeholder='e.g. Greeting Message'
+                                  value={personalization.name}
+                                  onChange={(e) => {
+                                    personalization.name = e.target.value;
+                                    setPersonalizations([...personalizations]);
                                   }}
                                 ></Form.Control>
                               </Form.Group>
                             </Col>
-                            <Col sm={3}>
+                            <Col sm={4}>
                               <Form.Group
-                                controlId={`${variation.name}-option-${index}-additionalPrice`}
+                                controlId={`additional-price-${index}`}
                               >
+                                <Form.Label>Additional Price</Form.Label>
                                 <Form.Control
-                                  className='form-control-sm'
                                   type='number'
-                                  placeholder='4.00'
-                                  value={option.additionalPrice}
+                                  placeholder='2.00'
+                                  value={personalization.additionalPrice}
                                   onChange={(e) => {
-                                    option.additionalPrice = Number(
+                                    personalization.additionalPrice = Number(
                                       e.target.value
                                     );
-                                    setVariations([...variations]);
+                                    setPersonalizations([...personalizations]);
                                   }}
                                 ></Form.Control>
                               </Form.Group>
                             </Col>
                             <Col sm={2}>
-                              <Form.Group
-                                className='d-flex justify-content-center'
-                                controlId={`${variation.name}-option-${index}-isSelected`}
-                              >
-                                <Form.Check
-                                  type='checkbox'
-                                  checked={variation.selectedOption === index}
-                                  onChange={(e) => {
-                                    variation.selectedOption = index;
-                                    setVariations([...variations]);
-                                  }}
-                                ></Form.Check>
-                              </Form.Group>
-                            </Col>
-                            <Col sm={1}>
                               <Button
                                 variant='danger'
                                 className='btn-sm px-2 py-1 ml-2 rounded'
                                 onClick={() => {
-                                  variation.options.splice(index, 1);
-                                  setVariations([...variations]);
+                                  personalizations.splice(index, 1);
+                                  setPersonalizations([...personalizations]);
                                 }}
                               >
                                 <i className='fas fa-trash'></i>
                               </Button>
                             </Col>
                           </Row>
-                        ))}
-                    </div>
-                  ))}
-
-                <h4 className='p-2 mb-0'>
-                  Personalization
-                  <Button
-                    variant='success'
-                    className='btn-sm px-2 py-1 ml-2 rounded'
-                    onClick={() => addPersonalizationHandler()}
-                  >
-                    <i className='fas fa-plus'></i>
-                  </Button>
-                </h4>
-                {personalizations &&
-                  personalizations.map((personalization, index) => (
-                    <div
-                      key={`personalization-${index}`}
-                      className='border-bottom-3 p-2'
-                    >
-                      <Row>
-                        <Col sm={6}>
+                          <Row>
+                            <Col sm={2}>
+                              <p>Optional?</p>
+                            </Col>
+                            <Col sm={1}>
+                              <Form.Check
+                                type='checkbox'
+                                checked={personalization.isOptional}
+                                onChange={(e) => {
+                                  personalization.isOptional =
+                                    !personalization.isOptional;
+                                  setPersonalizations([...personalizations]);
+                                }}
+                              ></Form.Check>
+                            </Col>
+                          </Row>
                           <Form.Group
                             controlId={`personalization-name-${index}`}
                           >
-                            <Form.Label>Personalization Name</Form.Label>
+                            <Form.Label>Placeholder Text</Form.Label>
                             <Form.Control
-                              type='text'
-                              placeholder='e.g. Greeting Message'
-                              value={personalization.name}
+                              as='textarea'
+                              rows={2}
+                              placeholder='e.g. Happy Birthday Richard'
+                              value={personalization.value}
                               onChange={(e) => {
-                                personalization.name = e.target.value;
+                                personalization.value = e.target.value;
                                 setPersonalizations([...personalizations]);
                               }}
                             ></Form.Control>
                           </Form.Group>
-                        </Col>
-                        <Col sm={4}>
-                          <Form.Group controlId={`additional-price-${index}`}>
-                            <Form.Label>Additional Price</Form.Label>
-                            <Form.Control
-                              type='number'
-                              placeholder='2.00'
-                              value={personalization.additionalPrice}
-                              onChange={(e) => {
-                                personalization.additionalPrice = Number(
-                                  e.target.value
-                                );
-                                setPersonalizations([...personalizations]);
-                              }}
-                            ></Form.Control>
-                          </Form.Group>
-                        </Col>
-                        <Col sm={2}>
-                          <Button
-                            variant='danger'
-                            className='btn-sm px-2 py-1 ml-2 rounded'
-                            onClick={() => {
-                              personalizations.splice(index, 1);
-                              setPersonalizations([...personalizations]);
-                            }}
-                          >
-                            <i className='fas fa-trash'></i>
-                          </Button>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col sm={2}>
-                          <p>Optional?</p>
-                        </Col>
-                        <Col sm={1}>
-                          <Form.Check
-                            type='checkbox'
-                            checked={personalization.isOptional}
-                            onChange={(e) => {
-                              personalization.isOptional =
-                                !personalization.isOptional;
-                              setPersonalizations([...personalizations]);
-                            }}
-                          ></Form.Check>
-                        </Col>
-                      </Row>
-                      <Form.Group controlId={`personalization-name-${index}`}>
-                        <Form.Label>Placeholder Text</Form.Label>
-                        <Form.Control
-                          as='textarea'
-                          rows={2}
-                          placeholder='e.g. Happy Birthday Richard'
-                          value={personalization.value}
-                          onChange={(e) => {
-                            personalization.value = e.target.value;
-                            setPersonalizations([...personalizations]);
-                          }}
-                        ></Form.Control>
-                      </Form.Group>
-                    </div>
-                  ))}
-              </div>
-              <Button type='submit' variant='success'>
-                Update
-              </Button>
-            </div>
-          </Form>
+                        </div>
+                      ))}
+                  </div>
+                  <Button type='submit' variant='success'>
+                    Update
+                  </Button>
+                </div>
+              </Form>
+            </Col>
+          </Row>
         )}
       </FormContainer>
     </>
