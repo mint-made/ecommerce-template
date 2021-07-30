@@ -1,15 +1,7 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  Form,
-  Button,
-  Row,
-  Col,
-  Container,
-  Carousel,
-  Image,
-} from 'react-bootstrap';
+import { Form, Button, Row, Col, Carousel, Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
@@ -110,6 +102,7 @@ const ProductEditScreen = ({ match, history }) => {
         countInStock,
         variations,
         personalizations,
+        images: imagesArray,
       })
     );
   };
@@ -164,14 +157,29 @@ const ProductEditScreen = ({ match, history }) => {
     setVariations(newVariationsArray);
   };
 
+  const arrayMove = (array, fromIndex, toIndex) => {
+    if (toIndex > array.length || toIndex < 0) {
+      return array;
+    }
+    const deletedElement = array.splice(fromIndex, 1);
+    array.splice(toIndex, 0, ...deletedElement);
+    return array;
+  };
+
   return (
     <>
-      <Link to='/admin/productlist' className='btn btn-light my-3'>
-        Go back
-      </Link>
+      <Row>
+        <Col sm={3}>
+          <Link to='/admin/productlist' className='btn btn-light m-0 '>
+            Go back
+          </Link>
+        </Col>
+        <Col sm={9} className='d-flex justify-content-center'>
+          <h1>Edit Product</h1>
+        </Col>
+      </Row>
 
       <FormContainer>
-        <h1>Edit Product</h1>
         {loadingUpdate && <Loader />}
         {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
         {loading ? (
@@ -192,28 +200,68 @@ const ProductEditScreen = ({ match, history }) => {
                       fluid
                       className='rounded-0 m-0 p-0 product-screen-image'
                     />
+                    <Carousel.Caption className='carousel-caption'>
+                      <h2 className='m-0 p-0 text-left text-dark'>
+                        #{index + 1}
+                      </h2>
+                    </Carousel.Caption>
                   </Carousel.Item>
                 ))}
               </Carousel>
               <Row>
                 {imagesArray.map((image, index) => (
-                  <Col sm={3} key={index}>
+                  <Col sm={4} key={index}>
                     <Image
                       src={image}
                       fluid
                       className='rounded-0 m-0 mb-1 p-0 product-screen-image'
                     />
-                    <Button
-                      variant='danger'
-                      className='btn-sm px-2 py-1 rounded'
-                      onClick={() => {
-                        imagesArray.splice(index, 1);
-                        setImagesArray([...imagesArray]);
-                      }}
-                    >
-                      {' '}
-                      <i className='fas fa-trash'></i>
-                    </Button>
+                    <div className='d-flex justify-content-around'>
+                      <Button
+                        variant='success'
+                        className='btn-sm px-2 py-1 rounded'
+                        onClick={() => {
+                          console.log('left');
+                          const newArr = arrayMove(
+                            imagesArray,
+                            index,
+                            index - 1
+                          );
+                          setImagesArray([...newArr]);
+                        }}
+                      >
+                        {' '}
+                        <i className='fas fa-angle-double-left'></i>
+                      </Button>
+                      <Button
+                        variant='success'
+                        className='btn-sm px-2 py-1 rounded'
+                        onClick={() => {
+                          console.log('right');
+                          const newArr = arrayMove(
+                            imagesArray,
+                            index,
+                            index + 1
+                          );
+                          setImagesArray([...newArr]);
+                        }}
+                      >
+                        {' '}
+                        <i className='fas fa-angle-double-right'></i>
+                      </Button>
+                      <Button
+                        variant='danger'
+                        className='btn-sm px-2 py-1 rounded'
+                        onClick={() => {
+                          console.log(index);
+                          imagesArray.splice(index, 1);
+                          setImagesArray([...imagesArray]);
+                        }}
+                      >
+                        {' '}
+                        <i className='fas fa-trash'></i>
+                      </Button>
+                    </div>
                   </Col>
                 ))}
               </Row>
