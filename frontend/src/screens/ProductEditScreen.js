@@ -221,7 +221,6 @@ const ProductEditScreen = ({ match, history }) => {
                         variant='success'
                         className='btn-sm px-2 py-1 rounded'
                         onClick={() => {
-                          console.log('left');
                           const newArr = arrayMove(
                             imagesArray,
                             index,
@@ -237,7 +236,6 @@ const ProductEditScreen = ({ match, history }) => {
                         variant='success'
                         className='btn-sm px-2 py-1 rounded'
                         onClick={() => {
-                          console.log('right');
                           const newArr = arrayMove(
                             imagesArray,
                             index,
@@ -253,7 +251,6 @@ const ProductEditScreen = ({ match, history }) => {
                         variant='danger'
                         className='btn-sm px-2 py-1 rounded'
                         onClick={() => {
-                          console.log(index);
                           imagesArray.splice(index, 1);
                           setImagesArray([...imagesArray]);
                         }}
@@ -266,6 +263,7 @@ const ProductEditScreen = ({ match, history }) => {
                 ))}
               </Row>
             </Col>
+
             <Col lg={8} className='pr-0'>
               <Form onSubmit={submitHandler}>
                 <div className='p-3 border border-3 rounded-lg'>
@@ -364,10 +362,7 @@ const ProductEditScreen = ({ match, history }) => {
 
                     {variations &&
                       variations.map((variation, index) => (
-                        <div
-                          key={`variation-${index}`}
-                          className='border-bottom-3 p-2'
-                        >
+                        <div key={index} className='border-bottom-3 p-2'>
                           <Form.Group controlId={`variation-name-${index}`}>
                             <Row>
                               <Col sm={10}>
@@ -432,74 +427,72 @@ const ProductEditScreen = ({ match, history }) => {
                           </Row>
                           {variation.options &&
                             variation.options.map((option, index) => (
-                              <>
-                                <Row key={`${variation.name}-option-${index}`}>
-                                  <Col sm={5}>
-                                    <Form.Group
-                                      controlId={`${variation.name}-option-${index}-name`}
-                                    >
-                                      <Form.Control
-                                        className='form-control-sm'
-                                        type='text'
-                                        placeholder='e.g. Large'
-                                        value={option.name}
-                                        onChange={(e) => {
-                                          option.name = e.target.value;
-                                          setVariations([...variations]);
-                                        }}
-                                      ></Form.Control>
-                                    </Form.Group>
-                                  </Col>
-                                  <Col sm={3}>
-                                    <Form.Group
-                                      controlId={`${variation.name}-option-${index}-additionalPrice`}
-                                    >
-                                      <Form.Control
-                                        className='form-control-sm'
-                                        type='number'
-                                        placeholder='4.00'
-                                        value={option.additionalPrice}
-                                        onChange={(e) => {
-                                          option.additionalPrice = Number(
-                                            e.target.value
-                                          );
-                                          setVariations([...variations]);
-                                        }}
-                                      ></Form.Control>
-                                    </Form.Group>
-                                  </Col>
-                                  <Col sm={2}>
-                                    <Form.Group
-                                      className='d-flex justify-content-center'
-                                      controlId={`${variation.name}-option-${index}-isSelected`}
-                                    >
-                                      <Form.Check
-                                        type='checkbox'
-                                        checked={
-                                          variation.selectedOption === index
-                                        }
-                                        onChange={(e) => {
-                                          variation.selectedOption = index;
-                                          setVariations([...variations]);
-                                        }}
-                                      ></Form.Check>
-                                    </Form.Group>
-                                  </Col>
-                                  <Col sm={1}>
-                                    <Button
-                                      variant='danger'
-                                      className='btn-sm px-2 py-1 ml-2 rounded'
-                                      onClick={() => {
-                                        variation.options.splice(index, 1);
+                              <Row key={index}>
+                                <Col sm={5}>
+                                  <Form.Group
+                                    controlId={`${variation.name}-option-${index}-name`}
+                                  >
+                                    <Form.Control
+                                      className='form-control-sm'
+                                      type='text'
+                                      placeholder='e.g. Large'
+                                      value={option.name}
+                                      onChange={(e) => {
+                                        option.name = e.target.value;
                                         setVariations([...variations]);
                                       }}
-                                    >
-                                      <i className='fas fa-trash'></i>
-                                    </Button>
-                                  </Col>
-                                </Row>
+                                    ></Form.Control>
+                                  </Form.Group>
+                                </Col>
+                                <Col sm={3}>
+                                  <Form.Group
+                                    controlId={`${variation.name}-option-${index}-additionalPrice`}
+                                  >
+                                    <Form.Control
+                                      className='form-control-sm'
+                                      type='number'
+                                      placeholder='4.00'
+                                      value={option.additionalPrice}
+                                      onChange={(e) => {
+                                        option.additionalPrice = Number(
+                                          e.target.value
+                                        );
+                                        setVariations([...variations]);
+                                      }}
+                                    ></Form.Control>
+                                  </Form.Group>
+                                </Col>
+                                <Col sm={2}>
+                                  <Form.Group
+                                    className='d-flex justify-content-center'
+                                    controlId={`${variation.name}-option-${index}-isSelected`}
+                                  >
+                                    <Form.Check
+                                      type='checkbox'
+                                      checked={
+                                        variation.selectedOption === index
+                                      }
+                                      onChange={(e) => {
+                                        variation.selectedOption = index;
+                                        setVariations([...variations]);
+                                      }}
+                                    ></Form.Check>
+                                  </Form.Group>
+                                </Col>
+                                <Col sm={1}>
+                                  <Button
+                                    variant='danger'
+                                    className='btn-sm px-2 py-1 ml-2 rounded'
+                                    onClick={() => {
+                                      variation.options.splice(index, 1);
+                                      setVariations([...variations]);
+                                    }}
+                                  >
+                                    <i className='fas fa-trash'></i>
+                                  </Button>
+                                </Col>
 
-                                <div className='ml-1 mb-3'>
+                                <Col className='ml-1 mb-3'>
                                   <Form.Label>Linked Image:</Form.Label>
                                   <Form.Control
                                     className='form-select  ml-2 form-control-sm d-inline-block'
@@ -510,23 +503,17 @@ const ProductEditScreen = ({ match, history }) => {
                                       variation.options[index].linkedImage =
                                         e.target.value;
                                       setVariations([...variations]);
-                                      console.log(variation);
                                     }}
                                   >
-                                    <option key='null' value={null}>
-                                      No Linked Image
-                                    </option>
+                                    <option value={-1}>No Linked Image</option>
                                     {imagesArray.map((image, index) => (
-                                      <option
-                                        key={`option-${index}`}
-                                        value={index}
-                                      >
+                                      <option key={index} value={index}>
                                         #{index + 1}
                                       </option>
                                     ))}
                                   </Form.Control>
-                                </div>
-                              </>
+                                </Col>
+                              </Row>
                             ))}
                         </div>
                       ))}
@@ -622,15 +609,17 @@ const ProductEditScreen = ({ match, history }) => {
                                     personalization.linkedImage =
                                       e.target.value;
                                     setPersonalizations([...personalizations]);
-                                    console.log(personalization);
                                   }}
                                 >
-                                  <option key='null' value={null}>
+                                  <option
+                                    key={`${personalization.name}-option-null`}
+                                    value={null}
+                                  >
                                     No Linked Image
                                   </option>
                                   {imagesArray.map((image, index) => (
                                     <option
-                                      key={`option-${index}`}
+                                      key={`${personalization.name}-option-${index}`}
                                       value={index}
                                     >
                                       #{index + 1}

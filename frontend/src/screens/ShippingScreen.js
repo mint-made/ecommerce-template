@@ -16,7 +16,6 @@ const ShippingScreen = ({ history }) => {
 
   useEffect(() => {
     if (shippingAddress.address) {
-      console.log(shippingAddress);
       setAddress(shippingAddress.address);
       setCity(shippingAddress.city);
       setPostalCode(shippingAddress.postalCode);
