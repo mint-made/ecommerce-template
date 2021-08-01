@@ -189,8 +189,10 @@ const ProductScreen = ({ history, match }) => {
       </Container>
     );
   };
-  const handleSelect = (selectedIndex, e) => {
-    setImageIndex(selectedIndex);
+  const handleSelect = (selectedIndex) => {
+    if (selectedIndex >= 0) {
+      setImageIndex(selectedIndex);
+    }
   };
 
   return (

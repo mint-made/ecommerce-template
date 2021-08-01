@@ -40,7 +40,6 @@ export const cartReducer = (
 
     case CART_REMOVE_ITEM:
       const { _id, variantId } = action.payload;
-      console.log('remove from cart reducer');
       return {
         ...state,
         cartItems: state.cartItems.filter(
