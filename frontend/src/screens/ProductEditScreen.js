@@ -292,14 +292,19 @@ const ProductEditScreen = ({ match, history }) => {
                     </Col>
                   </Row>
 
-                  <Form.Group controlId='image'>
-                    <Form.Label>Image</Form.Label>
+                  <p className='mb-2'>Image</p>
+                  <Form.Group
+                    controlId='image'
+                    className='border-bottom border-secondary rounded'
+                  >
                     <Form.Control
                       type='text'
                       placeholder='Enter image URL'
+                      className='border-0'
                       value={image}
                       onChange={(e) => setImage(e.target.value)}
                     ></Form.Control>
+                    <hr className='m-0' />
                     <Form.File
                       id='image-file'
                       label='Choose File'
