@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Row, Col, Breadcrumb } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+//import { useLocation } from 'react-router-dom';
 
 import { listProducts } from '../actions/productActions';
 import Product from '../components/Product';
@@ -11,20 +11,26 @@ import Paginate from '../components/Paginate';
 import Meta from '../components/Meta';
 
 const HomeScreen = ({ match }) => {
-  const location = useLocation();
-  console.log(location);
+  //const location = useLocation();
+  //console.log(location);
   const category = match.params.category;
+  const subCategory = match.params.subCategory;
   const keyword = match.params.keyword;
   const pageNumber = match.params.pageNumber || 1;
-
+  console.log(
+    'page: ',
+    pageNumber,
+    'cat: ',
+    category,
+    'sub-cat: ',
+    subCategory
+  );
   const dispatch = useDispatch();
-
   const productList = useSelector((state) => state.productList);
   const { loading, error, products, pages, page } = productList;
-
   useEffect(() => {
-    dispatch(listProducts(keyword, pageNumber));
-  }, [dispatch, keyword, pageNumber]);
+    dispatch(listProducts(keyword, pageNumber, category, subCategory));
+  }, [dispatch, keyword, pageNumber, category, subCategory]);
 
   const capitalize = (s) => {
     if (typeof s !== 'string') return '';
@@ -36,9 +42,9 @@ const HomeScreen = ({ match }) => {
       <Meta />
 
       <Breadcrumb>
-        <Breadcrumb.Item href='/'>Home</Breadcrumb.Item>
+        <Breadcrumb.Item href='/shop'>Shop</Breadcrumb.Item>
         {category && (
-          <Breadcrumb.Item href='https://getbootstrap.com/docs/4.0/components/breadcrumb/'>
+          <Breadcrumb.Item href={`/shop/${category}`}>
             {capitalize(category)}
           </Breadcrumb.Item>
         )}
@@ -62,6 +68,8 @@ const HomeScreen = ({ match }) => {
             pages={pages}
             page={page}
             keyword={keyword ? keyword : ''}
+            category={category ? category : ''}
+            subCategory={subCategory ? subCategory : ''}
           />
         </>
       )}

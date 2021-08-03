@@ -27,13 +27,13 @@ import {
 } from '../constants/productConstants';
 
 export const listProducts =
-  (keyword = '', pageNumber = '') =>
+  (keyword = '', pageNumber = '', category = '', subCategory = '') =>
   async (dispatch) => {
     try {
       dispatch({ type: PRODUCT_LIST_REQUEST });
 
       const { data } = await axios.get(
-        `/api/products?keyword=${keyword}&pageNumber=${pageNumber}`
+        `/api/products?keyword=${keyword}&pageNumber=${pageNumber}&category=${category}&subcategory=${subCategory}`
       );
 
       dispatch({
@@ -237,7 +237,7 @@ export const listProductCategories = () => async (dispatch) => {
       type: PRODUCT_CATEGORIES_REQUEST,
     });
 
-    const { data } = axios.get('/api/products/categories');
+    const { data } = await axios.get('/api/products/categories');
 
     dispatch({
       type: PRODUCT_CATEGORIES_SUCCESS,

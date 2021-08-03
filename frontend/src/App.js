@@ -52,24 +52,16 @@ const App = () => {
           />
 
           <Route path='/shop/' component={ShopScreen} exact />
-          <Route path='/shop/search/:keyword' component={ShopScreen} exact />
+          <Route path='/shop/page/:pageNumber' component={ShopScreen} exact />
 
-          <Route path='/shop/:category' component={ShopScreen} exact />
+          <Route path='/shop/search/:keyword' component={ShopScreen} exact />
           <Route
-            path='/shop/:category/search/:keyword'
+            path='/shop/search/:keyword/page/:pageNumber'
             component={ShopScreen}
             exact
           />
-          <Route
-            path='/shop/:category/:subCategory'
-            component={ShopScreen}
-            exact
-          />
-          <Route
-            path='/shop/:category/:subCategory/search/:keyword'
-            component={ShopScreen}
-            exact
-          />
+
+          <Route path='/shop/' component={ShopScreen} exact />
 
           <Route path='/' component={HomeScreen} exact />
         </Container>

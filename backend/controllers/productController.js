@@ -17,6 +17,22 @@ import Product from '../models/productModel.js';
 const getProducts = asyncHandler(async (req, res) => {
   const pageSize = 10;
   const page = Number(req.query.pageNumber) || 1;
+  const subcategory = req.query.subcategory
+    ? {
+        subCategory: {
+          $regex: req.query.subcategory,
+          $options: 'i',
+        },
+      }
+    : {};
+  const category = req.query.category
+    ? {
+        category: {
+          $regex: req.query.category,
+          $options: 'i',
+        },
+      }
+    : {};
   const keyword = req.query.keyword
     ? {
         name: {
@@ -25,9 +41,21 @@ const getProducts = asyncHandler(async (req, res) => {
         },
       }
     : {};
-
-  const count = await Product.countDocuments({ ...keyword });
-  const products = await Product.find({ ...keyword })
+  console.log({
+    ...keyword,
+    ...category,
+    ...subcategory,
+  });
+  const count = await Product.countDocuments({
+    ...keyword,
+    ...category,
+    ...subcategory,
+  });
+  const products = await Product.find({
+    ...keyword,
+    ...category,
+    ...subcategory,
+  })
     .limit(pageSize)
     .skip(pageSize * (page - 1));
 
@@ -236,6 +264,36 @@ const getTopProducts = asyncHandler(async (req, res) => {
   res.json(products);
 });
 
+/**
+ * @api {get} /api/products/categories getProductCategories
+ * @apiGroup Product
+ * @apiPermission Public
+ *
+ * @apiSuccess {Object} Categories All the categories of all products in db
+ */
+const getProductCategories = asyncHandler(async (req, res) => {
+  const products = await Product.find({});
+
+  const categories = {
+    parent: [],
+    sub: [],
+  };
+  if (products) {
+    products.forEach((product) => {
+      if (!categories.parent.includes(product.category)) {
+        categories.parent.push(product.category);
+      }
+      if (!categories.sub.includes(product.subCategory)) {
+        categories.sub.push(product.subCategory);
+      }
+    });
+    res.json(categories);
+  } else {
+    res.status(404);
+    throw new Error('Product not found');
+  }
+});
+
 export {
   getProductById,
   getProducts,
@@ -244,4 +302,5 @@ export {
   updateProduct,
   createProductReview,
   getTopProducts,
+  getProductCategories,
 };
