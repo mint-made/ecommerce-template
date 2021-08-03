@@ -98,11 +98,14 @@ const createProduct = asyncHandler(async (req, res) => {
     images: ['/images/sample.jpeg'],
     name: 'sample name',
     numReviews: 0,
+    personalizations: [],
     price: 0,
     reviews: [],
     subCategory: 'sample sub-category',
     tags: [],
     user: req.user._id,
+    variantId: '',
+    variations: [],
   });
 
   const createdProduct = await product.save();

@@ -138,7 +138,6 @@ export const createProduct = () => async (dispatch, getState) => {
 };
 
 export const updateProduct = (product) => async (dispatch, getState) => {
-  console.log(product);
   try {
     dispatch({
       type: PRODUCT_UPDATE_REQUEST,
@@ -165,6 +164,7 @@ export const updateProduct = (product) => async (dispatch, getState) => {
       type: PRODUCT_UPDATE_SUCCESS,
       payload: data,
     });
+    console.log(data);
   } catch (error) {
     dispatch({
       type: PRODUCT_UPDATE_FAIL,
