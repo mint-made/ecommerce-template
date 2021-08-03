@@ -137,6 +137,7 @@ const ProductScreen = ({ history, match }) => {
       </p>
     );
   }
+  console.log(product);
   const ReviewsSection = () => {
     return (
       <ListGroup variant='flush'>

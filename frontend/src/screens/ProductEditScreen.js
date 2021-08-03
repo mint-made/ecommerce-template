@@ -50,7 +50,6 @@ const ProductEditScreen = ({ match, history }) => {
       } else {
         setName(product.name);
         setPrice(product.price);
-        setImage(product.image);
         setCategory(product.category);
         setSubCategory(product.subCategory);
         setTagsArray(product.tags);

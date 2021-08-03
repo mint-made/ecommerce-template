@@ -92,15 +92,17 @@ const deleteProduct = asyncHandler(async (req, res) => {
  */
 const createProduct = asyncHandler(async (req, res) => {
   const product = new Product({
-    name: 'Sample name',
-    price: 0,
-    user: req.user._id,
-    image: '/images/sample.jpeg',
-    brand: 'sample brand',
-    category: 'Sample category',
+    category: 'sample category',
     countInStock: 0,
+    description: 'sample description',
+    images: ['/images/sample.jpeg'],
+    name: 'sample name',
     numReviews: 0,
-    description: 'Sample description',
+    price: 0,
+    reviews: [],
+    subCategory: 'sample sub-category',
+    tags: [],
+    user: req.user._id,
   });
 
   const createdProduct = await product.save();
@@ -179,7 +181,6 @@ const updateProduct = asyncHandler(async (req, res) => {
  * @apiSuccess {Object} product A template product created
  */
 const createProductReview = asyncHandler(async (req, res) => {
-  console.log('route hit');
   const { rating, comment } = req.body;
 
   const product = await Product.findById(req.params.id);
