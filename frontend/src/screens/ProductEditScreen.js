@@ -17,6 +17,9 @@ const ProductEditScreen = ({ match, history }) => {
   const [image, setImage] = useState('');
   const [imagesArray, setImagesArray] = useState([]);
   const [category, setCategory] = useState('');
+  const [subCategory, setSubCategory] = useState('');
+  const [tag, setTag] = useState('');
+  const [tagsArray, setTagsArray] = useState([]);
   const [countInStock, setCountInStock] = useState(0);
   const [description, setDescription] = useState('');
   //Variations + Personalizations
@@ -49,6 +52,8 @@ const ProductEditScreen = ({ match, history }) => {
         setPrice(product.price);
         setImage(product.image);
         setCategory(product.category);
+        setSubCategory(product.subCategory);
+        setTagsArray(product.tags);
         setCountInStock(product.countInStock);
         setDescription(product.description);
         setVariations(product.variations);
@@ -98,7 +103,9 @@ const ProductEditScreen = ({ match, history }) => {
         price,
         image,
         category,
+        subCategory,
         description,
+        tags: tagsArray,
         countInStock,
         variations,
         personalizations,
@@ -165,7 +172,6 @@ const ProductEditScreen = ({ match, history }) => {
     array.splice(toIndex, 0, ...deletedElement);
     return array;
   };
-
   return (
     <>
       <Row>
@@ -267,18 +273,16 @@ const ProductEditScreen = ({ match, history }) => {
             <Col lg={8} className='pr-0'>
               <Form onSubmit={submitHandler}>
                 <div className='p-3 border border-3 rounded-lg'>
+                  <Form.Group controlId='name'>
+                    <Form.Label>Name</Form.Label>
+                    <Form.Control
+                      type='name'
+                      placeholder='Enter Name'
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                    ></Form.Control>
+                  </Form.Group>
                   <Row>
-                    <Col xs={7}>
-                      <Form.Group controlId='name'>
-                        <Form.Label>Name</Form.Label>
-                        <Form.Control
-                          type='name'
-                          placeholder='Enter Name'
-                          value={name}
-                          onChange={(e) => setName(e.target.value)}
-                        ></Form.Control>
-                      </Form.Group>
-                    </Col>
                     <Col>
                       <Form.Group controlId='price'>
                         <Form.Label>Price</Form.Label>
@@ -290,8 +294,20 @@ const ProductEditScreen = ({ match, history }) => {
                         ></Form.Control>
                       </Form.Group>
                     </Col>
+                    <Col>
+                      <Form.Group controlId='countInStock'>
+                        <Form.Label>Count In Stock </Form.Label>
+                        <Form.Control
+                          type='number'
+                          placeholder='Count In Stock'
+                          value={countInStock}
+                          onChange={(e) =>
+                            setCountInStock(Number(e.target.value))
+                          }
+                        ></Form.Control>
+                      </Form.Group>
+                    </Col>
                   </Row>
-
                   <p className='mb-2'>Image</p>
                   <Form.Group
                     controlId='image'
@@ -313,8 +329,20 @@ const ProductEditScreen = ({ match, history }) => {
                     ></Form.File>
                     {uploading && <Loader />}
                   </Form.Group>
-
                   <Row>
+                    <Col xs={12}>
+                      <Form.Group controlId='description'>
+                        <Form.Label>Description</Form.Label>
+                        <Form.Control
+                          as='textarea'
+                          rows={3}
+                          type='text'
+                          placeholder='Enter Description'
+                          value={description}
+                          onChange={(e) => setDescription(e.target.value)}
+                        ></Form.Control>
+                      </Form.Group>
+                    </Col>
                     <Col>
                       <Form.Group controlId='category'>
                         <Form.Label>Category</Form.Label>
@@ -327,32 +355,57 @@ const ProductEditScreen = ({ match, history }) => {
                       </Form.Group>
                     </Col>
                     <Col>
-                      <Form.Group controlId='countInStock'>
-                        <Form.Label>Count In Stock </Form.Label>
+                      <Form.Group controlId='subCategory'>
+                        <Form.Label>Sub-Category</Form.Label>
                         <Form.Control
-                          type='number'
-                          placeholder='Count In Stock'
-                          value={countInStock}
-                          onChange={(e) =>
-                            setCountInStock(Number(e.target.value))
-                          }
+                          type='text'
+                          placeholder='Enter Sub-Category'
+                          value={subCategory}
+                          onChange={(e) => setSubCategory(e.target.value)}
                         ></Form.Control>
                       </Form.Group>
                     </Col>
                   </Row>
-
-                  <Form.Group controlId='description'>
-                    <Form.Label>Description</Form.Label>
-                    <Form.Control
-                      as='textarea'
-                      rows={3}
-                      type='text'
-                      placeholder='Enter Description'
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
-                    ></Form.Control>
-                  </Form.Group>
-
+                  <Row>
+                    <Col xs={9}>
+                      <Form.Group controlId='tags'>
+                        <Form.Label>Tags (Click a tag to remove)</Form.Label>
+                        <Form.Control
+                          type='text'
+                          placeholder='Enter Tag'
+                          value={tag}
+                          onChange={(e) => setTag(e.target.value)}
+                        ></Form.Control>
+                      </Form.Group>
+                    </Col>
+                    <Col xs={3} className='pl-0 pt-4 mt-3'>
+                      <Button
+                        variant='success'
+                        className='btn-sm px-2 py-1 ml-2 rounded'
+                        onClick={() => {
+                          setTagsArray([...tagsArray, tag]);
+                          setTag('');
+                        }}
+                      >
+                        <i className='fas fa-plus'></i>
+                      </Button>
+                    </Col>
+                    <Col className='mb-3'>
+                      {tagsArray.map((tag, index) => (
+                        <Button
+                          variant='outline-primary'
+                          key={index}
+                          className='py-0 px-1 mr-1'
+                          onClick={() => {
+                            tagsArray.splice(index, 1);
+                            setTagsArray([...tagsArray]);
+                          }}
+                        >
+                          {tag}
+                        </Button>
+                      ))}
+                    </Col>
+                  </Row>
                   <div className='border border-3 rounded-lg mb-2'>
                     <h4 className='p-2 mb-0'>
                       Variations
