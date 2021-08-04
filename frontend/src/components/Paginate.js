@@ -14,23 +14,13 @@ const Paginate = ({
     if (isAdmin) {
       return `/admin/productlist/${x + 1}`;
     }
-    if (!category) {
-      return keyword
-        ? `shop/search/${keyword}/page/${x + 1}`
-        : `shop/page/${x + 1}`;
-    }
-    if (!subCategory && category) {
-      return keyword
-        ? `shop/${category}/search/${keyword}/page/${x + 1}`
-        : `shop/${category}/page/${x + 1}`;
-    }
-    if (subCategory && category) {
-      return keyword
-        ? `shop/${category}/${subCategory}/search/${keyword}/page/${x + 1}`
-        : `shop/${category}/${subCategory}/page/${x + 1}`;
-    }
-    console.log('error: ', category, subCategory, keyword);
-    return '';
+    return !category
+      ? `/shop/page/${x + 1}`
+      : !subCategory
+      ? `/shop/${category}/page/${x + 1}`
+      : category && subCategory
+      ? `/shop/${category}/${subCategory}/page/${x + 1}`
+      : '';
   };
 
   return (
