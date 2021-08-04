@@ -6,9 +6,10 @@ import { PayPalButton } from 'react-paypal-button-v2';
 
 import Message from '../components/Message';
 import CheckoutSteps from '../components/CheckoutSteps';
-import { createOrder } from '../actions/orderActions';
+import { createOrder, placeOrder } from '../actions/orderActions';
 import ItemVariantInfo from '../components/ItemVariantInfo';
 import Loader from '../components/Loader';
+import { CART_RESET } from '../constants/cartConstants';
 
 const PlaceOrderScreen = ({ history }) => {
   const dispatch = useDispatch();
@@ -32,12 +33,19 @@ const PlaceOrderScreen = ({ history }) => {
     Number(cart.itemsPrice) + Number(cart.shippingPrice) + Number(cart.taxPrice)
   );
 
-  const orderCreate = useSelector((state) => state.orderCreate);
-  const { order, success, error } = orderCreate;
+  // const orderCreate = useSelector((state) => state.orderCreate);
+  // const { order, success, error } = orderCreate;
+
+  const orderPlace = useSelector((state) => state.orderPlace);
+  const { order, success, error } = orderPlace;
 
   useEffect(() => {
     if (success) {
+      dispatch({ type: CART_RESET });
       history.push(`/order/${order._id}`);
+    }
+    if (!cart.paymentMethod) {
+      history.push('/payment');
     }
     const addPaypalScript = async () => {
       const { data: clientId } = await axios.get('/api/config/paypal');
@@ -74,7 +82,18 @@ const PlaceOrderScreen = ({ history }) => {
   };
 
   const successPaymentHandler = (paymentResult) => {
-    console.log(paymentResult);
+    dispatch(
+      placeOrder({
+        orderItems: cart.cartItems,
+        shippingAddress: cart.shippingAddress,
+        paymentMethod: cart.paymentMethod,
+        itemsPrice: cart.itemsPrice,
+        shippingPrice: cart.shippingPrice,
+        taxPrice: cart.taxPrice,
+        totalPrice: cart.totalPrice,
+        paymentResult,
+      })
+    );
   };
 
   return (

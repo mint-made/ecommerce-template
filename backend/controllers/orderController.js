@@ -117,6 +117,69 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
   }
 });
 
+// @description Place new order
+// @route POST /api/orders
+// @access Private
+/**
+ * @api {post} /api/orders/place Place Order
+ * @apiGroup Order
+ * @apiPermission Private
+ *
+ * @apiDescription This route will create a new paid order from details provided
+ *
+ * @apiParam {Array} orderItems All items included in the order
+ * @apiParam {Object} shippingAddress Containing address , city, postalCode, country
+ * @apiParam {String} paymentMethod
+ * @apiParam {Number} itemsPrice
+ * @apiParam {Number} shippingPrice
+ * @apiParam {Number} taxPrice
+ * @apiParam {Number} totalPrice
+ * @apiParam {Object} paymentResult
+ *
+ * @apiSuccess {Object} createdOrder The order created
+ */
+const placeOrder = asyncHandler(async (req, res) => {
+  console.log('hit');
+  const {
+    orderItems,
+    shippingAddress,
+    paymentMethod,
+    itemsPrice,
+    shippingPrice,
+    taxPrice,
+    totalPrice,
+    paymentResult,
+  } = req.body;
+
+  if (orderItems && orderItems.length === 0) {
+    res.status(400);
+    throw new Error('No order items');
+  } else {
+    const order = new Order({
+      user: req.user._id,
+      orderItems,
+      shippingAddress,
+      paymentMethod,
+      itemsPrice,
+      taxPrice,
+      shippingPrice,
+      totalPrice,
+      isPaid: true,
+      paidAt: Date.now(),
+      paymentResult: {
+        id: paymentResult.id,
+        status: paymentResult.status,
+        update_time: paymentResult.update_time,
+        email_address: paymentResult.payer.email_address,
+      },
+    });
+
+    const placedOrder = await order.save();
+
+    res.status(201).json(placedOrder);
+  }
+});
+
 // @description Get logged in user order
 // @route GET /api/orders/myorders
 // @access Private
@@ -182,4 +245,5 @@ export {
   getMyOrders,
   getOrders,
   updateOrderToDelivered,
+  placeOrder,
 };
