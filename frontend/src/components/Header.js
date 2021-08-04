@@ -29,6 +29,10 @@ const Header = () => {
     { name: 'Totes', sub: [] },
   ];
 
+  const kebabCase = (string) => {
+    return string.replace(/ /g, '-').toLowerCase();
+  };
+
   //Searchbar:
   //<Route render={({ history }) => <SearchBox history={history} />} />
   return (
@@ -58,7 +62,9 @@ const Header = () => {
                 >
                   {category.sub.map((subCat, index) => (
                     <LinkContainer
-                      to={`/shop/${category.name.toLowerCase()}/${subCat.toLowerCase()}`}
+                      to={`/shop/${kebabCase(category.name)}/${kebabCase(
+                        subCat
+                      )}`}
                       key={index}
                     >
                       <NavDropdown.Item>{subCat}</NavDropdown.Item>

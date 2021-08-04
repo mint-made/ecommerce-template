@@ -11,9 +11,8 @@ import Paginate from '../components/Paginate';
 import Meta from '../components/Meta';
 
 const HomeScreen = ({ match }) => {
-  const location = useLocation();
   const category = match.params.category;
-  const subCategory = match.params.subCategory;
+  const subCategory = match.params.subCategory.replace(/-/g, ' ');
   const keyword = useQuery().get('q') || '';
   const pageNumber = useQuery().get('page') || 1;
 
@@ -28,7 +27,10 @@ const HomeScreen = ({ match }) => {
 
   const capitalize = (s) => {
     if (typeof s !== 'string') return '';
-    return s.charAt(0).toUpperCase() + s.slice(1);
+    const sArr = s.split(' ').map((string) => {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    });
+    return sArr.join(' ');
   };
 
   function useQuery() {
