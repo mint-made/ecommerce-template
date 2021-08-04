@@ -12,12 +12,10 @@ import Meta from '../components/Meta';
 
 const HomeScreen = ({ match }) => {
   const location = useLocation();
-  console.log(location);
-
   const category = match.params.category;
   const subCategory = match.params.subCategory;
-  const keyword = match.params.keyword;
-  const pageNumber = match.params.pageNumber || 1;
+  const keyword = useQuery().get('q') || '';
+  const pageNumber = useQuery().get('page') || 1;
 
   const dispatch = useDispatch();
 
@@ -25,21 +23,17 @@ const HomeScreen = ({ match }) => {
   const { loading, error, products, pages, page } = productList;
 
   useEffect(() => {
-    console.log(
-      'page: ',
-      pageNumber,
-      'cat: ',
-      category,
-      'sub-cat: ',
-      subCategory
-    );
     dispatch(listProducts(keyword, pageNumber, category, subCategory));
-  }, [dispatch, pageNumber]);
+  }, [dispatch, pageNumber, category, subCategory, keyword]);
 
-  // const capitalize = (s) => {
-  //   if (typeof s !== 'string') return '';
-  //   return s.charAt(0).toUpperCase() + s.slice(1);
-  // };
+  const capitalize = (s) => {
+    if (typeof s !== 'string') return '';
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  };
+
+  function useQuery() {
+    return new URLSearchParams(useLocation().search);
+  }
 
   return (
     <>
@@ -47,6 +41,16 @@ const HomeScreen = ({ match }) => {
 
       <Breadcrumb>
         <Breadcrumb.Item href='/shop'>Shop</Breadcrumb.Item>
+        {category && (
+          <Breadcrumb.Item href={`/shop/${category}`}>
+            {capitalize(category)}
+          </Breadcrumb.Item>
+        )}
+        {subCategory && (
+          <Breadcrumb.Item href={`/shop/${category}/${subCategory}`}>
+            {capitalize(subCategory)}
+          </Breadcrumb.Item>
+        )}
       </Breadcrumb>
 
       {loading ? (
@@ -62,13 +66,7 @@ const HomeScreen = ({ match }) => {
               </Col>
             ))}
           </Row>
-          <Paginate
-            pages={pages}
-            page={page}
-            keyword={keyword ? keyword : ''}
-            category={category ? category : ''}
-            subCategory={subCategory ? subCategory : ''}
-          />
+          <Paginate pages={pages} page={page} keyword={keyword} />
         </>
       )}
     </>

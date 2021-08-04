@@ -15,7 +15,7 @@ import Product from '../models/productModel.js';
  * @apiSuccess {Number} Pages Total number of pages of results
  */
 const getProducts = asyncHandler(async (req, res) => {
-  const pageSize = 10;
+  const pageSize = 3;
   const page = Number(req.query.pageNumber) || 1;
   const subcategory = req.query.subcategory
     ? {
@@ -46,6 +46,7 @@ const getProducts = asyncHandler(async (req, res) => {
     ...category,
     ...subcategory,
   });
+  console.log(req.query);
   const count = await Product.countDocuments({
     ...keyword,
     ...category,
