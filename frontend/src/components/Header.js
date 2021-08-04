@@ -23,7 +23,7 @@ const Header = () => {
     },
     { name: 'Prints', sub: ['Safari Animals', 'Sea Animal'] },
     {
-      name: 'Stationary',
+      name: 'Stationery',
       sub: ['Postcards', 'Notepad', 'To Do List'],
     },
     { name: 'Totes', sub: [] },

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
-import { Table, Button, Row, Col } from 'react-bootstrap';
+import { Table, Button, Row, Col, Image } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
@@ -82,7 +82,6 @@ const ProductListScreen = ({ history, match }) => {
           </Button>
         </Col>
       </Row>
-      <h1>Users</h1>
       {loadingDelete && <Loader />}
       {errorDelete && <Message variant='danger'>{errorDelete}</Message>}
       {loadingCreate && <Loader />}
@@ -96,22 +95,28 @@ const ProductListScreen = ({ history, match }) => {
           <Table striped bordered hover responsive className='table-sm'>
             <thead>
               <tr>
-                <th>ID</th>
+                <th>IMAGE</th>
                 <th>NAME</th>
                 <th>PRICE</th>
                 <th>CATEGORY</th>
-                <th>BRAND</th>
+                <th>SUB-CATEGORY</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
               {products.map((product) => (
                 <tr key={product._id}>
-                  <td>{product._id}</td>
+                  <td>
+                    <Image
+                      src={product.images[0]}
+                      rounded
+                      style={{ maxHeight: '50px' }}
+                    />
+                  </td>
                   <td>{product.name}</td>
                   <td>£{product.price}</td>
                   <td>{product.category}</td>
-                  <td>{product.brand}</td>
+                  <td>{product.subCategory}</td>
                   <td>
                     <LinkContainer to={`/admin/product/${product._id}/edit`}>
                       <Button variant='light' className='btn-sm'>

@@ -12,7 +12,9 @@ import Meta from '../components/Meta';
 
 const HomeScreen = ({ match }) => {
   const category = match.params.category;
-  const subCategory = match.params.subCategory.replace(/-/g, ' ');
+  const subCategory = match.params.subCategory
+    ? match.params.subCategory.replace(/-/g, ' ')
+    : '';
   const keyword = useQuery().get('q') || '';
   const pageNumber = useQuery().get('page') || 1;
 
