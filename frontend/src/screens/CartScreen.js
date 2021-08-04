@@ -36,7 +36,7 @@ const CartScreen = ({ match, location, history }) => {
   return (
     <Row>
       <Col md={9}>
-        <h1>Shopping Cart</h1>
+        <h2 className='text-center'>Cart</h2>
         {cartItems.length === 0 ? (
           <Message>
             Your cart is empty <Link to='/'>Go Back</Link>
@@ -46,13 +46,14 @@ const CartScreen = ({ match, location, history }) => {
             {cartItems.map((item) => (
               <ListGroup.Item key={`${item._id}-${item.variantId}`}>
                 <Row>
-                  <Col xs={2}>
+                  <Col xs={4} sm={2}>
                     <Image src={item.image} alt={item.name} fluid rounded />
                   </Col>
-                  <Col xs={5}>
+                  <Col xs={8} sm={5}>
                     <ItemVariantInfo item={item} />
                   </Col>
-                  <Col xs={2}>
+                  <hr />
+                  <Col xs={4} sm={2} className='mt-3'>
                     <Form.Control
                       as='select'
                       className='form-select border border-secondary rounded form-control-sm'
@@ -69,7 +70,7 @@ const CartScreen = ({ match, location, history }) => {
                       ))}
                     </Form.Control>
                   </Col>
-                  <Col xs={2} className='p-0 text-center'>
+                  <Col xs={5} sm={2} className='p-0 text-center mt-4'>
                     <h5 className='m-0'>
                       £{addDecimals(item.totalPrice * item.qty)}
                     </h5>
@@ -77,7 +78,7 @@ const CartScreen = ({ match, location, history }) => {
                       <p>(£{addDecimals(item.totalPrice)} each)</p>
                     )}
                   </Col>
-                  <Col xs={1}>
+                  <Col xs={3} sm={1} className='mt-3'>
                     <Button
                       type='button'
                       variant='light'
@@ -118,11 +119,11 @@ const CartScreen = ({ match, location, history }) => {
             <ListGroup.Item>
               <Button
                 type='button'
-                className='btn-block'
+                className='btn-block p-3'
                 disabled={cartItems.length === 0}
                 onClick={checkoutHandler}
               >
-                Proceed to Checkout
+                Checkout
               </Button>
             </ListGroup.Item>
           </ListGroup>
