@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react';
 //import { Route } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
@@ -6,7 +5,6 @@ import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
 
 //import SearchBox from './SeachBox.js';
 import { logout } from '../actions/userActions.js';
-import { listProductCategories } from '../actions/productActions.js';
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -14,16 +12,23 @@ const Header = () => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
-  const productCategories = useSelector((state) => state.productCategories);
-  const { categories } = productCategories;
-
-  useEffect(() => {
-    dispatch(listProductCategories());
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
   const logoutHandler = () => {
     dispatch(logout());
   };
+
+  const categoryArr = [
+    {
+      name: 'Cards',
+      sub: ['Birthday', 'Wedding', 'New Baby', 'Celebrate', 'All Occasions'],
+    },
+    { name: 'Prints', sub: ['Safari Animals', 'Sea Animal'] },
+    {
+      name: 'Stationary',
+      sub: ['Postcards', 'Notepad', 'To Do List'],
+    },
+    { name: 'Totes', sub: [] },
+  ];
+
   //Searchbar:
   //<Route render={({ history }) => <SearchBox history={history} />} />
   return (
@@ -32,7 +37,7 @@ const Header = () => {
         <div className='d-none d-md-flex justify-content-center px-3'>
           <LinkContainer to='/'>
             <h2 className='mt-2 mb-0 pb-0 text-dark cursor-pointer'>
-              Ecommerce Site
+              Pippa & Paper
             </h2>
           </LinkContainer>
         </div>
@@ -45,25 +50,37 @@ const Header = () => {
           </div>
           <Navbar.Collapse id='basic-navbar-nav'>
             <Nav className='mx-auto'>
-              <NavDropdown title='Shop' id='nav-dropdown'>
-                {categories.parent &&
-                  categories.parent.map((category, index) => (
+              {categoryArr.map((category, index) => (
+                <NavDropdown
+                  title={category.name}
+                  id='nav-dropdown'
+                  key={index}
+                >
+                  {category.sub.map((subCat, index) => (
                     <LinkContainer
-                      to={`/shop/${category.toLowerCase()}`}
+                      to={`/shop/${category.name.toLowerCase()}/${subCat.toLowerCase()}`}
                       key={index}
                     >
-                      <NavDropdown.Item>{category}</NavDropdown.Item>
+                      <NavDropdown.Item>{subCat}</NavDropdown.Item>
                     </LinkContainer>
                   ))}
-              </NavDropdown>
+                </NavDropdown>
+              ))}
               <LinkContainer to='/cart'>
                 <Nav.Link>
-                  <i className='fas fa-shopping-cart'></i> cart
+                  <i className='fas fa-shopping-cart'></i>
                 </Nav.Link>
               </LinkContainer>
 
               {userInfo ? (
-                <NavDropdown title={userInfo.name} id='username'>
+                <NavDropdown
+                  title={
+                    <>
+                      <i className='fas fa-user'></i>
+                    </>
+                  }
+                  id='username'
+                >
                   <LinkContainer to='/profile'>
                     <NavDropdown.Item>Profile</NavDropdown.Item>
                   </LinkContainer>
