@@ -1,15 +1,20 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
+import { PayPalButton } from 'react-paypal-button-v2';
 
 import Message from '../components/Message';
 import CheckoutSteps from '../components/CheckoutSteps';
 import { createOrder } from '../actions/orderActions';
 import ItemVariantInfo from '../components/ItemVariantInfo';
+import Loader from '../components/Loader';
 
 const PlaceOrderScreen = ({ history }) => {
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart);
+
+  const [sdkReady, setSdkReady] = useState(false);
 
   //Returns numbers to two decimal points
   const addDecimals = (num) => {
@@ -34,6 +39,23 @@ const PlaceOrderScreen = ({ history }) => {
     if (success) {
       history.push(`/order/${order._id}`);
     }
+    const addPaypalScript = async () => {
+      const { data: clientId } = await axios.get('/api/config/paypal');
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`;
+      script.async = true;
+      script.onload = () => {
+        setSdkReady(true);
+      };
+      document.body.appendChild(script);
+    };
+    if (!window.paypal) {
+      addPaypalScript();
+    } else {
+      setSdkReady(true);
+    }
+
     // eslint-disable-next-line
   }, [history, success]);
 
@@ -51,11 +73,15 @@ const PlaceOrderScreen = ({ history }) => {
     );
   };
 
+  const successPaymentHandler = (paymentResult) => {
+    console.log(paymentResult);
+  };
+
   return (
     <>
       <CheckoutSteps step1 step2 step3 step4 />
       <Row>
-        <Col md={8}>
+        <Col md={7}>
           <ListGroup variant='flush'>
             <ListGroup.Item>
               <h2>Shipping</h2>
@@ -110,7 +136,7 @@ const PlaceOrderScreen = ({ history }) => {
             </ListGroup.Item>
           </ListGroup>
         </Col>
-        <Col md={4}>
+        <Col md={5}>
           <Card>
             <ListGroup variant='flush'>
               <ListGroup.Item>
@@ -142,6 +168,15 @@ const PlaceOrderScreen = ({ history }) => {
               </ListGroup.Item>
               <ListGroup.Item>
                 {error && <Message variant='danger'>{error}</Message>}
+
+                {!sdkReady ? (
+                  <Loader />
+                ) : (
+                  <PayPalButton
+                    amount={cart.totalPrice}
+                    onSuccess={successPaymentHandler}
+                  />
+                )}
               </ListGroup.Item>
               <ListGroup.Item>
                 <Button
