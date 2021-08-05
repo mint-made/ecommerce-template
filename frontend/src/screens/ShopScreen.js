@@ -46,10 +46,9 @@ const HomeScreen = ({ match }) => {
           subCategory
             ? `${capitalize(category)} - ${capitalize(subCategory)}`
             : category
-            ? `${capitalize(category)} - Pippa & Paper`
-            : 'Shop - Pippa & Paper'
+            ? `${capitalize(category)}`
+            : 'Shop'
         }
-        showBrand={false}
       />
 
       <Breadcrumb>

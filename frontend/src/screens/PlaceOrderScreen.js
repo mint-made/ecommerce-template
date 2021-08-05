@@ -26,8 +26,8 @@ const PlaceOrderScreen = ({ history }) => {
   cart.itemsPrice = addDecimals(
     cart.cartItems.reduce((acc, item) => acc + item.totalPrice * item.qty, 0)
   );
-  cart.shippingPrice = addDecimals(cart.itemsPrice > 100 ? 0 : 100);
-  cart.taxPrice = addDecimals(Number(0.15 * cart.itemsPrice));
+  cart.shippingPrice = addDecimals(0);
+  cart.taxPrice = addDecimals(0);
   cart.totalPrice = addDecimals(
     Number(cart.itemsPrice) + Number(cart.shippingPrice) + Number(cart.taxPrice)
   );
@@ -43,23 +43,24 @@ const PlaceOrderScreen = ({ history }) => {
     if (!cart.paymentMethod) {
       history.push('/payment');
     }
-    const addPaypalScript = async () => {
-      const { data: clientId } = await axios.get('/api/config/paypal');
-      const script = document.createElement('script');
-      script.type = 'text/javascript';
-      script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=GBP&disable-funding=credit,sofort`;
-      script.async = true;
-      script.onload = () => {
-        setSdkReady(true);
+    if (cart.paymentMethod) {
+      const addPaypalScript = async () => {
+        const { data: clientId } = await axios.get('/api/config/paypal');
+        const script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=GBP&disable-funding=credit,sofort`;
+        script.async = true;
+        script.onload = () => {
+          setSdkReady(true);
+        };
+        document.body.appendChild(script);
       };
-      document.body.appendChild(script);
-    };
-    if (!window.paypal) {
-      addPaypalScript();
-    } else {
-      setSdkReady(true);
+      if (!window.paypal) {
+        addPaypalScript();
+      } else {
+        setSdkReady(true);
+      }
     }
-
     // eslint-disable-next-line
   }, [history, success]);
 
@@ -154,12 +155,6 @@ const PlaceOrderScreen = ({ history }) => {
                 <Row>
                   <Col>Shipping</Col>
                   <Col>£{cart.shippingPrice}</Col>
-                </Row>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <Row>
-                  <Col>Tax</Col>
-                  <Col>£{cart.taxPrice}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
