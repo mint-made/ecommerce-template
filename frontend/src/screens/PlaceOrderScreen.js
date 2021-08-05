@@ -10,6 +10,7 @@ import { createOrder } from '../actions/orderActions';
 import ItemVariantInfo from '../components/ItemVariantInfo';
 import Loader from '../components/Loader';
 import { CART_RESET } from '../constants/cartConstants';
+import Meta from '../components/Meta';
 
 const PlaceOrderScreen = ({ history }) => {
   const dispatch = useDispatch();
@@ -79,6 +80,7 @@ const PlaceOrderScreen = ({ history }) => {
 
   return (
     <>
+      <Meta title='Place Order' />
       <CheckoutSteps step1 step2 step3 step4 />
       <Row>
         <Col md={7}>

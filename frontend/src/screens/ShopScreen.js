@@ -41,7 +41,16 @@ const HomeScreen = ({ match }) => {
 
   return (
     <>
-      <Meta />
+      <Meta
+        title={
+          subCategory
+            ? `${capitalize(category)} - ${capitalize(subCategory)}`
+            : category
+            ? `${capitalize(category)} - Pippa & Paper`
+            : 'Shop - Pippa & Paper'
+        }
+        showBrand={false}
+      />
 
       <Breadcrumb>
         <Breadcrumb.Item href='/shop'>Shop</Breadcrumb.Item>

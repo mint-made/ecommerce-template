@@ -1,10 +1,19 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 
-const Meta = ({ title, description, keywords }) => {
+const Meta = ({
+  title = '',
+  description,
+  keywords,
+  brand,
+  showBrand = true,
+}) => {
+  const generateTitle = () => {
+    return !title ? brand : showBrand ? `${title} - ${brand}` : title;
+  };
   return (
     <Helmet>
-      <title>{title}</title>
+      <title>{generateTitle()}</title>
       <meta name='description' content={description} />
       <meta name='keyword' content={keywords} />
     </Helmet>
@@ -12,9 +21,9 @@ const Meta = ({ title, description, keywords }) => {
 };
 
 Meta.defaultProps = {
-  title: 'Welcome to Proshop',
-  description: 'We sell the best products',
-  keywords: 'electronics, buy electronics, best prices',
+  brand: 'Pippa & Paper',
+  description: 'Hand-Made Products',
+  keywords: 'cards, prints, stationery, totes, watercolor',
 };
 
 export default Meta;

@@ -11,6 +11,7 @@ import {
 } from '../actions/productActions';
 import Paginate from '../components/Paginate';
 import { PRODUCT_CREATE_RESET } from '../constants/productConstants';
+import Meta from '../components/Meta';
 
 const ProductListScreen = ({ history, match }) => {
   const pageNumber = match.params.pageNumber || 1;
@@ -72,6 +73,7 @@ const ProductListScreen = ({ history, match }) => {
 
   return (
     <>
+      <Meta title='Product List' />
       <Row className='align-items-center'>
         <Col>
           <h1>Products</h1>

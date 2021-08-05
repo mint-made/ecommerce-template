@@ -203,7 +203,7 @@ const ProductScreen = ({ history, match }) => {
         <Message variant='danger'>{error}</Message>
       ) : (
         <>
-          <Meta title={product.name} />
+          <Meta title={product.name} showBrand={false} />
           <Row>
             <Col md={5} className='d-block d-md-none'>
               {product.images && <ImageCarousel />}
