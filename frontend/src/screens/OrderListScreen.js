@@ -25,7 +25,7 @@ const OrderListScreen = ({ history }) => {
 
   return (
     <>
-      <h1>Users</h1>
+      <h1>Orders</h1>
       {loading ? (
         <Loader />
       ) : error ? (
@@ -34,19 +34,17 @@ const OrderListScreen = ({ history }) => {
         <Table striped bordered hover responsive className='table-sm'>
           <thead>
             <tr>
-              <th>ID</th>
               <th>USER</th>
-              <th>DATE</th>
+              <th>ORDER PLACED</th>
               <th>TOTAL</th>
               <th>PAID</th>
-              <th>DELEVERED</th>
+              <th>DISPATCHED</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             {orders.map((order) => (
               <tr key={order._id}>
-                <td>{order._id}</td>
                 <td>{order.user && order.user.name}</td>
                 <td>{order.createdAt.substring(0, 10)}</td>
                 <td>{order.totalPrice}</td>
@@ -57,20 +55,19 @@ const OrderListScreen = ({ history }) => {
                         className='fas fa-check'
                         style={{ color: 'green' }}
                       ></i>{' '}
-                      {order.paidAt.substring(0, 10)}
                     </>
                   ) : (
                     <i className='fas fa-times' style={{ color: 'red' }}></i>
                   )}
                 </td>
                 <td>
-                  {order.isDelivered ? (
+                  {order.isDispatched ? (
                     <>
                       <i
                         className='fas fa-check'
                         style={{ color: 'green' }}
                       ></i>{' '}
-                      {order.deliveredAt.substring(0, 10)}
+                      {order.dispatchedAt.substring(0, 10)}
                     </>
                   ) : (
                     <i className='fas fa-times' style={{ color: 'red' }}></i>
