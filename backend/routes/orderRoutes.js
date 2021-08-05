@@ -2,7 +2,6 @@ import express from 'express';
 const router = express.Router();
 import {
   getOrderById,
-  updateOrderToPaid,
   getMyOrders,
   getOrders,
   updateOrderToDelivered,
@@ -14,7 +13,6 @@ router.route('/').get(protect, isAdmin, getOrders);
 router.route('/myorders').get(protect, getMyOrders);
 router.route('/place').post(protect, placeOrder);
 router.route('/:id').get(protect, getOrderById);
-router.route('/:id/pay').put(protect, updateOrderToPaid);
 router.route('/:id/deliver').put(protect, isAdmin, updateOrderToDelivered);
 
 export default router;
