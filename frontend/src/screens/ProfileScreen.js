@@ -120,7 +120,7 @@ const ProfileScreen = ({ location, history }) => {
               <tr>
                 <th>DATE</th>
                 <th>TOTAL</th>
-                <th>DELEVERED</th>
+                <th>DISPATCHED</th>
                 <th></th>
               </tr>
             </thead>
@@ -131,16 +131,21 @@ const ProfileScreen = ({ location, history }) => {
                   <td>£{addDecimals(order.totalPrice)}</td>
 
                   <td>
-                    {order.isDelivered ? (
-                      order.deliveredAt.substring(0, 10)
-                    ) : (
-                      <div className='d-flex justify-content-center'>
+                    <div className='d-flex justify-content-center'>
+                      {order.isDispatched ? (
+                        <>
+                          <i
+                            className='fas fa-check'
+                            style={{ color: 'green' }}
+                          ></i>
+                        </>
+                      ) : (
                         <i
                           className='fas fa-times'
                           style={{ color: 'red' }}
                         ></i>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </td>
                   <td>
                     <LinkContainer to={`/order/${order._id}`}>
