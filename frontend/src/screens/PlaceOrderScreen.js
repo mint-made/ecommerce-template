@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap';
+import { Row, Col, ListGroup, Image, Card } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { PayPalButton } from 'react-paypal-button-v2';
 
 import Message from '../components/Message';
 import CheckoutSteps from '../components/CheckoutSteps';
-import { createOrder, placeOrder } from '../actions/orderActions';
+import { placeOrder } from '../actions/orderActions';
 import ItemVariantInfo from '../components/ItemVariantInfo';
 import Loader from '../components/Loader';
 import { CART_RESET } from '../constants/cartConstants';
@@ -25,19 +25,14 @@ const PlaceOrderScreen = ({ history }) => {
   cart.itemsPrice = addDecimals(
     cart.cartItems.reduce((acc, item) => acc + item.totalPrice * item.qty, 0)
   );
-
   cart.shippingPrice = addDecimals(cart.itemsPrice > 100 ? 0 : 100);
   cart.taxPrice = addDecimals(Number(0.15 * cart.itemsPrice));
-
   cart.totalPrice = addDecimals(
     Number(cart.itemsPrice) + Number(cart.shippingPrice) + Number(cart.taxPrice)
   );
 
-  // const orderCreate = useSelector((state) => state.orderCreate);
-  // const { order, success, error } = orderCreate;
-
   const orderPlace = useSelector((state) => state.orderPlace);
-  const { order, success, error } = orderPlace;
+  const { order, success, loading, error } = orderPlace;
 
   useEffect(() => {
     if (success) {
@@ -66,20 +61,6 @@ const PlaceOrderScreen = ({ history }) => {
 
     // eslint-disable-next-line
   }, [history, success]);
-
-  const placeorderHandler = () => {
-    dispatch(
-      createOrder({
-        orderItems: cart.cartItems,
-        shippingAddress: cart.shippingAddress,
-        paymentMethod: cart.paymentMethod,
-        itemsPrice: cart.itemsPrice,
-        shippingPrice: cart.shippingPrice,
-        taxPrice: cart.taxPrice,
-        totalPrice: cart.totalPrice,
-      })
-    );
-  };
 
   const successPaymentHandler = (paymentResult) => {
     dispatch(
@@ -186,6 +167,7 @@ const PlaceOrderScreen = ({ history }) => {
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
+                {loading && <Loader />}
                 {error && <Message variant='danger'>{error}</Message>}
 
                 {!sdkReady ? (
@@ -196,16 +178,6 @@ const PlaceOrderScreen = ({ history }) => {
                     onSuccess={successPaymentHandler}
                   />
                 )}
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <Button
-                  type='button'
-                  className='btn-block'
-                  disabled={cart.cartItems === 0}
-                  onClick={placeorderHandler}
-                >
-                  Place Order
-                </Button>
               </ListGroup.Item>
             </ListGroup>
           </Card>

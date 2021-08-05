@@ -59,6 +59,7 @@ const ProductScreen = ({ history, match }) => {
     productDeepCopy.variations = selectedVariations;
     productDeepCopy.personalizations = selectedPersonalizations;
     productDeepCopy.totalPrice = getTotalPrice();
+    productDeepCopy.image = productDeepCopy.images[0];
     const variantIdArray = selectedVariations
       .map((variation) =>
         !variation.isOptional || (variation.isOptional && variation.isSelected)

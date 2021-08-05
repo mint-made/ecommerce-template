@@ -28,6 +28,10 @@ const CartScreen = ({ match, location, history }) => {
     history.push('/login?redirect=shipping');
   };
 
+  const addToCartHandler = (e, item) => {
+    dispatch(addToCart(item, Number(e.target.value)));
+  };
+
   //Returns numbers to two decimal points
   const addDecimals = (num) => {
     return (Math.round(num * 100) / 100).toFixed(2);
@@ -59,9 +63,7 @@ const CartScreen = ({ match, location, history }) => {
                       className='form-select border border-secondary rounded form-control-sm'
                       style={{ maxWidth: '70px' }}
                       value={item.qty}
-                      onChange={(e) =>
-                        dispatch(addToCart(item, Number(e.target.value)))
-                      }
+                      onChange={(e) => addToCartHandler(e, item)}
                     >
                       {[...Array(item.countInStock).keys()].map((x) => (
                         <option key={`option-${x + 1}`} value={x + 1}>
