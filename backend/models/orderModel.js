@@ -96,7 +96,15 @@ const orderSchema = new mongoose.Schema(
       required: true,
       default: false,
     },
+    isDispatched: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
     deliveredAt: {
+      type: Date,
+    },
+    dispatchedAt: {
       type: Date,
     },
   },

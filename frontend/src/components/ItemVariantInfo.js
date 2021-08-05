@@ -57,12 +57,12 @@ const ItemVariantInfo = ({ item, total = false, quantity = false }) => {
               Total: £{addDecimals(item.totalPrice)}
             </>
           )}
-          {quantity && (
-            <>
-              <hr className='my-2' />
-              <p>Quantity: {item.qty}</p>
-            </>
-          )}
+        </>
+      )}
+      {quantity && (
+        <>
+          <hr className='my-2' />
+          <p>Quantity: {item.qty}</p>
         </>
       )}
     </>

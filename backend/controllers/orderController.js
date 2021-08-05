@@ -133,12 +133,12 @@ const getOrders = asyncHandler(async (req, res) => {
  *
  * @apiSuccess {Object} order Order that has been updated as delivered
  */
-const updateOrderToDelivered = asyncHandler(async (req, res) => {
+const updateOrderToDispatched = asyncHandler(async (req, res) => {
   const order = await Order.findById(req.params.id);
 
   if (order) {
-    order.isDelivered = true;
-    order.deliveredAt = Date.now();
+    order.isDispatched = true;
+    order.dispatchedAt = Date.now();
 
     const updatedOrder = await order.save();
 
@@ -154,5 +154,5 @@ export {
   getOrderById,
   getMyOrders,
   getOrders,
-  updateOrderToDelivered,
+  updateOrderToDispatched,
 };

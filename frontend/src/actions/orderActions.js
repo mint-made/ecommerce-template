@@ -3,9 +3,9 @@ import {
   ORDER_CREATE_FAIL,
   ORDER_CREATE_REQUEST,
   ORDER_CREATE_SUCCESS,
-  ORDER_DELIVER_FAIL,
-  ORDER_DELIVER_REQUEST,
-  ORDER_DELIVER_SUCCESS,
+  ORDER_DISPATCH_FAIL,
+  ORDER_DISPATCH_REQUEST,
+  ORDER_DISPATCH_SUCCESS,
   ORDER_DETAILS_FAIL,
   ORDER_DETAILS_REQUEST,
   ORDER_DETAILS_SUCCESS,
@@ -148,10 +148,10 @@ export const listOrders = () => async (dispatch, getState) => {
   }
 };
 
-export const deliverOrder = (id) => async (dispatch, getState) => {
+export const dispatchOrder = (id) => async (dispatch, getState) => {
   try {
     dispatch({
-      type: ORDER_DELIVER_REQUEST,
+      type: ORDER_DISPATCH_REQUEST,
     });
 
     const {
@@ -164,14 +164,14 @@ export const deliverOrder = (id) => async (dispatch, getState) => {
       },
     };
 
-    await axios.put(`/api/orders/${id}/deliver`, {}, config);
+    await axios.put(`/api/orders/${id}/dispatch`, {}, config);
 
     dispatch({
-      type: ORDER_DELIVER_SUCCESS,
+      type: ORDER_DISPATCH_SUCCESS,
     });
   } catch (error) {
     dispatch({
-      type: ORDER_DELIVER_FAIL,
+      type: ORDER_DISPATCH_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

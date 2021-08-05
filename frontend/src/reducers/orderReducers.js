@@ -3,13 +3,13 @@ import {
   ORDER_CREATE_REQUEST,
   ORDER_CREATE_RESET,
   ORDER_CREATE_SUCCESS,
-  ORDER_DELIVER_FAIL,
-  ORDER_DELIVER_REQUEST,
-  ORDER_DELIVER_RESET,
-  ORDER_DELIVER_SUCCESS,
   ORDER_DETAILS_FAIL,
   ORDER_DETAILS_REQUEST,
   ORDER_DETAILS_SUCCESS,
+  ORDER_DISPATCH_FAIL,
+  ORDER_DISPATCH_REQUEST,
+  ORDER_DISPATCH_RESET,
+  ORDER_DISPATCH_SUCCESS,
   ORDER_LIST_FAIL,
   ORDER_LIST_MY_FAIL,
   ORDER_LIST_MY_REQUEST,
@@ -81,15 +81,15 @@ export const orderListReducer = (state = { orders: [] }, action) => {
   }
 };
 
-export const orderDeliverReducer = (state = {}, action) => {
+export const orderDispatchReducer = (state = {}, action) => {
   switch (action.type) {
-    case ORDER_DELIVER_REQUEST:
+    case ORDER_DISPATCH_REQUEST:
       return { loading: true };
-    case ORDER_DELIVER_SUCCESS:
+    case ORDER_DISPATCH_SUCCESS:
       return { loading: false, success: true };
-    case ORDER_DELIVER_FAIL:
+    case ORDER_DISPATCH_FAIL:
       return { loading: false, error: action.payload };
-    case ORDER_DELIVER_RESET:
+    case ORDER_DISPATCH_RESET:
       return {};
     default:
       return state;

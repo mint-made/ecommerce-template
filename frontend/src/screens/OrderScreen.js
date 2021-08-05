@@ -4,9 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import ItemVariantInfo from '../components/ItemVariantInfo';
-import { getOrderDetails, deliverOrder } from '../actions/orderActions';
+import { getOrderDetails, dispatchOrder } from '../actions/orderActions';
 import {
-  ORDER_DELIVER_RESET,
+  ORDER_DISPATCH_RESET,
   ORDER_CREATE_RESET,
 } from '../constants/orderConstants';
 
@@ -18,8 +18,8 @@ const OrderScreen = ({ match, history }) => {
   const orderDetails = useSelector((state) => state.orderDetails);
   const { order, loading, error } = orderDetails;
 
-  const orderDeliver = useSelector((state) => state.orderDeliver);
-  const { loading: loadingDeliver, success: successDeliver } = orderDeliver;
+  const orderDispatch = useSelector((state) => state.orderDispatch);
+  const { loading: loadingDispatch, success: successDispatch } = orderDispatch;
 
   const orderCreate = useSelector((state) => state.orderCreate);
   const { success: successOrderCreate } = orderCreate;
@@ -38,14 +38,14 @@ const OrderScreen = ({ match, history }) => {
       dispatch({ type: ORDER_CREATE_RESET });
     }
 
-    if (!order || successDeliver) {
-      dispatch({ type: ORDER_DELIVER_RESET });
+    if (!order || successDispatch) {
+      dispatch({ type: ORDER_DISPATCH_RESET });
       dispatch(getOrderDetails(orderId));
     }
   }, [
     dispatch,
     orderId,
-    successDeliver,
+    successDispatch,
     order,
     history,
     userInfo,
@@ -53,13 +53,17 @@ const OrderScreen = ({ match, history }) => {
     successOrderCreate,
   ]);
 
-  const markDeliveredHandler = () => {
-    dispatch(deliverOrder(orderId));
+  const markDispatchededHandler = () => {
+    dispatch(dispatchOrder(orderId));
   };
 
   //Returns numbers to two decimal points
   const addDecimals = (num) => {
     return (Math.round(num * 100) / 100).toFixed(2);
+  };
+
+  const formatDate = (date) => {
+    return date.slice(0, 16).replace('T', ' at ');
   };
 
   return loading ? (
@@ -88,12 +92,12 @@ const OrderScreen = ({ match, history }) => {
                 {' ' + order.shippingAddress.postalCode},
                 {' ' + order.shippingAddress.country}
               </p>
-              {order.isDelivered ? (
+              {order.isDispatched ? (
                 <Message variant='success'>
-                  Delivered on {order.deliveredAt}
+                  Dispatched on {formatDate(order.dispatchedAt)}
                 </Message>
               ) : (
-                <Message variant='danger'>Not Delivered</Message>
+                <Message variant='danger'>Not Dispatched</Message>
               )}
             </ListGroup.Item>
 
@@ -104,7 +108,9 @@ const OrderScreen = ({ match, history }) => {
                 {order.paymentMethod}
               </p>
               {order.isPaid ? (
-                <Message variant='success'>Paid on {order.paidAt}</Message>
+                <Message variant='success'>
+                  Paid on {formatDate(order.paidAt)}
+                </Message>
               ) : (
                 <Message variant='danger'>Not paid</Message>
               )}
@@ -177,16 +183,16 @@ const OrderScreen = ({ match, history }) => {
                 </Row>
               </ListGroup.Item>
 
-              {loadingDeliver && <Loader />}
+              {loadingDispatch && <Loader />}
               {userInfo && userInfo.isAdmin && order.isPaid && (
                 <ListGroup.Item>
                   <Button
                     type='button'
                     className='btn btn-block'
-                    disabled={order.isDelivered}
-                    onClick={() => markDeliveredHandler()}
+                    disabled={order.isDispatched}
+                    onClick={() => markDispatchededHandler()}
                   >
-                    Mark Delivered
+                    Mark Dispatched
                   </Button>
                 </ListGroup.Item>
               )}
