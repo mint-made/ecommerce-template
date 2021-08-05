@@ -4,6 +4,11 @@ import { Card } from 'react-bootstrap';
 import Rating from './Rating.js';
 
 const Product = ({ product }) => {
+  //Returns numbers to two decimal points
+  const addDecimals = (num) => {
+    return (Math.round(num * 100) / 100).toFixed(2);
+  };
+
   return (
     <Card className='my-3 -3 rounded'>
       <Link to={`/product/${product._id}`}>
@@ -21,7 +26,7 @@ const Product = ({ product }) => {
             text={`${product.numReviews} reviews`}
           />
         </Card.Text>
-        <Card.Text as='h3'>£{product.price}</Card.Text>
+        <Card.Text as='h3'>£{addDecimals(product.price)}</Card.Text>
       </Card.Body>
     </Card>
   );

@@ -46,7 +46,7 @@ const PlaceOrderScreen = ({ history }) => {
       const { data: clientId } = await axios.get('/api/config/paypal');
       const script = document.createElement('script');
       script.type = 'text/javascript';
-      script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`;
+      script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=GBP&disable-funding=credit,sofort`;
       script.async = true;
       script.onload = () => {
         setSdkReady(true);
@@ -176,6 +176,7 @@ const PlaceOrderScreen = ({ history }) => {
                   <PayPalButton
                     amount={cart.totalPrice}
                     onSuccess={successPaymentHandler}
+                    currency='GBP'
                   />
                 )}
               </ListGroup.Item>
