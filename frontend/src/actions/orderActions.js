@@ -1,5 +1,8 @@
 import axios from 'axios';
 import {
+  ORDER_CREATE_FAIL,
+  ORDER_CREATE_REQUEST,
+  ORDER_CREATE_SUCCESS,
   ORDER_DELIVER_FAIL,
   ORDER_DELIVER_REQUEST,
   ORDER_DELIVER_SUCCESS,
@@ -12,15 +15,12 @@ import {
   ORDER_LIST_MY_SUCCESS,
   ORDER_LIST_REQUEST,
   ORDER_LIST_SUCCESS,
-  ORDER_PLACE_FAIL,
-  ORDER_PLACE_REQUEST,
-  ORDER_PLACE_SUCCESS,
 } from '../constants/orderConstants';
 
-export const placeOrder = (order) => async (dispatch, getState) => {
+export const createOrder = (order) => async (dispatch, getState) => {
   try {
     dispatch({
-      type: ORDER_PLACE_REQUEST,
+      type: ORDER_CREATE_REQUEST,
     });
 
     const {
@@ -34,15 +34,15 @@ export const placeOrder = (order) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.post(`/api/orders/place`, order, config);
+    const { data } = await axios.post(`/api/orders`, order, config);
 
     dispatch({
-      type: ORDER_PLACE_SUCCESS,
+      type: ORDER_CREATE_SUCCESS,
       payload: data,
     });
   } catch (error) {
     dispatch({
-      type: ORDER_PLACE_FAIL,
+      type: ORDER_CREATE_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

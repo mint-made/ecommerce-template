@@ -33,7 +33,7 @@ const getOrderById = asyncHandler(async (req, res) => {
 // @route POST /api/orders
 // @access Private
 /**
- * @api {post} /api/orders/place Place Order
+ * @api {post} /api/orders Place Order
  * @apiGroup Order
  * @apiPermission Private
  *
@@ -50,7 +50,7 @@ const getOrderById = asyncHandler(async (req, res) => {
  *
  * @apiSuccess {Object} createdOrder The order created
  */
-const placeOrder = asyncHandler(async (req, res) => {
+const createOrder = asyncHandler(async (req, res) => {
   const {
     orderItems,
     shippingAddress,
@@ -150,9 +150,9 @@ const updateOrderToDelivered = asyncHandler(async (req, res) => {
 });
 
 export {
+  createOrder,
   getOrderById,
   getMyOrders,
   getOrders,
   updateOrderToDelivered,
-  placeOrder,
 };

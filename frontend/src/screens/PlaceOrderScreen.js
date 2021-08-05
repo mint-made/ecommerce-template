@@ -6,7 +6,7 @@ import { PayPalButton } from 'react-paypal-button-v2';
 
 import Message from '../components/Message';
 import CheckoutSteps from '../components/CheckoutSteps';
-import { placeOrder } from '../actions/orderActions';
+import { createOrder } from '../actions/orderActions';
 import ItemVariantInfo from '../components/ItemVariantInfo';
 import Loader from '../components/Loader';
 import { CART_RESET } from '../constants/cartConstants';
@@ -31,8 +31,8 @@ const PlaceOrderScreen = ({ history }) => {
     Number(cart.itemsPrice) + Number(cart.shippingPrice) + Number(cart.taxPrice)
   );
 
-  const orderPlace = useSelector((state) => state.orderPlace);
-  const { order, success, loading, error } = orderPlace;
+  const orderCreate = useSelector((state) => state.orderCreate);
+  const { order, success, loading, error } = orderCreate;
 
   useEffect(() => {
     if (success) {
@@ -64,7 +64,7 @@ const PlaceOrderScreen = ({ history }) => {
 
   const successPaymentHandler = (paymentResult) => {
     dispatch(
-      placeOrder({
+      createOrder({
         orderItems: cart.cartItems,
         shippingAddress: cart.shippingAddress,
         paymentMethod: cart.paymentMethod,

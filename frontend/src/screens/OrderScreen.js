@@ -7,7 +7,7 @@ import ItemVariantInfo from '../components/ItemVariantInfo';
 import { getOrderDetails, deliverOrder } from '../actions/orderActions';
 import {
   ORDER_DELIVER_RESET,
-  ORDER_PLACE_RESET,
+  ORDER_CREATE_RESET,
 } from '../constants/orderConstants';
 
 const OrderScreen = ({ match, history }) => {
@@ -21,8 +21,8 @@ const OrderScreen = ({ match, history }) => {
   const orderDeliver = useSelector((state) => state.orderDeliver);
   const { loading: loadingDeliver, success: successDeliver } = orderDeliver;
 
-  const orderPlace = useSelector((state) => state.orderPlace);
-  const { success: successOrderPlace } = orderPlace;
+  const orderCreate = useSelector((state) => state.orderCreate);
+  const { success: successOrderCreate } = orderCreate;
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
@@ -34,8 +34,8 @@ const OrderScreen = ({ match, history }) => {
     if (order && order._id !== orderId) {
       dispatch(getOrderDetails(orderId));
     }
-    if (successOrderPlace) {
-      dispatch({ type: ORDER_PLACE_RESET });
+    if (successOrderCreate) {
+      dispatch({ type: ORDER_CREATE_RESET });
     }
 
     if (!order || successDeliver) {
@@ -50,7 +50,7 @@ const OrderScreen = ({ match, history }) => {
     history,
     userInfo,
     match,
-    successOrderPlace,
+    successOrderCreate,
   ]);
 
   const markDeliveredHandler = () => {
