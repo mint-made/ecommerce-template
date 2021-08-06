@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import { Card, Form, Image } from 'react-bootstrap';
+import { Form, Image } from 'react-bootstrap';
 import Loader from '../components/Loader';
 
 const S3Upload = () => {
@@ -19,7 +19,7 @@ const S3Upload = () => {
           'Content-Type': 'multipart/form-data',
         },
       };
-      const { data } = await axios.post('/api/upload', formData, config);
+      const { data } = await axios.post('/api/s3', formData, config);
 
       setImage(data);
       setUploading(false);
