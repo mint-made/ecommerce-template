@@ -85,7 +85,7 @@ const ProductEditScreen = ({ match, history }) => {
       setImagesArray([...imagesArray, data]);
       setUploading(false);
     } catch (e) {
-      console.error(error);
+      console.error(e);
       setUploading(false);
     }
   };
