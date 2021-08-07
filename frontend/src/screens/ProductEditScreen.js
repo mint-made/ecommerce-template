@@ -79,7 +79,7 @@ const ProductEditScreen = ({ match, history }) => {
           'Content-Type': 'multipart/form-data',
         },
       };
-      const { data } = await axios.post('/api/s3', formData, config);
+      const { data } = await axios.post('/api/upload', formData, config);
 
       setImage(data.imagePath);
       setImagesArray([...imagesArray, data.imagePath]);

@@ -12,6 +12,7 @@ import {
 import Paginate from '../components/Paginate';
 import { PRODUCT_CREATE_RESET } from '../constants/productConstants';
 import Meta from '../components/Meta';
+import { Link } from 'react-router-dom';
 
 const ProductListScreen = ({ history, match }) => {
   const pageNumber = match.params.pageNumber || 1;
@@ -109,13 +110,17 @@ const ProductListScreen = ({ history, match }) => {
               {products.map((product) => (
                 <tr key={product._id}>
                   <td>
-                    <Image
-                      src={product.images[0]}
-                      rounded
+                    <LinkContainer
+                      to={`/product/${product._id}`}
                       style={{ maxHeight: '50px' }}
-                    />
+                      className='cursor-pointer'
+                    >
+                      <Image src={product.images[0]} rounded />
+                    </LinkContainer>
                   </td>
-                  <td>{product.name}</td>
+                  <td>
+                    <Link to={`/product/${product._id}`}>{product.name}</Link>
+                  </td>
                   <td>£{product.price}</td>
                   <td>{product.category}</td>
                   <td>{product.subCategory}</td>
