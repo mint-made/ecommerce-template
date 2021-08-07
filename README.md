@@ -31,3 +31,9 @@ This is a template ecommerce site, built with the essential ecommerce functional
 - RESTful APIs
 - React-BootStrap
 - [apiDoc](https://apidocjs.com/#param-api-description)
+
+
+### Documentation for the API
+API documentation can be accessed in development mode only at http://localhost:5000/apidocs
+![image](https://user-images.githubusercontent.com/53815961/128601099-5449f05a-3d1f-4609-9f9f-36ce260a2063.png)
+
