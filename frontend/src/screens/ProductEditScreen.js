@@ -79,10 +79,10 @@ const ProductEditScreen = ({ match, history }) => {
           'Content-Type': 'multipart/form-data',
         },
       };
-      const { data } = await axios.post('/api/upload', formData, config);
+      const { data } = await axios.post('/api/s3', formData, config);
 
-      setImage(data);
-      setImagesArray([...imagesArray, data]);
+      setImage(data.imagePath);
+      setImagesArray([...imagesArray, data.imagePath]);
       setUploading(false);
     } catch (e) {
       console.error(e);
@@ -175,9 +175,13 @@ const ProductEditScreen = ({ match, history }) => {
     <>
       <Meta title='Edit Product' />
       <Row>
-        <Col sm={3}>
+        <Col sm={3} className='d-flex justify-content-center'>
           <Link to='/admin/productlist' className='btn btn-light m-0 '>
-            Go back
+            Go Back
+          </Link>
+
+          <Link to={`/product/${product._id}`} className='btn btn-light m-0 '>
+            View Product
           </Link>
         </Col>
         <Col sm={9} className='d-flex justify-content-center'>
