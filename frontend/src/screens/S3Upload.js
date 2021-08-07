@@ -20,8 +20,8 @@ const S3Upload = () => {
         },
       };
       const { data } = await axios.post('/api/s3', formData, config);
-
-      setImage(data);
+      console.log(data);
+      setImage(data.imagePath);
       setUploading(false);
     } catch (e) {
       console.error(e);
@@ -54,12 +54,14 @@ const S3Upload = () => {
         {uploading && <Loader />}
       </Form.Group>
 
-      <Image
-        src={image}
-        rounded
-        fluid
-        style={{ maxHeight: '150px', maxWidth: '150px' }}
-      />
+      {image && (
+        <Image
+          src={image}
+          rounded
+          fluid
+          style={{ maxHeight: '150px', maxWidth: '150px' }}
+        />
+      )}
     </div>
   );
 };
