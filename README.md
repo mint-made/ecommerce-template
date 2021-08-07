@@ -35,5 +35,5 @@ This is a template ecommerce site, built with the essential ecommerce functional
 
 ### Documentation for the API
 API documentation can be accessed in development mode only at http://localhost:5000/apidocs
-![image](https://user-images.githubusercontent.com/53815961/128601099-5449f05a-3d1f-4609-9f9f-36ce260a2063.png)
+![image](https://user-images.githubusercontent.com/53815961/128601252-a3c9aa7c-0d3a-4245-96a9-079ffb56e5db.png)
 
