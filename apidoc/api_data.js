@@ -111,47 +111,6 @@ define({ "api": [
   },
   {
     "type": "get",
-    "url": "/api/orders/:id/pay",
-    "title": "updateOrderToPaid",
-    "group": "Order",
-    "permission": [
-      {
-        "name": "Private"
-      }
-    ],
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "orderId",
-            "description": "<p>ID of the order that has been paid</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "Object",
-            "optional": false,
-            "field": "order",
-            "description": "<p>The order with payment details added</p>"
-          }
-        ]
-      }
-    },
-    "version": "0.0.0",
-    "filename": "/home/tom/Desktop/ecommerce-template/backend/controllers/orderController.js",
-    "groupTitle": "Order",
-    "name": "GetApiOrdersIdPay"
-  },
-  {
-    "type": "get",
     "url": "/api/orders/myorders",
     "title": "getMyOrders",
     "group": "Order",
@@ -181,14 +140,14 @@ define({ "api": [
   {
     "type": "post",
     "url": "/api/orders",
-    "title": "addOrderItems",
+    "title": "Place Order",
     "group": "Order",
     "permission": [
       {
         "name": "Private"
       }
     ],
-    "description": "<p>This route will create a new order, made up of the order items passed in the body</p>",
+    "description": "<p>This route will create a new paid order from details provided</p>",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -197,49 +156,56 @@ define({ "api": [
             "type": "Array",
             "optional": false,
             "field": "orderItems",
-            "description": "<p>All items included in the order</p>"
+            "description": "<p>all items included in the order</p>"
           },
           {
             "group": "Parameter",
             "type": "Object",
             "optional": false,
             "field": "shippingAddress",
-            "description": "<p>Containing address , city, postalCode, country</p>"
+            "description": "<p>containing address , city, postalCode, country</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": false,
             "field": "paymentMethod",
-            "description": ""
+            "description": "<p>how the order was paid e.g. Paypal, Stripe</p>"
           },
           {
             "group": "Parameter",
             "type": "Number",
             "optional": false,
             "field": "itemsPrice",
-            "description": ""
+            "description": "<p>total items price ex. shipping/tax</p>"
           },
           {
             "group": "Parameter",
             "type": "Number",
             "optional": false,
             "field": "shippingPrice",
-            "description": ""
+            "description": "<p>cost of shipping the order</p>"
           },
           {
             "group": "Parameter",
             "type": "Number",
             "optional": false,
             "field": "taxPrice",
-            "description": ""
+            "description": "<p>tax due for the order</p>"
           },
           {
             "group": "Parameter",
             "type": "Number",
             "optional": false,
             "field": "totalPrice",
-            "description": ""
+            "description": "<p>total cost of the order inc. shipping/tax</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Object",
+            "optional": false,
+            "field": "paymentResult",
+            "description": "<p>containing payment info such id, status, time and email of payer</p>"
           }
         ]
       }
@@ -364,6 +330,34 @@ define({ "api": [
     "filename": "/home/tom/Desktop/ecommerce-template/backend/controllers/productController.js",
     "groupTitle": "Product",
     "name": "GetApiProducts"
+  },
+  {
+    "type": "get",
+    "url": "/api/products/categories",
+    "title": "getProductCategories",
+    "group": "Product",
+    "permission": [
+      {
+        "name": "Public"
+      }
+    ],
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "Categories",
+            "description": "<p>All the categories of all products in db</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "/home/tom/Desktop/ecommerce-template/backend/controllers/productController.js",
+    "groupTitle": "Product",
+    "name": "GetApiProductsCategories"
   },
   {
     "type": "get",
@@ -619,6 +613,48 @@ define({ "api": [
     "filename": "/home/tom/Desktop/ecommerce-template/backend/controllers/productController.js",
     "groupTitle": "Product",
     "name": "PutApiProductsId"
+  },
+  {
+    "type": "post",
+    "url": "/api/upload",
+    "title": "",
+    "group": "Upload",
+    "permission": [
+      {
+        "name": "Private/Admin"
+      }
+    ],
+    "description": "<p>This route uploads images to AWS S3 to be displayed on the website</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Object",
+            "optional": false,
+            "field": "FormData",
+            "description": "<p>FormData with the selected image appended</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "imagePath",
+            "description": "<p>providing a imagePath to access the image uploaded to S3</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "/home/tom/Desktop/ecommerce-template/backend/routes/s3UploadRoutes.js",
+    "groupTitle": "Upload",
+    "name": "PostApiUpload"
   },
   {
     "type": "delete",

@@ -41,7 +41,14 @@ const ProductEditScreen = ({ match, history }) => {
     success: successUpdate,
   } = productUpdate;
 
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
   useEffect(() => {
+    if (!userInfo || !userInfo.isAdmin) {
+      history.push('/login');
+    }
+
     if (successUpdate) {
       dispatch({ type: PRODUCT_UPDATE_RESET });
       history.push('/admin/productlist');
@@ -61,7 +68,7 @@ const ProductEditScreen = ({ match, history }) => {
         setImagesArray(product.images);
       }
     }
-  }, [dispatch, history, productId, product, successUpdate]);
+  }, [dispatch, history, productId, product, successUpdate, userInfo]);
 
   /**
    * Handler for uploading images added by the user
@@ -77,8 +84,10 @@ const ProductEditScreen = ({ match, history }) => {
       const config = {
         headers: {
           'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${userInfo.token}`,
         },
       };
+      console.log(typeof formData);
       const { data } = await axios.post('/api/upload', formData, config);
 
       setImage(data.imagePath);

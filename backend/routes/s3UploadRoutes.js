@@ -6,6 +6,7 @@ import S3 from 'aws-sdk/clients/s3.js';
 import { triggerAsyncId } from 'async_hooks';
 import path from 'path';
 import util from 'util';
+import { protect, isAdmin } from '../middleware/authMiddleware.js';
 
 dotenv.config();
 const router = express.Router();
@@ -49,7 +50,21 @@ const upload = multer({
   },
 });
 
-router.post('/', upload.single('image'), async (req, res) => {
+// @description Upload an Image to AWS S3
+// @route POST /api/upload
+// @access Private/Admin
+/**
+ * @api {post} /api/upload
+ * @apiGroup Upload
+ * @apiPermission Private/Admin
+ *
+ * @apiDescription This route uploads images to AWS S3 to be displayed on the website
+ *
+ * @apiParam {Object} FormData FormData with the selected image appended
+ *
+ * @apiSuccess {Object} imagePath providing a imagePath to access the image uploaded to S3
+ */
+router.post('/', protect, isAdmin, upload.single('image'), async (req, res) => {
   try {
     const result = await uploadFileToS3(req.file);
 

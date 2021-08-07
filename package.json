@@ -18,7 +18,7 @@
     "data:import": "node backend/seeder",
     "data:destroy": "node backend/seeder -d",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend",
-    "docs": "rm -r backend/apidoc; apidoc -i /home/tom/Desktop/ecommerce-template/backend/controllers/ -o apidoc/"
+    "docs": "rm -r apidoc; apidoc -i /home/tom/Desktop/ecommerce-template/backend/controllers/ -i /home/tom/Desktop/ecommerce-template/backend/routes/ -o apidoc/"
   },
   "repository": {
     "type": "git",

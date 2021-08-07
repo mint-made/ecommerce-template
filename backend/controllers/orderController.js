@@ -39,14 +39,14 @@ const getOrderById = asyncHandler(async (req, res) => {
  *
  * @apiDescription This route will create a new paid order from details provided
  *
- * @apiParam {Array} orderItems All items included in the order
- * @apiParam {Object} shippingAddress Containing address , city, postalCode, country
- * @apiParam {String} paymentMethod
- * @apiParam {Number} itemsPrice
- * @apiParam {Number} shippingPrice
- * @apiParam {Number} taxPrice
- * @apiParam {Number} totalPrice
- * @apiParam {Object} paymentResult
+ * @apiParam {Array} orderItems all items included in the order
+ * @apiParam {Object} shippingAddress containing address , city, postalCode, country
+ * @apiParam {String} paymentMethod how the order was paid e.g. Paypal, Stripe
+ * @apiParam {Number} itemsPrice total items price ex. shipping/tax
+ * @apiParam {Number} shippingPrice cost of shipping the order
+ * @apiParam {Number} taxPrice tax due for the order
+ * @apiParam {Number} totalPrice total cost of the order inc. shipping/tax
+ * @apiParam {Object} paymentResult containing payment info such id, status, time and email of payer
  *
  * @apiSuccess {Object} createdOrder The order created
  */
