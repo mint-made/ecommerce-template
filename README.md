@@ -26,10 +26,12 @@ This is a template ecommerce site, built with the essential ecommerce functional
 - React + Redux
 - Node + Express
 - MongoDB + Mongoose
+- AWS S3
 - JSON web tokens
 - [bcrypt](https://www.npmjs.com/package/bcrypt)
 - RESTful APIs
 - React-BootStrap
+- Heroku
 - [apiDoc](https://apidocjs.com/#param-api-description)
 
 
