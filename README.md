@@ -26,8 +26,16 @@ This is a template ecommerce site, built with the essential ecommerce functional
 - React + Redux
 - Node + Express
 - MongoDB + Mongoose
+- AWS S3
 - JSON web tokens
 - [bcrypt](https://www.npmjs.com/package/bcrypt)
 - RESTful APIs
 - React-BootStrap
+- Heroku
 - [apiDoc](https://apidocjs.com/#param-api-description)
+
+
+### Documentation for the API
+API documentation can be accessed in development mode only at http://localhost:5000/apidocs
+![image](https://user-images.githubusercontent.com/53815961/128601252-a3c9aa7c-0d3a-4245-96a9-079ffb56e5db.png)
+
