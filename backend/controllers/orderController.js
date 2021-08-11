@@ -29,15 +29,15 @@ const getOrderById = asyncHandler(async (req, res) => {
   }
 });
 
-// @description Place new order
+// @description Post create new order
 // @route POST /api/orders
 // @access Private
 /**
- * @api {post} /api/orders Place Order
+ * @api {post} /api/orders createOrder
  * @apiGroup Order
  * @apiPermission Private
  *
- * @apiDescription This route will create a new paid order from details provided
+ * @apiDescription This route will create a new order from details provided
  *
  * @apiParam {Array} orderItems all items included in the order
  * @apiParam {Object} shippingAddress containing address , city, postalCode, country

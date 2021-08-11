@@ -140,14 +140,14 @@ define({ "api": [
   {
     "type": "post",
     "url": "/api/orders",
-    "title": "Place Order",
+    "title": "createOrder",
     "group": "Order",
     "permission": [
       {
         "name": "Private"
       }
     ],
-    "description": "<p>This route will create a new paid order from details provided</p>",
+    "description": "<p>This route will create a new order from details provided</p>",
     "parameter": {
       "fields": {
         "Parameter": [
