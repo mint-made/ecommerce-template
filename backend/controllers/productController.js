@@ -41,6 +41,20 @@ const getProducts = asyncHandler(async (req, res) => {
         },
       }
     : {};
+
+  const sort = {};
+  if (req.query.sort) {
+    const sortArr = req.query.sort.split('_');
+    const sortField = sortArr[0];
+    let sortValue;
+    if (sortArr[1] === 'asc') {
+      sortValue = 1;
+    } else if (sortArr[1] === 'desc') {
+      sortValue = -1;
+    }
+    sort[sortField] = sortValue;
+  }
+
   console.log({
     ...keyword,
     ...category,
@@ -57,6 +71,7 @@ const getProducts = asyncHandler(async (req, res) => {
     ...category,
     ...subcategory,
   })
+    .sort(sort)
     .limit(pageSize)
     .skip(pageSize * (page - 1));
 

@@ -18,7 +18,7 @@ const HomeScreen = ({ match, history }) => {
     : '';
   const keyword = useQuery().get('q') || '';
   const pageNumber = useQuery().get('page') || 1;
-  const sortBy = useQuery().get('sort_by') || '';
+  const sort = useQuery().get('sort') || '';
 
   const dispatch = useDispatch();
 
@@ -27,9 +27,9 @@ const HomeScreen = ({ match, history }) => {
 
   useEffect(() => {
     dispatch(
-      listProducts(keyword, pageNumber.toString(), category, subCategory)
+      listProducts(keyword, pageNumber.toString(), category, subCategory, sort)
     );
-  }, [dispatch, pageNumber, category, subCategory, keyword]);
+  }, [dispatch, pageNumber, category, subCategory, keyword, sort]);
 
   const capitalize = (s) => {
     if (typeof s !== 'string') return '';
@@ -59,7 +59,7 @@ const HomeScreen = ({ match, history }) => {
         }
       />
       <Row>
-        <Col>
+        <Col xs={8}>
           <Breadcrumb>
             <Breadcrumb.Item href='/shop'>Shop</Breadcrumb.Item>
             {category && (
@@ -74,22 +74,20 @@ const HomeScreen = ({ match, history }) => {
             )}
           </Breadcrumb>
         </Col>
-        <Col>
+        <Col xs={4} className='d-flex justify-content-end'>
           <Form.Control
             as='select'
             className='form-select border border-secondary rounded'
             style={{ maxWidth: '160px' }}
-            value={sortBy}
+            value={sort}
             onChange={(e) => sortSelectHandler(e.target.value)}
           >
-            Sort By:
-            <option value={'date_desc'}>Most Recent</option>
             <option value={'price_asc'}>Lowest Price</option>
             <option value={'price_desc'}>Highest Price</option>
           </Form.Control>
         </Col>
       </Row>
-
+      <Paginate pages={pages} page={page} keyword={keyword} />
       {loading ? (
         <Loader />
       ) : error ? (
@@ -103,7 +101,6 @@ const HomeScreen = ({ match, history }) => {
               </Col>
             ))}
           </Row>
-          <Paginate pages={pages} page={page} keyword={keyword} />
         </>
       )}
     </>
