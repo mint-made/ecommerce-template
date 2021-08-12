@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Row, Col, Breadcrumb, Form } from 'react-bootstrap';
+import { Row, Col, Breadcrumb, Dropdown } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 
@@ -75,19 +75,21 @@ const HomeScreen = ({ match, history }) => {
           </Breadcrumb>
         </Col>
         <Col xs={4} className='d-flex justify-content-end'>
-          <Form.Control
-            as='select'
-            className='form-select border border-secondary rounded'
-            style={{ maxWidth: '160px' }}
-            value={sort}
-            onChange={(e) => sortSelectHandler(e.target.value)}
-          >
-            <option value={'price_asc'}>Lowest Price</option>
-            <option value={'price_desc'}>Highest Price</option>
-          </Form.Control>
+          <Dropdown>
+            <Dropdown.Toggle id='dropdown-basic'>Sort By:</Dropdown.Toggle>
+
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={() => sortSelectHandler('price_asc')}>
+                Price: Low - High
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => sortSelectHandler('price_desc')}>
+                Price: High - Low
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
         </Col>
       </Row>
-      <Paginate pages={pages} page={page} keyword={keyword} />
+      <Paginate pages={pages} page={page} keyword={keyword} sort={sort} />
       {loading ? (
         <Loader />
       ) : error ? (

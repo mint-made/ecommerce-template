@@ -3,15 +3,30 @@ import { Pagination } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useLocation } from 'react-router';
 
-const Paginate = ({ pages, page, isAdmin = false, keyword = '' }) => {
+const Paginate = ({
+  pages,
+  page,
+  isAdmin = false,
+  keyword = '',
+  sort = '',
+}) => {
   const location = useLocation();
   const generateLink = (x) => {
     if (isAdmin) {
       return `/admin/productlist/${x + 1}`;
     }
-    return !keyword
-      ? `${location.pathname}?page=${x + 1}`
-      : `${location.pathname}?q=${keyword}&page=${x + 1}`;
+    if (!keyword && !sort) {
+      return `${location.pathname}?page=${x + 1}`;
+    }
+    if (!keyword && sort) {
+      return `${location.pathname}?sort=${sort}&page=${x + 1}`;
+    }
+    if (keyword && !sort) {
+      return `${location.pathname}?q=${keyword}&page=${x + 1}`;
+    }
+    if (keyword && sort) {
+      return `${location.pathname}?sort=${sort}&q=${keyword}&page=${x + 1}`;
+    }
   };
 
   return (
