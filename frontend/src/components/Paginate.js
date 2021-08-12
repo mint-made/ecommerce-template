@@ -12,9 +12,6 @@ const Paginate = ({
 }) => {
   const location = useLocation();
   const generateLink = (x) => {
-    if (isAdmin) {
-      return `/admin/productlist/${x + 1}`;
-    }
     if (!keyword && !sort) {
       return `${location.pathname}?page=${x + 1}`;
     }

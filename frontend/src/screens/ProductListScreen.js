@@ -1,6 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
-import { Table, Button, Row, Col, Image, Dropdown } from 'react-bootstrap';
+import {
+  Table,
+  Button,
+  Row,
+  Col,
+  Image,
+  Dropdown,
+  Form,
+} from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
@@ -16,6 +24,7 @@ import Meta from '../components/Meta';
 import { Link, useLocation } from 'react-router-dom';
 
 const ProductListScreen = ({ history, match }) => {
+  const [searchTerm, setSearchTerm] = useState('');
   const location = useLocation();
   const sort = useQuery().get('sort') || '';
   const category = match.params.category
@@ -24,7 +33,8 @@ const ProductListScreen = ({ history, match }) => {
   const subCategory = match.params.subCategory
     ? match.params.subCategory.replace(/-/g, ' ')
     : '';
-  const pageNumber = match.params.pageNumber || 1;
+  const keyword = useQuery().get('q') || '';
+  const pageNumber = useQuery().get('page') || 1;
 
   const dispatch = useDispatch();
 
@@ -67,7 +77,13 @@ const ProductListScreen = ({ history, match }) => {
       history.push(`/admin/product/${createdProduct._id}/edit`);
     } else {
       dispatch(
-        listProducts('', pageNumber.toString(), category, subCategory, sort)
+        listProducts(
+          keyword,
+          pageNumber.toString(),
+          category,
+          subCategory,
+          sort
+        )
       );
       dispatch(listProductCategories());
     }
@@ -82,6 +98,7 @@ const ProductListScreen = ({ history, match }) => {
     sort,
     category,
     subCategory,
+    keyword,
   ]);
 
   const deleteHandler = (id) => {
@@ -109,9 +126,27 @@ const ProductListScreen = ({ history, match }) => {
   return (
     <>
       <Meta title='Product List' />
-      <Row className='align-items-center'>
-        <Col xs={4}>
-          <h1>Products</h1>
+      <Row className='align-items-center mb-3'>
+        <Col xs={4} className='d-flex justify-content-left'>
+          <Form.Group
+            controlId='tags'
+            className='mb-0'
+            style={{ maxWidth: '200px' }}
+          >
+            <Form.Control
+              type='text'
+              placeholder='Search'
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
+          <Button
+            variant='light'
+            className='btn'
+            onClick={() => history.push(`/admin/productlist?q=${searchTerm}`)}
+          >
+            <i className='fa fa-search'></i>
+          </Button>
         </Col>
         <Col xs={8} className='text-right d-flex justify-content-around'>
           {loadingCategories ? (
@@ -120,7 +155,7 @@ const ProductListScreen = ({ history, match }) => {
             <Message variant='danger'>{error}</Message>
           ) : (
             <>
-              <Dropdown className='my-3'>
+              <Dropdown>
                 <Dropdown.Toggle id='dropdown-basic'>Category:</Dropdown.Toggle>
                 <Dropdown.Menu>
                   <Dropdown.Item
@@ -143,7 +178,7 @@ const ProductListScreen = ({ history, match }) => {
                     ))}
                 </Dropdown.Menu>
               </Dropdown>
-              <Dropdown className='my-3'>
+              <Dropdown>
                 <Dropdown.Toggle id='dropdown-basic'>
                   Sub-Category:
                 </Dropdown.Toggle>
@@ -175,7 +210,7 @@ const ProductListScreen = ({ history, match }) => {
             </>
           )}
 
-          <Dropdown className='my-3'>
+          <Dropdown>
             <Dropdown.Toggle id='dropdown-basic'>Sort By:</Dropdown.Toggle>
             <Dropdown.Menu>
               <Dropdown.Item onClick={() => sortSelectHandler('date_desc')}>
@@ -190,11 +225,7 @@ const ProductListScreen = ({ history, match }) => {
             </Dropdown.Menu>
           </Dropdown>
 
-          <Button
-            className='my-3'
-            variant='success'
-            onClick={createProductHandler}
-          >
+          <Button variant='success' onClick={createProductHandler}>
             <i className='fas fa-plus'></i> Create Product
           </Button>
         </Col>
@@ -203,7 +234,13 @@ const ProductListScreen = ({ history, match }) => {
       {errorDelete && <Message variant='danger'>{errorDelete}</Message>}
       {loadingCreate && <Loader />}
       {errorCreate && <Message variant='danger'>{errorCreate}</Message>}
-      <Paginate pages={pages} page={page} isAdmin={true} sort={sort} />
+      <Paginate
+        pages={pages}
+        page={page}
+        isAdmin={true}
+        sort={sort}
+        keyword={keyword}
+      />
       {loading ? (
         <Loader />
       ) : error ? (
