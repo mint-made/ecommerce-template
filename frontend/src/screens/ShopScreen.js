@@ -12,7 +12,9 @@ import Meta from '../components/Meta';
 
 const HomeScreen = ({ match, history }) => {
   const location = useLocation();
-  const category = match.params.category;
+  const category = match.params.category
+    ? match.params.category.replace(/-/g, ' ')
+    : '';
   const subCategory = match.params.subCategory
     ? match.params.subCategory.replace(/-/g, ' ')
     : '';

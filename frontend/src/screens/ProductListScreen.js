@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
-import { Table, Button, Row, Col, Image } from 'react-bootstrap';
+import { Table, Button, Row, Col, Image, Dropdown } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
@@ -8,13 +8,22 @@ import {
   listProducts,
   deleteProduct,
   createProduct,
+  listProductCategories,
 } from '../actions/productActions';
 import Paginate from '../components/Paginate';
 import { PRODUCT_CREATE_RESET } from '../constants/productConstants';
 import Meta from '../components/Meta';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const ProductListScreen = ({ history, match }) => {
+  const location = useLocation();
+  const sort = useQuery().get('sort') || '';
+  const category = match.params.category
+    ? match.params.category.replace(/-/g, ' ')
+    : '';
+  const subCategory = match.params.subCategory
+    ? match.params.subCategory.replace(/-/g, ' ')
+    : '';
   const pageNumber = match.params.pageNumber || 1;
 
   const dispatch = useDispatch();
@@ -37,6 +46,13 @@ const ProductListScreen = ({ history, match }) => {
     product: createdProduct,
   } = productCreate;
 
+  const productCategories = useSelector((state) => state.productCategories);
+  const {
+    loading: loadingCategories,
+    error: errorCategories,
+    categories,
+  } = productCategories;
+
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
@@ -50,7 +66,10 @@ const ProductListScreen = ({ history, match }) => {
     if (successCreate) {
       history.push(`/admin/product/${createdProduct._id}/edit`);
     } else {
-      dispatch(listProducts('', pageNumber));
+      dispatch(
+        listProducts('', pageNumber.toString(), category, subCategory, sort)
+      );
+      dispatch(listProductCategories());
     }
   }, [
     dispatch,
@@ -60,6 +79,9 @@ const ProductListScreen = ({ history, match }) => {
     successCreate,
     createdProduct,
     pageNumber,
+    sort,
+    category,
+    subCategory,
   ]);
 
   const deleteHandler = (id) => {
@@ -68,19 +90,111 @@ const ProductListScreen = ({ history, match }) => {
     }
   };
 
+  function useQuery() {
+    return new URLSearchParams(useLocation().search);
+  }
+
   const createProductHandler = (product) => {
     dispatch(createProduct());
+  };
+
+  const sortSelectHandler = (value) => {
+    history.push(`${location.pathname}?sort=${value}`);
+  };
+
+  const kebabCase = (string) => {
+    return string.replace(/ /g, '-').toLowerCase();
   };
 
   return (
     <>
       <Meta title='Product List' />
       <Row className='align-items-center'>
-        <Col>
+        <Col xs={4}>
           <h1>Products</h1>
         </Col>
-        <Col className='text-right'>
-          <Button className='my-3' onClick={createProductHandler}>
+        <Col xs={8} className='text-right d-flex justify-content-around'>
+          {loadingCategories ? (
+            <Loader />
+          ) : errorCategories ? (
+            <Message variant='danger'>{error}</Message>
+          ) : (
+            <>
+              <Dropdown className='my-3'>
+                <Dropdown.Toggle id='dropdown-basic'>Category:</Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <Dropdown.Item
+                    onClick={() => history.push(`/admin/productlist/`)}
+                  >
+                    All
+                  </Dropdown.Item>
+                  {categories.parent &&
+                    categories.parent.map((category, index) => (
+                      <Dropdown.Item
+                        key={index}
+                        onClick={() =>
+                          history.push(
+                            `/admin/productlist/${kebabCase(category)}`
+                          )
+                        }
+                      >
+                        {category}
+                      </Dropdown.Item>
+                    ))}
+                </Dropdown.Menu>
+              </Dropdown>
+              <Dropdown className='my-3'>
+                <Dropdown.Toggle id='dropdown-basic'>
+                  Sub-Category:
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <Dropdown.Item
+                    onClick={() =>
+                      history.push(`/admin/productlist/${kebabCase(category)}/`)
+                    }
+                  >
+                    All
+                  </Dropdown.Item>
+                  {categories.parent &&
+                    categories.sub.map((subCat, index) => (
+                      <Dropdown.Item
+                        key={index}
+                        onClick={() =>
+                          history.push(
+                            `/admin/productlist/${kebabCase(
+                              category
+                            )}/${kebabCase(subCat)}`
+                          )
+                        }
+                      >
+                        {subCat}
+                      </Dropdown.Item>
+                    ))}
+                </Dropdown.Menu>
+              </Dropdown>
+            </>
+          )}
+
+          <Dropdown className='my-3'>
+            <Dropdown.Toggle id='dropdown-basic'>Sort By:</Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={() => sortSelectHandler('date_desc')}>
+                Newest Arrivals
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => sortSelectHandler('price_asc')}>
+                Price: Low - High
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => sortSelectHandler('price_desc')}>
+                Price: High - Low
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+
+          <Button
+            className='my-3'
+            variant='success'
+            onClick={createProductHandler}
+          >
             <i className='fas fa-plus'></i> Create Product
           </Button>
         </Col>
@@ -89,6 +203,7 @@ const ProductListScreen = ({ history, match }) => {
       {errorDelete && <Message variant='danger'>{errorDelete}</Message>}
       {loadingCreate && <Loader />}
       {errorCreate && <Message variant='danger'>{errorCreate}</Message>}
+      <Paginate pages={pages} page={page} isAdmin={true} sort={sort} />
       {loading ? (
         <Loader />
       ) : error ? (
@@ -142,7 +257,6 @@ const ProductListScreen = ({ history, match }) => {
               ))}
             </tbody>
           </Table>
-          <Paginate pages={pages} page={page} isAdmin={true} />
         </>
       )}
     </>

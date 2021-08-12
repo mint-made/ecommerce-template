@@ -45,7 +45,12 @@ const App = () => {
             exact
           />
           <Route
-            path='/admin/productlist/:pageNumber'
+            path='/admin/productlist/:category'
+            component={ProductListScreen}
+            exact
+          />
+          <Route
+            path='/admin/productlist/:category/:subCategory'
             component={ProductListScreen}
             exact
           />
