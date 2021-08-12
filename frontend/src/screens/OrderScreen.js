@@ -178,12 +178,6 @@ const OrderScreen = ({ match, history }) => {
                   </ListGroup.Item>
                   <ListGroup.Item>
                     <Row>
-                      <Col>Tax</Col>
-                      <Col>£{addDecimals(order.taxPrice)}</Col>
-                    </Row>
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    <Row>
                       <Col>Total</Col>
                       <Col>£{addDecimals(order.totalPrice)}</Col>
                     </Row>
