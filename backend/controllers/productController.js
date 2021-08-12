@@ -55,12 +55,6 @@ const getProducts = asyncHandler(async (req, res) => {
     sort[sortField] = sortValue;
   }
 
-  console.log({
-    ...keyword,
-    ...category,
-    ...subcategory,
-  });
-  console.log(req.query);
   const count = await Product.countDocuments({
     ...keyword,
     ...category,
@@ -150,6 +144,7 @@ const createProduct = asyncHandler(async (req, res) => {
     user: req.user._id,
     variantId: '',
     variations: [],
+    date: Date.now(),
   });
 
   const createdProduct = await product.save();

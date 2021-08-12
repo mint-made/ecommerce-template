@@ -85,6 +85,9 @@ const HomeScreen = ({ match, history }) => {
               <Dropdown.Item onClick={() => sortSelectHandler('price_desc')}>
                 Price: High - Low
               </Dropdown.Item>
+              <Dropdown.Item onClick={() => sortSelectHandler('date_desc')}>
+                Newest Arrivals
+              </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
         </Col>

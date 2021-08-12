@@ -90,6 +90,10 @@ const productSchema = new mongoose.Schema({
     required: true,
     default: 0,
   },
+  date: {
+    type: Number,
+    required: true,
+  },
 });
 
 const Product = mongoose.model('Product', productSchema);
