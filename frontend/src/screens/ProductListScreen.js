@@ -24,7 +24,6 @@ import Meta from '../components/Meta';
 import { Link, useLocation } from 'react-router-dom';
 
 const ProductListScreen = ({ history, match }) => {
-  const [searchTerm, setSearchTerm] = useState('');
   const location = useLocation();
   const sort = useQuery().get('sort') || '';
   const category = match.params.category
@@ -35,6 +34,7 @@ const ProductListScreen = ({ history, match }) => {
     : '';
   const keyword = useQuery().get('q') || '';
   const pageNumber = useQuery().get('page') || 1;
+  const [term, setTerm] = useState('');
 
   const dispatch = useDispatch();
 
@@ -101,6 +101,21 @@ const ProductListScreen = ({ history, match }) => {
     keyword,
   ]);
 
+  // Whenever the component is re-rendered and term has changed, run this function
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      if (term) {
+        history.push(`${location.pathname}?q=${term}`);
+      }
+      if (!term && keyword) {
+        history.push(`${location.pathname}`);
+      }
+    }, 1000);
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [term, history, location, keyword]);
+
   const deleteHandler = (id) => {
     if (window.confirm('Are you sure?')) {
       dispatch(deleteProduct(id));
@@ -132,25 +147,20 @@ const ProductListScreen = ({ history, match }) => {
       <Meta title='Product List' />
       <Row className='align-items-center mb-3'>
         <Col xs={4} className='d-flex justify-content-left'>
-          <Form.Group
-            controlId='tags'
-            className='mb-0'
-            style={{ maxWidth: '200px' }}
+          <Form
+            onSubmit={(e) => {
+              e.preventDefault();
+              history.push(`${location.pathname}?q=${term}`);
+            }}
           >
-            <Form.Control
-              type='text'
-              placeholder='Search'
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
-          <Button
-            variant='light'
-            className='btn'
-            onClick={() => history.push(`/admin/productlist?q=${searchTerm}`)}
-          >
-            <i className='fa fa-search'></i>
-          </Button>
+            <Form.Group controlId='search'>
+              <Form.Control
+                placeholder='Search'
+                value={term}
+                onChange={(e) => setTerm(e.target.value)}
+              />
+            </Form.Group>
+          </Form>
         </Col>
         <Col xs={8} className='text-right d-flex justify-content-around'>
           {loadingCategories ? (
