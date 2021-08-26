@@ -19,15 +19,9 @@ const Header = () => {
 
   const categoryArr = [
     {
-      name: 'Cards',
-      sub: ['Birthday', 'Wedding', 'New Baby', 'Celebrate', 'All Occasions'],
+      name: 'Clothing',
+      sub: ['T-Shirts', 'Beanies'],
     },
-    { name: 'Prints', sub: ['Safari Animals', 'Sea Animal'] },
-    {
-      name: 'Stationery',
-      sub: ['Postcards', 'Notepad', 'To Do List'],
-    },
-    { name: 'Totes', sub: [] },
   ];
 
   const kebabCase = (string) => {
@@ -50,11 +44,15 @@ const Header = () => {
           <Navbar.Toggle aria-controls='basic-navbar-nav' />
           <div className='d-flex justify-content-center px-3 d-md-none'>
             <LinkContainer to='/'>
-              <h2 className='my-0 text-dark cursor-pointer'>Ecommerce Site</h2>
+              <h2 className='my-0 text-dark cursor-pointer'>TC Graphics</h2>
             </LinkContainer>
           </div>
+
           <Navbar.Collapse id='basic-navbar-nav'>
             <Nav className='mx-auto'>
+              <LinkContainer to='/portfolio'>
+                <Nav.Link>Portfolio</Nav.Link>
+              </LinkContainer>
               {categoryArr.map((category, index) => (
                 <NavDropdown
                   title={category.name}
